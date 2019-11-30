@@ -92,7 +92,7 @@ schema:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   ## Deadline for cassandra schema creation job
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: 300
   # traceTtl: 172800
   # dependenciesTtl: 0
 
