@@ -1,6 +1,7 @@
 # Kubernetes Helm Charts for Jaeger backend
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![](https://github.com/jaegertracing/helm-charts/workflows/Release%20Charts/badge.svg?branch=master)](https://github.com/jaegertracing/helm-charts/actions)
 
 This functionality is in beta and is subject to change. The code is provided as-is with no warranties. Beta features are not subject to the support SLA of official GA features.
 
