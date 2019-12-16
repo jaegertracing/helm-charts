@@ -1,0 +1,25 @@
+name: Lint and Test Charts
+
+on: pull_request
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.0.0-alpha.2
+        with:
+          installLocalPathProvisioner: true
+
+      - name: Run chart-testing (lint)
+        uses: helm/chart-testing-action@v1.0.0-alpha.1
+        with:
+          command: lint
+
+      - name: Run chart-testing (install)
+        uses: helm/chart-testing-action@v1.0.0-alpha.1
+        with:
+          command: install
