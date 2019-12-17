@@ -1,6 +1,6 @@
 # Jaeger
 
-[Jaeger](http://jaeger.readthedocs.io/en/latest/) is a distributed tracing system.
+[Jaeger](https://www.jaegertracing.io/) is a distributed tracing system.
 
 ## Introduction
 
