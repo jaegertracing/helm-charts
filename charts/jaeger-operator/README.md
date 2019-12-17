@@ -5,7 +5,7 @@
 ## Install
 
 ```console
-$ helm install stable/jaeger-operator
+$ helm install jaegertracing/jaeger-operator
 ```
 
 ## Introduction
@@ -18,10 +18,16 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 
 ## Installing the Chart
 
+Add the Jaeger Tracing Helm repository:
+
+```console
+$ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+```
+
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/jaeger-operator
+$ helm install --name my-release jaegertracing/jaeger-operator
 ```
 
 The command deploys jaeger-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -66,7 +72,7 @@ Specify each parameter you'd like to override using a YAML file as described abo
 You can also specify any non-array parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/jaeger-operator --name my-release \
+$ helm install jaegertracing/jaeger-operator --name my-release \
     --set rbac.create=false
 ```
 
