@@ -14,8 +14,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       # See https://github.com/helm/chart-releaser-action/issues/6
       - name: Initialize Helm
