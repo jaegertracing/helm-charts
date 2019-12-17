@@ -14,21 +14,6 @@ jobs:
         with:
           installLocalPathProvisioner: true
 
-      # See https://github.com/helm/chart-releaser-action/issues/6
-      # For now, install the same version of Tiller as the chart-testing Helm
-      # client version: v2.15.2.
-      - name: Install Helm
-        run: |
-          curl -sSLo get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get
-          chmod 700 get_helm.sh
-          DESIRED_VERSION=v2.15.2 ./get_helm.sh
-          helm init
-
-      - name: Add dependency chart repos
-        run: |
-          helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-          helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-
       - name: Run chart-testing (lint)
         uses: helm/chart-testing-action@v1.0.0-alpha.1
         with:

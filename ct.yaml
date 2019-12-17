@@ -1,0 +1,6 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+chart-dirs:
+  - charts
+chart-repos:
+  - incubator=https://kubernetes-charts-incubator.storage.googleapis.com
