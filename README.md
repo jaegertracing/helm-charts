@@ -16,7 +16,7 @@ Once Helm is set up properly, add the repo as follows:
 $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 ```
 
-You can then run `helm search jaegertracing` to see the charts.
+You can then run `helm search repo jaegertracing` to see the charts.
 
 ## Contributing
 
