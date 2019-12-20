@@ -77,7 +77,7 @@ $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 To install the chart with the release name `myrel`, run the following command:
 
 ```bash
-$ helm install jaegertracing/jaeger --name myrel
+$ helm install jaeger jaegertracing/jaeger
 ```
 
 After a few minutes, you should see a 3 node Cassandra instance, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
@@ -85,20 +85,16 @@ After a few minutes, you should see a 3 node Cassandra instance, a Jaeger Daemon
 IMPORTANT NOTE: For testing purposes, the footprint for Cassandra can be reduced significantly in the event resources become constrained (such as running on your local laptop or in a Vagrant environment). You can override the resources required run running this command:
 
 ```bash
-helm install jaegertracing/jaeger --name myrel --set cassandra.config.max_heap_size=1024M --set cassandra.config.heap_new_size=256M --set cassandra.resources.requests.memory=2048Mi --set cassandra.resources.requests.cpu=0.4 --set cassandra.resources.limits.memory=2048Mi --set cassandra.resources.limits.cpu=0.4
+helm install jaeger jaegertracing/jaeger --set cassandra.config.max_heap_size=1024M --set cassandra.config.heap_new_size=256M --set cassandra.resources.requests.memory=2048Mi --set cassandra.resources.requests.cpu=0.4 --set cassandra.resources.limits.memory=2048Mi --set cassandra.resources.limits.cpu=0.4
 ```
-
-> **Tip**: List all releases using `helm list`
 
 ## Installing the Chart using an Existing Cassandra Cluster
 
 If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (make sure you replace `<HOST>`, `<PORT>`, etc with your values):
 
 ```bash
-helm install jaegertracing/jaeger --name myrel --set provisionDataStore.cassandra=false --set storage.cassandra.host=<HOST> --set storage.cassandra.port=<PORT> --set storage.cassandra.user=<USER> --set storage.cassandra.password=<PASSWORD>
+helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false --set storage.cassandra.host=<HOST> --set storage.cassandra.port=<PORT> --set storage.cassandra.user=<USER> --set storage.cassandra.password=<PASSWORD>
 ```
-
-> **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
 
 ## Installing the Chart using an Existing Cassandra Cluster with TLS
 
@@ -152,31 +148,24 @@ data:
 
 ```bash
 kubectl apply -f jaeger-tls-cassandra-secret.yaml
-helm install jaegertracing/jaeger --name myrel --values values.yaml
+helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
 
 ## Installing the Chart using a New ElasticSearch Cluster
 
-To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
+To install the chart with the release name `jaeger` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
-$ helm install jaegertracing/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
+$ helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false  --set elasticsearch.enabled=true --set storage.type=elasticsearch
 ```
-
-After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
-
-> **Tip**: If the ElasticSearch client nodes do not enter the running state, try --set elasticsearch.rbac.create=true
 
 ## Installing the Chart using an Existing ElasticSearch Cluster
 
 If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store:
 
 ```bash
-helm install jaegertracing/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
+helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
 ```
-
-> **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
-
 
 ## Installing the Chart using an Existing ElasticSearch Cluster with TLS
 

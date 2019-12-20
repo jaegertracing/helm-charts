@@ -4,7 +4,8 @@
 
 provisionDataStore:
   cassandra: true
-  elasticsearch: false
+# To provision elasticsearch instead,
+# set above value to false and set elasticsearch.enabled to true
 
 tag: 1.16.0
 
@@ -47,7 +48,7 @@ storage:
     # existingSecret:
   elasticsearch:
     scheme: http
-    host: elasticsearch
+    host: elasticsearch-master
     port: 9200
     user: elastic
     usePassword: true
@@ -96,13 +97,10 @@ schema:
   # traceTtl: 172800
   # dependenciesTtl: 0
 
-# Begin: Override values on the Elasticsearch subchart to customize for Jaeger
+# For configurable values of the elasticsearch dependency, please see:
+# https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
 elasticsearch:
-  cluster:
-    name: "tracing"
-  data:
-    persistence:
-      enabled: false
+  enabled: false
 
 agent:
   enabled: true

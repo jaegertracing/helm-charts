@@ -4,4 +4,5 @@ chart-dirs:
   - charts
 chart-repos:
   - incubator=https://kubernetes-charts-incubator.storage.googleapis.com
+  - elastic=https://helm.elastic.co
 helm-extra-args: --timeout=500
