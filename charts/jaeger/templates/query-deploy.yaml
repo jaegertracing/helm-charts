@@ -73,7 +73,7 @@ spec:
             value: "/cassandra-tls/client-cert.pem"
           - name: CASSANDRA_TLS_CA
             value: "/cassandra-tls/ca-cert.pem"
-          {{- end }}    
+          {{- end }}
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
@@ -97,8 +97,12 @@ spec:
           - name: ES_USERNAME
             value: {{ .Values.storage.elasticsearch.user }}
           {{- end }}
+          {{- if .Values.query.basePath }}
           - name: QUERY_BASE_PATH
             value: {{ .Values.query.basePath | quote }}
+          {{- end }}
+          - name: JAEGER_AGENT_PORT
+            value: "6831"
         ports:
         - name: query
           containerPort: 16686
