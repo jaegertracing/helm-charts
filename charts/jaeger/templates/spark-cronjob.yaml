@@ -29,12 +29,6 @@ spec:
 {{ toYaml .Values.spark.podLabels | indent 12 }}
             {{- end }}
         spec:
-          nodeSelector:
-{{ toYaml .Values.spark.nodeSelector | indent 12 }}
-{{- if .Values.spark.tolerations }}
-          tolerations:
-{{ toYaml .Values.spark.tolerations | indent 12 }}
-{{- end }}
           serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
@@ -67,4 +61,16 @@ spec:
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
+    {{- with .Values.spark.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+    {{- with .Values.spark.affinity }}
+      affinity:
+        {{- toYaml . | nindent 12 }}
+    {{- end }}
+    {{- with .Values.spark.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 12 }}
+    {{- end }}
 {{- end -}}

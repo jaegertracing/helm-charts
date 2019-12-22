@@ -36,12 +36,6 @@ spec:
 {{ toYaml .Values.query.podLabels | indent 8 }}
 {{- end }}
     spec:
-      nodeSelector:
-{{ toYaml .Values.query.nodeSelector | indent 8 }}
-{{- if .Values.query.tolerations }}
-      tolerations:
-{{ toYaml .Values.query.tolerations | indent 8 }}
-{{- end }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
@@ -169,4 +163,16 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+    {{- with .Values.query.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.query.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.query.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end -}}
