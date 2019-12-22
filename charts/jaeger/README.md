@@ -6,75 +6,15 @@
 
 This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra)), but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster (using the [elasticsearch chart](https://github.com/kubernetes/charts/tree/master/incubator/elasticsearch)), or connecting to an existing ElasticSearch cluster. Once the back storage available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments.
 
-## Prerequisites
-
-- Has been tested on Kubernetes 1.7+
-  - The `spark` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support:
-    > You need a working Kubernetes cluster at version >= 1.8 (for CronJob). For previous versions of cluster (< 1.8) you need to explicitly enable `batch/v2alpha1` API by passing `--runtime-config=batch/v2alpha1=true` to the API server ([see Turn on or off an API version for your cluster for more](https://kubernetes.io/docs/admin/cluster-management/#turn-on-or-off-an-api-version-for-your-cluster)).
-
-- The Cassandra chart calls out the following requirements (default) for a test environment (please see the important note in the installation section):
-```
-resources:
-  requests:
-    memory: 4Gi
-    cpu: 2
-  limits:
-    memory: 4Gi
-    cpu: 2
-```
-- The Cassandra chart calls out the following requirements for a production environment:
-```
-resources:
-  requests:
-    memory: 8Gi
-    cpu: 2
-  limits:
-    memory: 8Gi
-    cpu: 2
-```
-
-- The ElasticSearch chart calls out the following requirements for a production environment:
-```
-client:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
-    requests:
-      cpu: "25m"
-      memory: "512Mi"
-
-master:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
-    requests:
-      cpu: "25m"
-      memory: "512Mi"
-
-data:
-  ...
-  resources:
-    limits:
-      cpu: "1"
-      # memory: "2048Mi"
-    requests:
-      cpu: "25m"
-      memory: "1536Mi"
-```
-
 ## Installing the Chart
 
 Add the Jaeger Tracing Helm repository:
 
-```console
+```bash
 $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 ```
 
-To install the chart with the release name `myrel`, run the following command:
+To install the chart with the release name `jaeger`, run the following command:
 
 ```bash
 $ helm install jaeger jaegertracing/jaeger
@@ -159,9 +99,9 @@ To install the chart with the release name `jaeger` using a new ElasticSearch cl
 $ helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false  --set elasticsearch.enabled=true --set storage.type=elasticsearch
 ```
 
-## Installing the Chart using an Existing ElasticSearch Cluster
+## Installing the Chart using an Existing Elasticsearch Cluster
 
-If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store:
+A release can be configured as follows to use an existing Elasticsearch cluster as it as the storage backend:
 
 ```bash
 helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
@@ -221,7 +161,7 @@ data:
 
 ```bash
 kubectl apply -f jaeger-tls-cfgmap.yaml
-helm install jaegertracing/jaeger --name myrel --values jaeger-values.yaml
+helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
 ## Uninstalling the Chart
@@ -278,13 +218,12 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `9411` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
-| `elasticsearch.rbac.create` | To enable RBAC | `false` |
+| `elasticsearch.enable` | Install elasticsearch as a dependency | `false` |
 | `fullnameOverride` | Override full name | `nil` |
 | `hotrod.enabled` | Enables the Hotrod demo app | `false` |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `nameOverride` | Override name| `nil` |
 | `provisionDataStore.cassandra` | Provision Cassandra Data Store| `true` |
-| `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.cmdlineParams` | Additional command line parameters | `nil` |
