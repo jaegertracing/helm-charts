@@ -286,7 +286,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `collector.service.tchannelPort` | Jaeger Agent port for thrift| `14267` |
 | `collector.service.type` | Service type | `ClusterIP` |
-| `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `9411` |
+| `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `nil` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
 | `elasticsearch.rbac.create` | To enable RBAC | `false` |

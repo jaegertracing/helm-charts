@@ -55,6 +55,10 @@ spec:
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.collector.service.zipkinPort }}
+          - name: COLLECTOR_ZIPKIN_HTTP_PORT
+            value: {{ .Values.collector.service.zipkinPort | quote }}
+          {{- end }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
           {{- if eq .Values.storage.type "cassandra" }}
@@ -117,9 +121,11 @@ spec:
         - containerPort: 14269
           name: admin
           protocol: TCP
+        {{- if .Values.collector.service.zipkinPort }}
         - containerPort: {{ .Values.collector.service.zipkinPort }}
           name: zipkin
           protocol: TCP
+        {{- end }}
         readinessProbe:
           httpGet:
             path: /
