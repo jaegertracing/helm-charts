@@ -1,4 +1,4 @@
-{{- if and .Values.spark.enabled .Values.serviceAccounts.spark.create -}}
+{{- if and .Values.spark.enabled .Values.spark.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

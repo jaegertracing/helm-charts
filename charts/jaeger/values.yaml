@@ -11,26 +11,6 @@ tag: 1.16.0
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccounts:
-  cassandraSchema:
-    create: true
-    name:
-  agent:
-    create: true
-    name:
-  collector:
-    create: true
-    name:
-  query:
-    create: true
-    name:
-  spark:
-    create: true
-    name:
-  hotrod:
-    create: true
-    name:
-
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
@@ -88,6 +68,9 @@ schema:
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
@@ -132,6 +115,9 @@ agent:
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
   nodeSelector: {}
   podAnnotations: {}
   ## Additional pod labels
@@ -176,6 +162,9 @@ collector:
     # requests:
     #   cpu: 500m
     #   memory: 512Mi
+  serviceAccount:
+    create: true
+    name:
   nodeSelector: {}
   podAnnotations: {}
   ## Additional pod labels
@@ -259,6 +248,9 @@ query:
     # requests:
     #    cpu: 256m
     #    memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
   nodeSelector: {}
   podAnnotations: {}
   ## Additional pod labels
@@ -290,6 +282,9 @@ spark:
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
   nodeSelector: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -336,6 +331,9 @@ hotrod:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
   tracing:
     host: null
     port: 6831

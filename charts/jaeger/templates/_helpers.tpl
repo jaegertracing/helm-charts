@@ -35,10 +35,10 @@ Create chart name and version as used by the chart label.
 Create the name of the cassandra schema service account to use
 */}}
 {{- define "jaeger.cassandraSchema.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.cassandraSchema.create -}}
-    {{ default (printf "%s-cassandra-schema" (include "jaeger.fullname" .)) .Values.serviceAccounts.cassandraSchema.name }}
+{{- if .Values.schema.serviceAccount.create -}}
+    {{ default (printf "%s-cassandra-schema" (include "jaeger.fullname" .)) .Values.schema.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.cassandraSchema.name }}
+    {{ default "default" .Values.schema.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -46,10 +46,10 @@ Create the name of the cassandra schema service account to use
 Create the name of the spark service account to use
 */}}
 {{- define "jaeger.spark.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.spark.create -}}
-    {{ default (printf "%s-spark" (include "jaeger.fullname" .)) .Values.serviceAccounts.spark.name }}
+{{- if .Values.spark.serviceAccount.create -}}
+    {{ default (printf "%s-spark" (include "jaeger.fullname" .)) .Values.spark.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.spark.name }}
+    {{ default "default" .Values.spark.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -57,10 +57,10 @@ Create the name of the spark service account to use
 Create the name of the hotrod service account to use
 */}}
 {{- define "jaeger.hotrod.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.hotrod.create -}}
-    {{ default (printf "%s-hotrod" (include "jaeger.fullname" .)) .Values.serviceAccounts.hotrod.name }}
+{{- if .Values.hotrod.serviceAccount.create -}}
+    {{ default (printf "%s-hotrod" (include "jaeger.fullname" .)) .Values.hotrod.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.hotrod.name }}
+    {{ default "default" .Values.hotrod.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -68,10 +68,10 @@ Create the name of the hotrod service account to use
 Create the name of the query service account to use
 */}}
 {{- define "jaeger.query.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.query.create -}}
-    {{ default (include "jaeger.query.name" .) .Values.serviceAccounts.query.name }}
+{{- if .Values.query.serviceAccount.create -}}
+    {{ default (include "jaeger.query.name" .) .Values.query.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.query.name }}
+    {{ default "default" .Values.query.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -79,10 +79,10 @@ Create the name of the query service account to use
 Create the name of the agent service account to use
 */}}
 {{- define "jaeger.agent.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.agent.create -}}
-    {{ default (include "jaeger.agent.name" .) .Values.serviceAccounts.agent.name }}
+{{- if .Values.agent.serviceAccount.create -}}
+    {{ default (include "jaeger.agent.name" .) .Values.agent.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.agent.name }}
+    {{ default "default" .Values.agent.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -90,10 +90,10 @@ Create the name of the agent service account to use
 Create the name of the collector service account to use
 */}}
 {{- define "jaeger.collector.serviceAccountName" -}}
-{{- if .Values.serviceAccounts.collector.create -}}
-    {{ default (include "jaeger.collector.name" .) .Values.serviceAccounts.collector.name }}
+{{- if .Values.collector.serviceAccount.create -}}
+    {{ default (include "jaeger.collector.name" .) .Values.collector.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccounts.collector.name }}
+    {{ default "default" .Values.collector.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
