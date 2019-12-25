@@ -4,11 +4,8 @@ kind: Deployment
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: query
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.query.annotations }}
   annotations:
 {{ toYaml .Values.query.annotations | indent 4 }}
@@ -17,9 +14,8 @@ spec:
   replicas: {{ .Values.query.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "jaeger.name" . }}
+      {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: query
-      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:
@@ -29,9 +25,8 @@ spec:
 {{ toYaml .Values.query.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "jaeger.name" . }}
+        {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: query
-        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.query.podLabels }}
 {{ toYaml .Values.query.podLabels | indent 8 }}
 {{- end }}

@@ -4,10 +4,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "jaeger.agent.name" . }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: agent
 {{- if .Values.agent.annotations }}
   annotations:
@@ -16,8 +13,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "jaeger.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: agent
   template:
     metadata:
@@ -26,8 +22,7 @@ spec:
 {{ toYaml .Values.agent.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "jaeger.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: agent
 {{- if .Values.agent.podLabels }}
 {{ toYaml .Values.agent.podLabels | indent 8 }}

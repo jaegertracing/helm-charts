@@ -6,11 +6,8 @@ kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: query
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if .Values.query.ingress.annotations }}
   annotations:
 {{ toYaml .Values.query.ingress.annotations | indent 4 }}

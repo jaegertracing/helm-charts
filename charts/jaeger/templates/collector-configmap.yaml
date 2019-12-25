@@ -4,10 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "jaeger.fullname" . }}-sampling-strategies
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: collector
 data:
   strategies.json: |-

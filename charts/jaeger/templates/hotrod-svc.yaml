@@ -4,11 +4,8 @@ kind: Service
 metadata:
   name: {{ include "jaeger.fullname" . }}-hotrod
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: hotrod
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.hotrod.service.annotations }}
   annotations:
 {{ toYaml .Values.hotrod.service.annotations | indent 4 }}
@@ -21,8 +18,7 @@ spec:
       protocol: TCP
       targetPort: http
   selector:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: hotrod
-    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- template "loadBalancerSourceRanges" .Values.hotrod }}
 {{- end -}}
