@@ -6,4 +6,4 @@ dependencies:
   - name: elasticsearch
     version: ^7.5.1
     repository: https://helm.elastic.co
-    condition: elasticsearch.enabled
+    condition: provisionDataStore.elasticsearch

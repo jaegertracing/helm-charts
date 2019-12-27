@@ -96,7 +96,7 @@ helm install jaeger jaegertracing/jaeger --values values.yaml
 To install the chart with the release name `jaeger` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
-$ helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false  --set elasticsearch.enabled=true --set storage.type=elasticsearch
+$ helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
 ```
 
 ## Installing the Chart using an Existing Elasticsearch Cluster
@@ -218,12 +218,12 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `nil` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
-| `elasticsearch.enable` | Install elasticsearch as a dependency | `false` |
 | `fullnameOverride` | Override full name | `nil` |
 | `hotrod.enabled` | Enables the Hotrod demo app | `false` |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `nameOverride` | Override name| `nil` |
 | `provisionDataStore.cassandra` | Provision Cassandra Data Store| `true` |
+| `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.cmdlineParams` | Additional command line parameters | `nil` |

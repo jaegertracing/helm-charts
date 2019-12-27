@@ -4,8 +4,7 @@
 
 provisionDataStore:
   cassandra: true
-# To provision elasticsearch instead,
-# set above value to false and set elasticsearch.enabled to true
+  elasticsearch: false
 
 tag: 1.16.0
 
@@ -97,10 +96,9 @@ schema:
   # traceTtl: 172800
   # dependenciesTtl: 0
 
-# For configurable values of the elasticsearch dependency, please see:
+# For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
-elasticsearch:
-  enabled: false
+elasticsearch: {}
 
 agent:
   enabled: true
