@@ -119,13 +119,12 @@ agent:
     create: true
     name:
   nodeSelector: {}
+  tolerations: []
+  affinity: {}
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: []
   useHostNetwork: false
   dnsPolicy: ClusterFirst
 
@@ -166,13 +165,12 @@ collector:
     create: true
     name:
   nodeSelector: {}
+  tolerations: []
+  affinity: {}
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: []
   extraConfigmapMounts: []
   # - name: jaeger-tls
   #   mountPath: /tls
@@ -252,13 +250,12 @@ query:
     create: true
     name:
   nodeSelector: {}
+  tolerations: []
+  affinity: {}
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: []
   extraConfigmapMounts: []
   # - name: jaeger-tls
   #   mountPath: /tls
@@ -286,12 +283,11 @@ spark:
     create: true
     name:
   nodeSelector: {}
+  tolerations: []
+  affinity: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: []
 # End: Default values for the various components of Jaeger
 
 hotrod:
@@ -334,6 +330,9 @@ hotrod:
   serviceAccount:
     create: true
     name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
   tracing:
     host: null
     port: 6831
