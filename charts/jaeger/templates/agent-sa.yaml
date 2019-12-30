@@ -1,8 +1,8 @@
-{{- if and .Values.agent.enabled .Values.serviceAccounts.agent.create -}}
+{{- if and .Values.agent.enabled .Values.agent.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ template "jaeger.agent.name" . }}
+  name: {{ template "jaeger.agent.serviceAccountName" . }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger.name" . }}
     helm.sh/chart: {{ include "jaeger.chart" . }}

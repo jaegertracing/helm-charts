@@ -1,4 +1,4 @@
-{{- if and .Values.hotrod.enabled .Values.serviceAccounts.hotrod.create -}}
+{{- if and .Values.hotrod.enabled .Values.hotrod.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

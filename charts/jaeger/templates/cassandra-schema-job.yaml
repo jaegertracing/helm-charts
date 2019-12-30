@@ -24,7 +24,7 @@ spec:
 {{ toYaml .Values.schema.podLabels | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ include "jaeger.fullname" . }}-cassandra-schema
+      serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
