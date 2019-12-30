@@ -42,8 +42,16 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.hotrod.resources | indent 12 }}
-    {{- if .Values.hotrod.nodeSelector }}
+    {{- with .Values.hotrod.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.hotrod.nodeSelector | indent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.hotrod.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hotrod.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
     {{- end }}
 {{- end }}

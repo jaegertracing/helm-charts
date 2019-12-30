@@ -34,12 +34,6 @@ spec:
 {{ toYaml .Values.collector.podLabels | indent 8 }}
 {{- end }}
     spec:
-      nodeSelector:
-{{ toYaml .Values.collector.nodeSelector | indent 8 }}
-{{- if .Values.collector.tolerations }}
-      tolerations:
-{{ toYaml .Values.collector.tolerations | indent 8 }}
-{{- end }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
@@ -169,5 +163,16 @@ spec:
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
       {{- end }}
-
+    {{- with .Values.collector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.collector.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.collector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end -}}
