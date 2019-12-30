@@ -5,11 +5,8 @@ kind: Job
 metadata:
   name: {{ include "jaeger.fullname" . }}-cassandra-schema
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: cassandra-schema
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.schema.annotations }}
   annotations:
 {{ toYaml .Values.schema.annotations | indent 4 }}

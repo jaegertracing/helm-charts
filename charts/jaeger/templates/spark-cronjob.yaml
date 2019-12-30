@@ -4,11 +4,8 @@ kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-spark
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: spark
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.spark.annotations }}
   annotations:
 {{ toYaml .Values.spark.annotations | indent 4 }}
@@ -22,9 +19,8 @@ spec:
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: {{ include "jaeger.name" . }}
+            {{- include "jaeger.selectorLabels" . | nindent 12 }}
             app.kubernetes.io/component: spark
-            app.kubernetes.io/instance: {{ .Release.Name }}
             {{- if .Values.spark.podLabels }}
 {{ toYaml .Values.spark.podLabels | indent 12 }}
             {{- end }}
