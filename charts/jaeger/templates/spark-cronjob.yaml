@@ -57,16 +57,16 @@ spec:
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
-    {{- with .Values.spark.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 12 }}
-      {{- end }}
-    {{- with .Values.spark.affinity }}
-      affinity:
-        {{- toYaml . | nindent 12 }}
-    {{- end }}
-    {{- with .Values.spark.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 12 }}
-    {{- end }}
+        {{- with .Values.spark.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- with .Values.spark.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.spark.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
 {{- end -}}
