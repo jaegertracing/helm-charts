@@ -121,6 +121,12 @@ agent:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  extraConfigmapMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   configMap: jaeger-tls
+  #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
 
