@@ -199,6 +199,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort` | jaeger.thrift over binary thrift | `6832` |
 | `agent.service.compactPort` | jaeger.thrift over compact thrift | `6831` |
 | `agent.service.zipkinThriftPort` | zipkin.thrift over compact thrift | `5775` |
+| `agent.extraConfigmapMounts` | Additional agent configMap mounts | `[]` |
 | `agent.useHostNetwork` | Enable hostNetwork for agents | `false` |
 | `collector.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `collector.autoscaling.minReplicas` | Minimum replicas |  2 |
