@@ -64,7 +64,7 @@ spec:
             value: "/cassandra-tls/ca-cert.pem"
           {{- end }}
           - name: CASSANDRA_KEYSPACE
-            value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
+            value: {{ .Values.storage.cassandra.keyspace }}
           - name: CASSANDRA_USERNAME
             value: {{ .Values.storage.cassandra.user }}
           - name: CASSANDRA_PASSWORD
@@ -135,12 +135,25 @@ spec:
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
+        {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
         - name: REPORTER_GRPC_HOST_PORT
           value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
+        {{- end }}
+        {{- range $key, $value := .Values.agent.cmdlineParams }}
+        - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
         ports:
         - name: admin
           containerPort: 14271
           protocol: TCP
+        volumeMounts:
+        {{- range .Values.agent.secretMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /
@@ -157,6 +170,11 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.agent.secretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
       {{- end }}
     {{- with .Values.query.nodeSelector }}
       nodeSelector:

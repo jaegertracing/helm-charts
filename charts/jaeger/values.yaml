@@ -23,6 +23,7 @@ storage:
     user: user
     usePassword: true
     password: password
+    keyspace: jaeger_v1_dc1
     ## Use existing secret (ignores previous password)
     # existingSecret:
   elasticsearch:
@@ -35,6 +36,9 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     nodesWanOnly: false
+  kafka:
+    broker: kafka:9092
+    topic: jaeger_v1_dc1
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -83,6 +87,16 @@ schema:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
 elasticsearch: {}
 
+ingester:
+  enabled: false
+  annotations: {}
+  image: jaegertracing/jaeger-ingester
+  pullPolicy: IfNotPresent
+  cmdlineParams: {}
+  service:
+    type: ClusterIP
+  extraConfigmapMounts: []
+
 agent:
   enabled: true
   annotations: {}
@@ -121,11 +135,17 @@ agent:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  extraConfigmapMounts: []
+  secretMounts: []
   # - name: jaeger-tls
   #   mountPath: /tls
   #   subPath: ""
-  #   configMap: jaeger-tls
+  #   secretName: arpit
+  #   readOnly: true
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
   #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
@@ -173,11 +193,17 @@ collector:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  extraConfigmapMounts: []
+  secretMounts: []
   # - name: jaeger-tls
   #   mountPath: /tls
   #   subPath: ""
-  #   configMap: jaeger-tls
+  #   secretName: arpit
+  #   readOnly: true
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
   #   readOnly: true
   # samplingConfig: |-
   #   {
@@ -259,10 +285,10 @@ query:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   extraConfigmapMounts: []
-  # - name: jaeger-tls
-  #   mountPath: /tls
+  # - name: jaeger-config
+  #   mountPath: /config
   #   subPath: ""
-  #   configMap: jaeger-tls
+  #   configMap: jaeger-config
   #   readOnly: true
 
 spark:
