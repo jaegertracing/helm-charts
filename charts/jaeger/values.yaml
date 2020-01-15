@@ -121,6 +121,18 @@ agent:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  extraSecretMounts: []
+  # - name: jaeger-tls
+  #   mountPath: /tls
+  #   subPath: ""
+  #   secretName: jaeger-tls
+  #   readOnly: true
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
+  #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
 
@@ -167,11 +179,17 @@ collector:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
-  extraConfigmapMounts: []
+  extraSecretMounts: []
   # - name: jaeger-tls
   #   mountPath: /tls
   #   subPath: ""
-  #   configMap: jaeger-tls
+  #   secretName: jaeger-tls
+  #   readOnly: true
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
   #   readOnly: true
   # samplingConfig: |-
   #   {
@@ -253,10 +271,10 @@ query:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   extraConfigmapMounts: []
-  # - name: jaeger-tls
-  #   mountPath: /tls
+  # - name: jaeger-config
+  #   mountPath: /config
   #   subPath: ""
-  #   configMap: jaeger-tls
+  #   configMap: jaeger-config
   #   readOnly: true
 
 spark:

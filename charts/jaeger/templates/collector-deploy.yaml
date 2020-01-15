@@ -132,6 +132,12 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
+        {{- range .Values.collector.extraSecretMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
         {{- if .Values.storage.cassandra.tls.enabled }}
           - name: {{ .Values.storage.cassandra.tls.secretName }}
             mountPath: "/cassandra-tls/ca-cert.pem"
@@ -157,6 +163,11 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.collector.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
       {{- end }}
       {{- if .Values.collector.samplingConfig}}
         - name: strategies
