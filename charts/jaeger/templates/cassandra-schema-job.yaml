@@ -46,10 +46,8 @@ spec:
             secretKeyRef:
               name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
               key: password
-      {{- if .Values.schema.keyspace }}
         - name: KEYSPACE
           value: {{ .Values.storage.cassandra.keyspace | quote }}
-      {{- end }}
       {{- if .Values.schema.traceTtl }}
         - name: TRACE_TTL
           value: {{ .Values.schema.traceTtl | quote }}
