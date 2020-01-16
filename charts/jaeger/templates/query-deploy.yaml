@@ -63,8 +63,10 @@ spec:
           - name: CASSANDRA_TLS_CA
             value: "/cassandra-tls/ca-cert.pem"
           {{- end }}
+          {{- if .Values.storage.cassandra.keyspace }}
           - name: CASSANDRA_KEYSPACE
-            value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
+            value: {{ .Values.storage.cassandra.keyspace | quote }}
+          {{- end }}
           - name: CASSANDRA_USERNAME
             value: {{ .Values.storage.cassandra.user }}
           - name: CASSANDRA_PASSWORD
@@ -148,6 +150,12 @@ spec:
           containerPort: 14271
           protocol: TCP
         volumeMounts:
+        {{- range .Values.agent.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
         {{- range .Values.agent.extraSecretMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
@@ -175,6 +183,11 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- range .Values.agent.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
       {{- end }}
     {{- with .Values.query.nodeSelector }}
       nodeSelector:

@@ -70,8 +70,10 @@ spec:
           - name: CASSANDRA_TLS_CA
             value: "/cassandra-tls/ca-cert.pem"
           {{- end }}
+          {{- if .Values.storage.cassandra.keyspace }}
           - name: CASSANDRA_KEYSPACE
-            value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
+            value: {{ .Values.storage.cassandra.keyspace }}
+          {{- end }}
           - name: CASSANDRA_USERNAME
             value: {{ .Values.storage.cassandra.user }}
           - name: CASSANDRA_PASSWORD
