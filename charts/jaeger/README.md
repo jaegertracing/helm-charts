@@ -199,6 +199,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort` | jaeger.thrift over binary thrift | `6832` |
 | `agent.service.compactPort` | jaeger.thrift over compact thrift | `6831` |
 | `agent.service.zipkinThriftPort` | zipkin.thrift over compact thrift | `5775` |
+| `agent.extraConfigmapMounts` | Additional agent configMap mounts | `[]` |
+| `agent.extraSecretMounts` | Additional agent secret mounts | `[]` |
 | `agent.useHostNetwork` | Enable hostNetwork for agents | `false` |
 | `collector.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `collector.autoscaling.minReplicas` | Minimum replicas |  2 |
@@ -218,6 +220,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.type` | Service type | `ClusterIP` |
 | `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `nil` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
+| `collector.extraSecretMounts` | Additional collector secret mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
 | `fullnameOverride` | Override full name | `nil` |
 | `hotrod.enabled` | Enables the Hotrod demo app | `false` |

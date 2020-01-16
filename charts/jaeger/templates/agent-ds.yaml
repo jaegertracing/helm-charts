@@ -44,7 +44,7 @@ spec:
         {{- end }}
         {{- range $key, $value := .Values.agent.cmdlineParams }}
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-          value: {{ $value }}
+          value: {{ $value | quote }}
         {{- end }}
         ports:
         - name: zipkin-compact
@@ -84,6 +84,30 @@ spec:
             port: admin
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
+        volumeMounts:
+        {{- range .Values.agent.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+        {{- range .Values.agent.extraSecretMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+      volumes:
+      {{- range .Values.agent.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.agent.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
     {{- with .Values.agent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
