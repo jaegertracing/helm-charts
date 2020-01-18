@@ -23,6 +23,7 @@ storage:
     user: user
     usePassword: true
     password: password
+    keyspace: jaeger_v1_test
     ## Use existing secret (ignores previous password)
     # existingSecret:
   elasticsearch:

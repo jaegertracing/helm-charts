@@ -273,6 +273,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.tag` | Tag of the dependencies job image | `latest` |
 | `storage.cassandra.existingSecret` | Name of existing password secret object (for password authentication | `nil`
 | `storage.cassandra.host` | Provisioned cassandra host | `cassandra` |
+| `storage.cassandra.keyspace` | Schema name for cassandra | `jaeger_v1_test` |
 | `storage.cassandra.password` | Provisioned cassandra password  (ignored if storage.cassandra.existingSecret set) | `password` |
 | `storage.cassandra.port` | Provisioned cassandra port | `9042` |
 | `storage.cassandra.tls.enabled` | Provisioned cassandra TLS connection enabled | `false` |
