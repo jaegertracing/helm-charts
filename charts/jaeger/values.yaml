@@ -5,6 +5,7 @@
 provisionDataStore:
   cassandra: true
   elasticsearch: false
+  kafka: false
 
 tag: 1.16.0
 
@@ -36,6 +37,10 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     nodesWanOnly: false
+  kafka:
+    brokers:
+      - kafka:9092
+    topic: jaeger_v1_test
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -49,6 +54,15 @@ cassandra:
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
 # End: Override values on the Cassandra subchart to customize for Jaeger
+
+# Begin: Override values on the Kafka subchart to customize for Jaeger
+kafka:
+  replicas: 1
+  configurationOverrides:
+    "auto.create.topics.enable": true
+  zookeeper:
+    replicaCount: 1
+# End: Override values on the Kafka subchart to customize for Jaeger
 
 # Begin: Default values for the various components of Jaeger
 # This chart has been based on the Kubernetes integration found in the following repo:

@@ -228,6 +228,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `nameOverride` | Override name| `nil` |
 | `provisionDataStore.cassandra` | Provision Cassandra Data Store| `true` |
 | `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
+| `provisionDataStore.kafka` | Provision Kafka Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.cmdlineParams` | Additional command line parameters | `nil` |
