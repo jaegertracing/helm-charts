@@ -98,6 +98,45 @@ schema:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
 elasticsearch: {}
 
+ingester:
+  enabled: false
+  annotations: {}
+  image: jaegertracing/jaeger-ingester
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+  service:
+    annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+  serviceAccount:
+    create: true
+    name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  extraSecretMounts: []
+  extraConfigmapMounts: []
+
 agent:
   enabled: true
   annotations: {}
