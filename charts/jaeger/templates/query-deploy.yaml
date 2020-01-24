@@ -31,9 +31,13 @@ spec:
 {{ toYaml .Values.query.podLabels | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.query.podSecurityContext | indent 8 }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
+        securityContext:
+{{ toYaml .Values.query.securityContext | indent 10 }}
         image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
@@ -134,6 +138,8 @@ spec:
             port: admin
 {{- if .Values.query.agentSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-sidecar
+        securityContext:
+{{ toYaml .Values.query.securityContext | indent 10 }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:

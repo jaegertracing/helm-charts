@@ -28,6 +28,8 @@ spec:
 {{ toYaml .Values.agent.podLabels | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.agent.podSecurityContext | indent 8 }}
       {{- if .Values.agent.useHostNetwork }}
       hostNetwork: true
       {{- end }}
@@ -35,6 +37,8 @@ spec:
       serviceAccountName: {{ template "jaeger.agent.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.agent.name" . }}
+        securityContext:
+{{ toYaml .Values.agent.securityContext | indent 10 }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
