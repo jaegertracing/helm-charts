@@ -33,6 +33,8 @@ spec:
 {{ toYaml .Values.ingester.podLabels | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.ingester.podSecurityContext | indent 8 }}
       nodeSelector:
 {{ toYaml .Values.ingester.nodeSelector | indent 8 }}
 {{- if .Values.ingester.tolerations }}
@@ -41,6 +43,8 @@ spec:
 {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
+        securityContext:
+{{ toYaml .Values.ingester.securityContext | indent 10 }}
         image: {{ .Values.ingester.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         env:

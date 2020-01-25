@@ -34,9 +34,13 @@ spec:
 {{ toYaml .Values.collector.podLabels | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.collector.podSecurityContext | indent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
+        securityContext:
+{{ toYaml .Values.collector.securityContext | indent 10 }}
         image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         env:

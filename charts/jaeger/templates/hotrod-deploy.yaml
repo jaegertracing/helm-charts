@@ -18,9 +18,13 @@ spec:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: hotrod
     spec:
+      securityContext:
+{{ toYaml .Values.hotrod.podSecurityContext | indent 8 }}
       serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
+          securityContext:
+{{ toYaml .Values.hotrod.securityContext | indent 12 }}
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
