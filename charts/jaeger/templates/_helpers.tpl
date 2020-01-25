@@ -118,6 +118,17 @@ Create the name of the collector service account to use
 {{- end -}}
 
 {{/*
+Create the name of the ingester service account to use
+*/}}
+{{- define "jaeger.ingester.serviceAccountName" -}}
+{{- if .Values.ingester.serviceAccount.create -}}
+    {{ default (include "jaeger.ingester.name" .) .Values.ingester.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.ingester.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create a fully qualified query name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -151,6 +162,19 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $nameGlobalOverride := printf "%s-collector" (include "jaeger.fullname" .) -}}
 {{- if .Values.collector.fullnameOverride -}}
 {{- printf "%s" .Values.collector.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create a fully qualified ingester name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "jaeger.ingester.name" -}}
+{{- $nameGlobalOverride := printf "%s-ingester" (include "jaeger.fullname" .) -}}
+{{- if .Values.ingester.fullnameOverride -}}
+{{- printf "%s" .Values.ingester.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -216,4 +240,9 @@ Configure list of IP CIDRs allowed access to load balancer (if supported)
     - {{ $cidr }}
   {{- end }}
 {{- end }}
+{{- end -}}
+
+{{- define "helm-toolkit.utils.joinListWithComma" -}}
+{{- $local := dict "first" true -}}
+{{- range $k, $v := . -}}{{- if not $local.first -}},{{- end -}}{{- $v -}}{{- $_ := set $local "first" false -}}{{- end -}}
 {{- end -}}

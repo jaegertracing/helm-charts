@@ -48,6 +48,14 @@ spec:
           - name: COLLECTOR_ZIPKIN_HTTP_PORT
             value: {{ .Values.collector.service.zipkinPort | quote }}
           {{- end }}
+          {{- if .Values.ingester.enabled }}
+          - name: SPAN_STORAGE_TYPE
+            value: kafka
+          - name: KAFKA_PRODUCER_BROKERS
+            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
+          - name: KAFKA_PRODUCER_TOPIC
+            value: {{ .Values.storage.kafka.topic }}
+          {{ else }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
           {{- if eq .Values.storage.type "cassandra" }}
@@ -94,6 +102,7 @@ spec:
             value: {{ template "elasticsearch.client.url" . }}
           - name: ES_USERNAME
             value: {{ .Values.storage.elasticsearch.user }}
+          {{- end }}
           {{- end }}
           {{- if .Values.collector.samplingConfig}}
           - name: SAMPLING_STRATEGIES_FILE

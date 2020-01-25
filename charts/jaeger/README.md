@@ -222,12 +222,29 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.extraSecretMounts` | Additional collector secret mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
+| `ingester.enabled` | Enable ingester component, collectors will write to Kafka | `false` |
+| `ingester.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
+| `ingester.autoscaling.minReplicas` | Minimum replicas |  2 |
+| `ingester.autoscaling.maxReplicas` | Maximum replicas |  10 |
+| `ingester.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
+| `ingester.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
+| `ingester.cmdlineParams` | Additional command line parameters | `nil` |
+| `ingester.podAnnotations` | Annotations for Ingester pod | `nil` |
+| `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
+| `ingester.image` | Image for jaeger Ingester | `jaegertracing/jaeger-ingester` |
+| `ingester.pullPolicy` | Ingester image pullPolicy | `IfNotPresent` |
+| `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
+| `ingester.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
+| `ingester.service.type` | Service type | `ClusterIP` |
+| `ingester.extraConfigmapMounts` | Additional Ingester configMap mounts | `[]` |
+| `ingester.extraSecretMounts` | Additional Ingester secret mounts | `[]` |
 | `fullnameOverride` | Override full name | `nil` |
 | `hotrod.enabled` | Enables the Hotrod demo app | `false` |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `nameOverride` | Override name| `nil` |
 | `provisionDataStore.cassandra` | Provision Cassandra Data Store| `true` |
 | `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
+| `provisionDataStore.kafka` | Provision Kafka Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.cmdlineParams` | Additional command line parameters | `nil` |
@@ -288,6 +305,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.usePassword` | Use password | `true` |
 | `storage.elasticsearch.user` | Provisioned elasticsearch user| `elastic` |
 | `storage.elasticsearch.nodesWanOnly` | Only access specified es host | `false` |
+| `storage.kafka.brokers` | Broker List for Kafka with port | `kafka:9092` |
+| `storage.kafka.topic` | Topic name for Kafka | `jaeger_v1_test` |
 | `storage.type` | Storage type (ES or Cassandra)| `cassandra` |
 | `tag` | Image tag/version | `1.16.0` |
 

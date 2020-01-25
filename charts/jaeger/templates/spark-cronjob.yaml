@@ -37,8 +37,8 @@ spec:
             - name: CASSANDRA_CONTACT_POINTS
               value: {{ template "cassandra.contact_points" . }}
             - name: CASSANDRA_KEYSPACE
-              value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
-              {{- end }}
+              value: {{ .Values.storage.cassandra.keyspace }}
+            {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
             - name: ES_NODES
               value: {{ template "elasticsearch.client.url" . }}
