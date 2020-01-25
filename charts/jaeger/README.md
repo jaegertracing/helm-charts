@@ -185,6 +185,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `<component>.nodeSelector` | Node selector | {} |
 | `<component>.tolerations` | Node tolerations | [] |
 | `<component.affinity` | Affinity | {} |
+| `<component>.podSecurityContext` | Pod security context | {} |
+| `<component>.securityContext` | Container security context | {} |
 | `agent.annotations` | Annotations for Agent | `nil` |
 | `agent.cmdlineParams` |Additional command line parameters| `nil` |
 | `agent.dnsPolicy` | Configure DNS policy for agents | `ClusterFirst` |
