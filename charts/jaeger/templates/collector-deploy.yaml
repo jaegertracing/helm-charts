@@ -52,7 +52,7 @@ spec:
           - name: SPAN_STORAGE_TYPE
             value: kafka
           - name: KAFKA_PRODUCER_BROKERS
-            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.broker }}
+            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_PRODUCER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
           {{ else }}

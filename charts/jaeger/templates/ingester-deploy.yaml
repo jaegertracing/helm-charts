@@ -4,11 +4,8 @@ kind: Deployment
 metadata:
   name: {{ include "jaeger.fullname" . }}-ingester
   labels:
-    app.kubernetes.io/name: {{ include "jaeger.name" . }}
-    helm.sh/chart: {{ include "jaeger.chart" . }}
+    {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: ingester
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.ingester.annotations }}
   annotations:
 {{ toYaml .Values.ingester.annotations | indent 4 }}
@@ -19,9 +16,8 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "jaeger.name" . }}
+      {- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: ingester
-      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:
@@ -31,9 +27,8 @@ spec:
 {{ toYaml .Values.ingester.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "jaeger.name" . }}
+        {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: ingester
-        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.ingester.podLabels }}
 {{ toYaml .Values.ingester.podLabels | indent 8 }}
 {{- end }}
@@ -56,7 +51,7 @@ spec:
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
           - name: KAFKA_CONSUMER_BROKERS
-            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.broker }}
+            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_CONSUMER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
           {{- if eq .Values.storage.type "cassandra" }}
@@ -143,5 +138,4 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
-
 {{- end -}}

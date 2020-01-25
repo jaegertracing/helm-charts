@@ -222,6 +222,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.extraSecretMounts` | Additional collector secret mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
+| `ingester.enabled` | Enable ingester component, collectors will write to Kafka | `false` |
 | `ingester.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `ingester.autoscaling.minReplicas` | Minimum replicas |  2 |
 | `ingester.autoscaling.maxReplicas` | Maximum replicas |  10 |
