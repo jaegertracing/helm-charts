@@ -4,15 +4,7 @@
 
 ## Introduction
 
-This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. 
-
-The chart has following features :
-
- - Deploy or Use an existing Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra))
- - Deploy or Use an existing ElasticSearch cluster (using the [elasticsearch chart](https://github.com/kubernetes/charts/tree/master/incubator/elasticsearch))
- - Deploy or Use an existing Kafka Cluster
- - Deploy `jaeger-agent` as a DaemonSet
- - Deploy `jaeger-collector`, `jaeger-query` and `jaeger-ingester`(optional) components as standard individual deployments.
+This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra)), but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster (using the [elasticsearch chart](https://github.com/elastic/helm-charts/tree/master/elasticsearch)), or connecting to an existing ElasticSearch cluster. Once the storage backend is available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as Deployments.
 
 ## Installing the Chart
 
@@ -29,14 +21,16 @@ To install the chart with the release name `jaeger`, run the following command:
 helm install jaeger jaegertracing/jaeger
 ```
 
-By default, it will deploy below things in your cluster
+By default, the chart deploys the following:
 
- - 3 node Cassandra instance
+ - Cassandra statefulset
  - Jaeger Agent DaemonSet
  - Jaeger Collector Deployment
  - Jaeger Query (UI) Deployment
 
-![Jaeger with Default components](jaeger-default.png)
+![Jaeger with Default components](images/jaeger-default.png)
+
+> Image represents agent as a sidecar and for more info to refer to [this](https://medium.com/jaegertracing/deployment-strategies-for-the-jaeger-agent-1d6f91796d09)
 
 IMPORTANT NOTE: For testing purposes, the footprint for Cassandra can be reduced significantly in the event resources become constrained (such as running on your local laptop or in a Vagrant environment). You can override the resources required run running this command:
 
@@ -121,13 +115,13 @@ data:
 kubectl apply -f jaeger-tls-cassandra-secret.yaml
 helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
-### Elasticsearch
+### ElasticSearch
 
-You can choose to use Elasticsearch over cassandra
+You can choose to use ElasticSearch over cassandra
 
 **New cluster**
 
-To install the chart with the release name `jaeger` using a new Elasticsearch cluster instead of Cassandra (default), run the following command:
+To install the chart with the release name `jaeger` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
 helm install jaeger jaegertracing/jaeger \
@@ -138,7 +132,7 @@ helm install jaeger jaegertracing/jaeger \
 
 **Using an existing cluster**
 
-A release can be configured as follows to use an existing Elasticsearch cluster as it as the storage backend:
+A release can be configured as follows to use an existing ElasticSearch cluster as it as the storage backend:
 
 ```bash
 helm install jaeger jaegertracing/jaeger \
@@ -152,7 +146,7 @@ helm install jaeger jaegertracing/jaeger \
 
 **Using an existing cluster with TLS**
 
-If you already have an existing running Elasticsearch cluster with TLS, you can configure the chart as follows to use it as your backing store:
+If you already have an existing running ElasticSearch cluster with TLS, you can configure the chart as follows to use it as your backing store:
 
 Content of the `jaeger-values.yaml` file:
 
@@ -209,9 +203,11 @@ helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 
 ### Ingester and Kafka
 
-There are additional components which can also be installed with variety of choide for Kafka similar to Cassandra and Elasticsearch
+There are additional components which can also be installed with variety of choide for Kafka similar to Cassandra and ElasticSearch
 
-![Jaeger with Ingester](jaeger-with-ingester.png)
+![Jaeger with Ingester](images/jaeger-with-ingester.png)
+
+> Image represents agent as a sidecar and for more info to refer to [this](https://medium.com/jaegertracing/deployment-strategies-for-the-jaeger-agent-1d6f91796d09)
 
 **New Kafka cluster**
 
