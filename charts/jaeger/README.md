@@ -4,28 +4,41 @@
 
 ## Introduction
 
-This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra)), but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster (using the [elasticsearch chart](https://github.com/kubernetes/charts/tree/master/incubator/elasticsearch)), or connecting to an existing ElasticSearch cluster. Once the back storage available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments.
+This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster (using the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra)), but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster (using the [elasticsearch chart](https://github.com/elastic/helm-charts/tree/master/elasticsearch)), or connecting to an existing ElasticSearch cluster. Once the storage backend is available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as Deployments.
 
 ## Installing the Chart
 
 Add the Jaeger Tracing Helm repository:
 
 ```bash
-$ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 ```
 
 To install the chart with the release name `jaeger`, run the following command:
 
 ```bash
-$ helm install jaeger jaegertracing/jaeger
+helm install jaeger jaegertracing/jaeger
 ```
 
-After a few minutes, you should see a 3 node Cassandra instance, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
+By default, the chart deploys the following:
+
+ - Jaeger Agent DaemonSet
+ - Jaeger Collector Deployment
+ - Jaeger Query (UI) Deployment
+ - Cassandra StatefulSet
+
+![Jaeger with Default components](images/jaeger-default.png)
 
 IMPORTANT NOTE: For testing purposes, the footprint for Cassandra can be reduced significantly in the event resources become constrained (such as running on your local laptop or in a Vagrant environment). You can override the resources required run running this command:
 
 ```bash
-helm install jaeger jaegertracing/jaeger --set cassandra.config.max_heap_size=1024M --set cassandra.config.heap_new_size=256M --set cassandra.resources.requests.memory=2048Mi --set cassandra.resources.requests.cpu=0.4 --set cassandra.resources.limits.memory=2048Mi --set cassandra.resources.limits.cpu=0.4
+helm install jaeger jaegertracing/jaeger \
+  --set cassandra.config.max_heap_size=1024M \
+  --set cassandra.config.heap_new_size=256M \
+  --set cassandra.resources.requests.memory=2048Mi \
+  --set cassandra.resources.requests.cpu=0.4 \
+  --set cassandra.resources.limits.memory=2048Mi \
+  --set cassandra.resources.limits.cpu=0.4
 ```
 
 ## Installing the Chart using an Existing Cassandra Cluster
@@ -33,7 +46,12 @@ helm install jaeger jaegertracing/jaeger --set cassandra.config.max_heap_size=10
 If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (make sure you replace `<HOST>`, `<PORT>`, etc with your values):
 
 ```bash
-helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false --set storage.cassandra.host=<HOST> --set storage.cassandra.port=<PORT> --set storage.cassandra.user=<USER> --set storage.cassandra.password=<PASSWORD>
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.cassandra=false \
+  --set storage.cassandra.host=<HOST> \
+  --set storage.cassandra.port=<PORT> \
+  --set storage.cassandra.user=<USER> \
+  --set storage.cassandra.password=<PASSWORD>
 ```
 
 ## Installing the Chart using an Existing Cassandra Cluster with TLS
@@ -96,15 +114,24 @@ helm install jaeger jaegertracing/jaeger --values values.yaml
 To install the chart with the release name `jaeger` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
-$ helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.cassandra=false \
+  --set provisionDataStore.elasticsearch=true \
+  --set storage.type=elasticsearch
 ```
 
 ## Installing the Chart using an Existing Elasticsearch Cluster
 
-A release can be configured as follows to use an existing Elasticsearch cluster as it as the storage backend:
+A release can be configured as follows to use an existing ElasticSearch cluster as it as the storage backend:
 
 ```bash
-helm install jaeger jaegertracing/jaeger --set provisionDataStore.cassandra=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.cassandra=false \
+  --set storage.type=elasticsearch \
+  --set storage.elasticsearch.host=<HOST> \
+  --set storage.elasticsearch.port=<PORT> \
+  --set storage.elasticsearch.user=<USER> \
+  --set storage.elasticsearch.password=<password>
 ```
 
 ## Installing the Chart using an Existing ElasticSearch Cluster with TLS
@@ -164,17 +191,33 @@ kubectl apply -f jaeger-tls-cfgmap.yaml
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
-## Uninstalling the Chart
+## Installing the Chart with Ingester enabled
 
-To uninstall/delete the `myrel` deployment:
+The architecture illustrated below can be achieved by enabling the ingester component. When enabled, Cassandra or Elasticsearch (depending on the configured values) now becomes the ingester's storage backend, whereas Kafka becomes the storage backend of the collector service.
+
+![Jaeger with Ingester](images/jaeger-with-ingester.png)
+
+
+## Installing the Chart with Ingester enabled using a New Kafka Cluster
+
+To provision a new Kafka cluster along with jaeger-ingester:
 
 ```bash
-$ helm delete myrel
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.kafka=true \
+  --set ingester.enabled=true
 ```
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+## Installing the Chart with Ingester using an existing Kafka Cluster
 
-> **Tip**: To completely remove the release, run `helm delete --purge myrel`
+You can use an exisiting Kafka cluster with jaeger too
+
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set ingester.enabled=true \
+  --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
+  --set storage.kafka.topic=<TOPIC>
+```
 
 ## Configuration
 
@@ -315,22 +358,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
 For more information about some of the tunable parameters that Jaeger provides, please visit the official [Jaeger repo](https://github.com/uber/jaeger) at GitHub.com.
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
-
-```bash
-$ helm install --name myrel \
-    --set cassandra.config.rack_name=rack2 \
-    jaegertracing/jaeger
-```
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart.
-
-### Storage persistence
-
-Jaeger itself is a stateful application that by default uses Cassandra to store all related data. That means this helm chart has a dependency on the Cassandra helm chart for its data persistence. To deploy Jaeger with storage persistence, please take a look at the [README.md](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) for configuration details.
-
-Override any required configuration options in the Cassandra chart that is required and then enable persistence by setting the following option: `--set cassandra.persistence.enabled=true`
 
 ### Pending enhancements
 - [ ] Sidecar deployment support

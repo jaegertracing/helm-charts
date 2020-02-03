@@ -16,7 +16,7 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      {- include "jaeger.selectorLabels" . | nindent 6 }}
+      {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: ingester
   strategy:
     type: Recreate
