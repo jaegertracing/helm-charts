@@ -3,6 +3,33 @@ entries:
   jaeger:
   - apiVersion: v1
     appVersion: 1.16.0
+    created: "2020-02-03T00:50:48.917504275Z"
+    description: A Jaeger Helm chart for Kubernetes
+    digest: 85caf03b1c3cdd3e92257b9dd0dbd9dd1b218271b13531d232649ab19735f021
+    home: https://jaegertracing.io
+    icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+    keywords:
+    - jaeger
+    - opentracing
+    - tracing
+    - instrumentation
+    maintainers:
+    - email: david.vonthenen@dell.com
+      name: dvonthenen
+    - email: michael.lorant@fairfaxmedia.com.au
+      name: mikelorant
+    - email: naseem@transit.app
+      name: naseemkullah
+    - email: pavel.nikolov@fairfaxmedia.com.au
+      name: pavelnikolov
+    name: jaeger
+    sources:
+    - https://hub.docker.com/u/jaegertracing/
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-0.19.2/jaeger-0.19.2.tgz
+    version: 0.19.2
+  - apiVersion: v1
+    appVersion: 1.16.0
     created: "2020-01-25T19:08:11.74080516Z"
     description: A Jaeger Helm chart for Kubernetes
     digest: 4808625d8b6a42b88caf48422c81f3c6447d005977257b9714b8b25d7f61f8e3
