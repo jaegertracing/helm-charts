@@ -27,7 +27,7 @@ By default, the chart deploys the following:
 - Jaeger Query (UI) Deployment
 - Cassandra StatefulSet
 
-![Jaeger with Default components](images/jaeger-default.png)
+![Jaeger with Default components](https://www.jaegertracing.io/img/architecture-v1.png)
 
 IMPORTANT NOTE: For testing purposes, the footprint for Cassandra can be reduced significantly in the event resources become constrained (such as running on your local laptop or in a Vagrant environment). You can override the resources required run running this command:
 
@@ -195,7 +195,7 @@ helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 
 The architecture illustrated below can be achieved by enabling the ingester component. When enabled, Cassandra or Elasticsearch (depending on the configured values) now becomes the ingester's storage backend, whereas Kafka becomes the storage backend of the collector service.
 
-![Jaeger with Ingester](images/jaeger-with-ingester.png)
+![Jaeger with Ingester](https://www.jaegertracing.io/img/architecture-v2.png)
 
 ## Installing the Chart with Ingester enabled using a New Kafka Cluster
 
