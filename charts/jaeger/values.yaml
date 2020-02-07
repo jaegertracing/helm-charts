@@ -345,6 +345,7 @@ spark:
   image: jaegertracing/spark-dependencies
   tag: latest
   pullPolicy: Always
+  cmdlineParams: {}
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5

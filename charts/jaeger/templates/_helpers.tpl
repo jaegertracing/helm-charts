@@ -218,11 +218,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $host := printf "%s" .Values.storage.elasticsearch.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- else }}
-{{- $host := printf "%s-%s-%s" .Release.Name "elasticsearch" "client" | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
-{{- end -}}
-{{- else }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
