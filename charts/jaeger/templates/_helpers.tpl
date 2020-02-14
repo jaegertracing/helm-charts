@@ -220,6 +220,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- else }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
 {{- end -}}
+{{- else }}
+{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
 {{- end -}}
 {{- end -}}
 
