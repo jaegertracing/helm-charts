@@ -183,14 +183,13 @@ spark:
 
 ```
 
-Generate jaeger-tls configmap:
+Generate configmap jaeger-tls:
 ```bash
 keytool -import -trustcacerts -keystore trust.store -storepass changeit -alias es-root -file es.pem
 kubectl create configmap jaeger-tls --from-file=trust.store --from-file=es.pem
 ```
 
 ```bash
-kubectl apply -f jaeger-tls-cfgmap.yaml
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
