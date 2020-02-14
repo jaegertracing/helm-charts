@@ -170,24 +170,26 @@ collector:
       subPath: ""
       configMap: jaeger-tls
       readOnly: true
+spark:
+  enabled: true
+  cmdlineParams:
+    java.opts: "-Djavax.net.ssl.trustStore=/tls/trust.store -Djavax.net.ssl.trustStorePassword=changeit"
+  extraConfigmapMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      configMap: jaeger-tls
+      readOnly: true
+
 ```
 
-Content of the `jaeger-tls-cfgmap.yaml` file:
-
-```YAML
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: jaeger-tls
-data:
-  es.pem: |
-    -----BEGIN CERTIFICATE-----
-    <CERT>
-    -----END CERTIFICATE-----
+Generate configmap jaeger-tls:
+```bash
+keytool -import -trustcacerts -keystore trust.store -storepass changeit -alias es-root -file es.pem
+kubectl create configmap jaeger-tls --from-file=trust.store --from-file=es.pem
 ```
 
 ```bash
-kubectl apply -f jaeger-tls-cfgmap.yaml
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
@@ -333,6 +335,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.successfulJobsHistoryLimit` | Cron job successfulJobsHistoryLimit | `5` |
 | `spark.failedJobsHistoryLimit` | Cron job failedJobsHistoryLimit | `5` |
 | `spark.tag` | Tag of the dependencies job image | `latest` |
+| `spark.extraConfigmapMounts` | Additional spark configMap mounts | `[]` |
+| `spark.extraSecretMounts` | Additional spark secret mounts | `[]` |
 | `storage.cassandra.existingSecret` | Name of existing password secret object (for password authentication | `nil`
 | `storage.cassandra.host` | Provisioned cassandra host | `cassandra` |
 | `storage.cassandra.keyspace` | Schema name for cassandra | `jaeger_v1_test` |
