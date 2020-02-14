@@ -213,19 +213,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "elasticsearch.client.url" -}}
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
-{{- if .Values.provisionDataStore.elasticsearch -}}
-{{- if .Values.storage.elasticsearch.nameOverride }}
-{{- $host := printf "%s" .Values.storage.elasticsearch.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
-{{- else }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
-{{- end -}}
-{{- end -}}
 {{- end -}}
 
 {{- define "jaeger.hotrod.tracing.host" -}}
 {{- default (include "jaeger.agent.name" .) .Values.hotrod.tracing.host -}}
 {{- end -}}
+
 
 {{/*
 Configure list of IP CIDRs allowed access to load balancer (if supported)
