@@ -33,7 +33,7 @@ spec:
             env:
             {{- range $key, $value := .Values.spark.cmdlineParams }}
             - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-            value: {{ $value | quote }}
+              value: {{ $value | quote }}
             {{- end }}
             - name: STORAGE
               value: {{ .Values.storage.type }}
