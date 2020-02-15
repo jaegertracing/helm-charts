@@ -5,6 +5,7 @@ image:
   repository: jaegertracing/jaeger-operator
   tag: 1.16.0
   pullPolicy: IfNotPresent
+  imagePullSecrets: []
 
 crd:
   install: true

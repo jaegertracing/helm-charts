@@ -31,6 +31,10 @@ spec:
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
             imagePullPolicy: {{ .Values.spark.pullPolicy }}
             env:
+            {{- range $key, $value := .Values.spark.cmdlineParams }}
+            - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
             - name: STORAGE
               value: {{ .Values.storage.type }}
             {{- if eq .Values.storage.type "cassandra" }}
@@ -38,6 +42,15 @@ spec:
               value: {{ template "cassandra.contact_points" . }}
             - name: CASSANDRA_KEYSPACE
               value: {{ .Values.storage.cassandra.keyspace }}
+            {{- if .Values.storage.cassandra.usePassword }}
+            - name: CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
+                  key: password
+            {{- end }}
+            - name: CASSANDRA_USERNAME
+              value: {{ .Values.storage.cassandra.user }}
             {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
             - name: ES_NODES
@@ -56,7 +69,31 @@ spec:
             {{- end }}
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}
+            volumeMounts:
+            {{- range .Values.spark.extraConfigmapMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- range .Values.spark.extraSecretMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
           restartPolicy: OnFailure
+          volumes:
+          {{- range .Values.spark.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.spark.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+          {{- end }}
         {{- with .Values.spark.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
