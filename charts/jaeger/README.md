@@ -22,12 +22,12 @@ helm install jaeger jaegertracing/jaeger
 
 By default, the chart deploys the following:
 
- - Jaeger Agent DaemonSet
- - Jaeger Collector Deployment
- - Jaeger Query (UI) Deployment
- - Cassandra StatefulSet
+- Jaeger Agent DaemonSet
+- Jaeger Collector Deployment
+- Jaeger Query (UI) Deployment
+- Cassandra StatefulSet
 
-![Jaeger with Default components](images/jaeger-default.png)
+![Jaeger with Default components](https://www.jaegertracing.io/img/architecture-v1.png)
 
 IMPORTANT NOTE: For testing purposes, the footprint for Cassandra can be reduced significantly in the event resources become constrained (such as running on your local laptop or in a Vagrant environment). You can override the resources required run running this command:
 
@@ -197,8 +197,7 @@ helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 
 The architecture illustrated below can be achieved by enabling the ingester component. When enabled, Cassandra or Elasticsearch (depending on the configured values) now becomes the ingester's storage backend, whereas Kafka becomes the storage backend of the collector service.
 
-![Jaeger with Ingester](images/jaeger-with-ingester.png)
-
+![Jaeger with Ingester](https://www.jaegertracing.io/img/architecture-v2.png)
 
 ## Installing the Chart with Ingester enabled using a New Kafka Cluster
 
@@ -232,6 +231,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `<component.affinity` | Affinity | {} |
 | `<component>.podSecurityContext` | Pod security context | {} |
 | `<component>.securityContext` | Container security context | {} |
+| `<component>.serviceAccount.create` | Create service account | `true` |
+| `<component>.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
 | `agent.annotations` | Annotations for Agent | `nil` |
 | `agent.cmdlineParams` |Additional command line parameters| `nil` |
 | `agent.dnsPolicy` | Configure DNS policy for agents | `ClusterFirst` |
@@ -308,26 +309,14 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.basePath` | Base path of Query UI, used for ingress as well (if it is enabled) | `/` |
 | `query.extraConfigmapMounts` | Additional query configMap mounts | `[]` |
 | `schema.annotations` | Annotations for the schema job| `nil` |
-| `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]  |
+| `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |
-| `schema.mode` | Schema mode (prod or test | `prod` |
+| `schema.mode` | Schema mode (prod or test) | `prod` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.traceTtl` | Time to live for trace data in seconds | `nil` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
 | `schema.dependenciesTtl` | Time to live for dependencies data in seconds | `nil` |
-| `serviceAccounts.agent.create` | Create service account | `true` |
-| `serviceAccounts.agent.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
-| `serviceAccounts.cassandraSchema.create` | Create service account | `true` |
-| `serviceAccounts.cassandraSchema.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
-| `serviceAccounts.collector.create` | Create service account | `true` |
-| `serviceAccounts.collector.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
-| `serviceAccounts.hotrod.create` | Create service account | `true` |
-| `serviceAccounts.hotrod.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
-| `serviceAccounts.query.create` | Create service account | `true` |
-| `serviceAccounts.query.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
-| `serviceAccounts.spark.create` | Create service account | `true` |
-| `serviceAccounts.spark.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
 | `spark.enabled` | Enables the dependencies job| `false` |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |
@@ -364,4 +353,5 @@ For more information about some of the tunable parameters that Cassandra provide
 For more information about some of the tunable parameters that Jaeger provides, please visit the official [Jaeger repo](https://github.com/uber/jaeger) at GitHub.com.
 
 ### Pending enhancements
+
 - [ ] Sidecar deployment support
