@@ -92,6 +92,13 @@ rules:
   - deployments/finalizers
   verbs:
   - update
+- apiGroups:
+  - kafka.strimzi.io
+  resources:
+  - kafkas
+  - kafkausers
+  verbs:
+  - '*'
 {{- if .Values.rbac.pspEnabled }}
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']
