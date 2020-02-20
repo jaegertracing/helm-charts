@@ -342,6 +342,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.scheme` | Provisioned elasticsearch scheme | `http` |
 | `storage.elasticsearch.usePassword` | Use password | `true` |
 | `storage.elasticsearch.user` | Provisioned elasticsearch user| `elastic` |
+| `storage.elasticsearch.indexPrefix` | Index Prefix for elasticsearch | `nil` |
 | `storage.elasticsearch.nodesWanOnly` | Only access specified es host | `false` |
 | `storage.kafka.brokers` | Broker List for Kafka with port | `kafka:9092` |
 | `storage.kafka.topic` | Topic name for Kafka | `jaeger_v1_test` |
