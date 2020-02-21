@@ -34,6 +34,7 @@ storage:
     user: elastic
     usePassword: true
     password: changeme
+    # indexPrefix: test
     ## Use existing secret (ignores previous password)
     # existingSecret:
     nodesWanOnly: false

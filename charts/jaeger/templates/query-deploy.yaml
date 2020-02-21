@@ -91,6 +91,10 @@ spec:
             value: {{ template "elasticsearch.client.url" . }}
           - name: ES_USERNAME
             value: {{ .Values.storage.elasticsearch.user }}
+          {{- if .Values.storage.elasticsearch.indexPrefix }}
+          - name: ES_INDEX_PREFIX
+            value: {{ .Values.storage.elasticsearch.indexPrefix }}
+          {{- end }}
           {{- end }}
           {{- if .Values.query.basePath }}
           - name: QUERY_BASE_PATH
