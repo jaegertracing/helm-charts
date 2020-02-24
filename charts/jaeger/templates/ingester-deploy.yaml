@@ -132,20 +132,6 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
-        {{- if .Values.storage.cassandra.tls.enabled }}
-          - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/ca-cert.pem"
-            subPath: "ca-cert.pem"
-            readOnly: true
-          - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/client-cert.pem"
-            subPath: "client-cert.pem"
-            readOnly: true
-          - name: {{ .Values.storage.cassandra.tls.secretName }}
-            mountPath: "/cassandra-tls/client-key.pem"
-            subPath: "client-key.pem"
-            readOnly: true
-        {{- end }}
       dnsPolicy: {{ .Values.ingester.dnsPolicy }}
       restartPolicy: Always
       volumes:
