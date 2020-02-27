@@ -74,6 +74,17 @@ Create the name of the spark service account to use
 {{- end -}}
 
 {{/*
+Create the name of the esIndexCleaner service account to use
+*/}}
+{{- define "jaeger.esIndexCleaner.serviceAccountName" -}}
+{{- if .Values.esIndexCleaner.serviceAccount.create -}}
+    {{ default (printf "%s-esIndexCleaner" (include "jaeger.fullname" .)) .Values.esIndexCleaner.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.esIndexCleaner.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the hotrod service account to use
 */}}
 {{- define "jaeger.hotrod.serviceAccountName" -}}

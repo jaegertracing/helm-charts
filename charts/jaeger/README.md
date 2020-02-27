@@ -325,6 +325,16 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.tag` | Tag of the dependencies job image | `latest` |
 | `spark.extraConfigmapMounts` | Additional spark configMap mounts | `[]` |
 | `spark.extraSecretMounts` | Additional spark secret mounts | `[]` |
+| `esIndexCleaner.enabled` | Enables the ElasticSearch indices cleanup job| `false` |
+| `esIndexCleaner.image` | Image for the ElasticSearch indices cleanup job| `jaegertracing/jaeger-es-index-cleaner` |
+| `esIndexCleaner.pullPolicy` | Image pull policy of the ES cleanup image | `Always` |
+| `esIndexCleaner.numberOfDays` | ElasticSearch indicess older than this number (Number of days) would be deleted by the CronJob | `7`
+| `esIndexCleaner.schedule` | Schedule of the cron job | `"55 23 * * *"` |
+| `esIndexCleaner.successfulJobsHistoryLimit` | successfulJobsHistoryLimit for ElasticSearch indices cleanup CronJob | `5` |
+| `esIndexCleaner.failedJobsHistoryLimit` | failedJobsHistoryLimit for ElasticSearch indices cleanup CronJob | `5` |
+| `esIndexCleaner.tag` | Tag of the dependencies job image | `latest` |
+| `esIndexCleaner.extraConfigmapMounts` | Additional esIndexCleaner configMap mounts | `[]` |
+| `esIndexCleaner.extraSecretMounts` | Additional esIndexCleaner secret mounts | `[]` |
 | `storage.cassandra.existingSecret` | Name of existing password secret object (for password authentication | `nil`
 | `storage.cassandra.host` | Provisioned cassandra host | `cassandra` |
 | `storage.cassandra.keyspace` | Schema name for cassandra | `jaeger_v1_test` |

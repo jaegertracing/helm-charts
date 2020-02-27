@@ -376,6 +376,36 @@ spark:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+
+esIndexCleaner:
+  enabled: false
+  annotations: {}
+  image: jaegertracing/jaeger-es-index-cleaner
+  tag: latest
+  pullPolicy: Always
+  cmdlineParams: {}
+  schedule: "55 23 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  numberOfDays: 7
+  serviceAccount:
+    create: true
+    name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraSecretMounts: []
+  extraConfigmapMounts: []
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 # End: Default values for the various components of Jaeger
 
 hotrod:
