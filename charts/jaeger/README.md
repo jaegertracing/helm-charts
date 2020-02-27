@@ -257,16 +257,15 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
 | `collector.cmdlineParams` | Additional command line parameters | `nil` |
 | `collector.podAnnotations` | Annotations for Collector pod | `nil` |
-| `collector.service.httpPort` | Client port for HTTP thrift | `14268` |
-| `collector.service.annotations` | Annotations for Collector SVC | `nil` |
 | `collector.image` | Image for jaeger collector | `jaegertracing/jaeger-collector` |
 | `collector.pullPolicy` | Collector image pullPolicy | `IfNotPresent` |
 | `collector.service.annotations` | Annotations for Collector SVC | `nil` |
-| `collector.service.httpPort` | Client port for HTTP thrift | `14268` |
+| `collector.service.grpc.port` | Jaeger Agent port for model.proto | `14250` |
+| `collector.service.http.port` | Client port for HTTP thrift | `14268` |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
-| `collector.service.tchannelPort` | Jaeger Agent port for thrift| `14267` |
+| `collector.service.tchannel.port` | Jaeger Agent port for thrift| `14267` |
 | `collector.service.type` | Service type | `ClusterIP` |
-| `collector.service.zipkinPort` | Zipkin port for JSON/thrift HTTP | `nil` |
+| `collector.service.zipkin.port` | Zipkin port for JSON/thrift HTTP | `nil` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.extraSecretMounts` | Additional collector secret mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |

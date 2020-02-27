@@ -13,20 +13,32 @@ metadata:
 spec:
   ports:
   - name: grpc
-    port: {{ .Values.collector.service.grpcPort }}
+    port: {{ .Values.collector.service.grpc.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.grpc.nodePort) }}
+    nodePort: {{ .Values.collector.service.grpc.nodePort }}
+{{- end }}
     protocol: TCP
     targetPort: grpc
   - name: tchannel
-    port: {{ .Values.collector.service.tchannelPort }}
+    port: {{ .Values.collector.service.tchannel.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.tchannel.nodePort) }}
+    nodePort: {{ .Values.collector.service.tchannel.nodePort }}
+{{- end }}
     protocol: TCP
     targetPort: tchannel
   - name: http
-    port: {{ .Values.collector.service.httpPort }}
+    port: {{ .Values.collector.service.http.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.http.nodePort) }}
+    nodePort: {{ .Values.collector.service.http.nodePort }}
+{{- end }}
     protocol: TCP
     targetPort: http
-{{- if .Values.collector.service.zipkinPort }}
+{{- if .Values.collector.service.zipkin }}
   - name: zipkin
-    port: {{ .Values.collector.service.zipkinPort }}
+    port: {{ .Values.collector.service.zipkin.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.zipkin.nodePort) }}
+    nodePort: {{ .Values.collector.service.zipkin.nodePort }}
+{{- end }}
     protocol: TCP
     targetPort: zipkin
 {{- end }}

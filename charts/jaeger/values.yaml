@@ -216,13 +216,21 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
-    grpcPort: 14250
+    grpc:
+      port: 14250
+      # nodePort:
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
-    tchannelPort: 14267
+    tchannel:
+      port: 14267
+      # nodePort:
     # httpPort: can accept spans directly from clients in jaeger.thrift format
-    httpPort: 14268
+    http:
+      port: 14268
+      # nodePort:
     # can accept Zipkin spans in JSON or Thrift
-    # zipkinPort: 9411
+    zipkin:
+      # port: 9411
+      # nodePort:
   resources: {}
     # limits:
     #   cpu: 1
