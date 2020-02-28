@@ -379,6 +379,10 @@ spark:
 
 esIndexCleaner:
   enabled: false
+  securityContext:
+    runAsUser: 1000
+  podSecurityContext:
+    runAsUser: 1000
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
   tag: latest
