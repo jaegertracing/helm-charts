@@ -48,9 +48,9 @@ spec:
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
             value: {{ $value | quote }}
           {{- end }}
-          {{- if .Values.collector.service.zipkinPort }}
+          {{- if .Values.collector.service.zipkin }}
           - name: COLLECTOR_ZIPKIN_HTTP_PORT
-            value: {{ .Values.collector.service.zipkinPort | quote }}
+            value: {{ .Values.collector.service.zipkin.port | quote }}
           {{- end }}
           {{- if .Values.ingester.enabled }}
           - name: SPAN_STORAGE_TYPE
@@ -117,20 +117,20 @@ spec:
             value: /etc/conf/strategies.json
           {{- end }}
         ports:
-        - containerPort: {{ .Values.collector.service.grpcPort }}
+        - containerPort: {{ .Values.collector.service.grpc.port }}
           name: grpc
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.tchannelPort }}
+        - containerPort: {{ .Values.collector.service.tchannel.port }}
           name: tchannel
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.httpPort }}
+        - containerPort: {{ .Values.collector.service.http.port }}
           name: http
           protocol: TCP
         - containerPort: 14269
           name: admin
           protocol: TCP
-        {{- if .Values.collector.service.zipkinPort }}
-        - containerPort: {{ .Values.collector.service.zipkinPort }}
+        {{- if .Values.collector.service.zipkin }}
+        - containerPort: {{ .Values.collector.service.zipkin.port }}
           name: zipkin
           protocol: TCP
         {{- end }}

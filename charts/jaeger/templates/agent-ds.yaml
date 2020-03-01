@@ -44,7 +44,7 @@ spec:
         env:
         {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
         - name: REPORTER_GRPC_HOST_PORT
-          value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpcPort }}
+          value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
         {{- end }}
         {{- range $key, $value := .Values.agent.cmdlineParams }}
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
