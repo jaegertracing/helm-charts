@@ -31,7 +31,7 @@ spec:
           securityContext:
 {{ toYaml .Values.esIndexCleaner.podSecurityContext | indent 12 }}
           containers:
-          - name: {{ include "jaeger.fullname" . }}-esIndexCleaner
+          - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
             securityContext:
 {{ toYaml .Values.esIndexCleaner.securityContext | indent 14 }}
             image: "{{ .Values.esIndexCleaner.image }}:{{ .Values.esIndexCleaner.tag }}"

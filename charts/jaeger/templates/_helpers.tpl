@@ -78,7 +78,7 @@ Create the name of the esIndexCleaner service account to use
 */}}
 {{- define "jaeger.esIndexCleaner.serviceAccountName" -}}
 {{- if .Values.esIndexCleaner.serviceAccount.create -}}
-    {{ default (printf "%s-esIndexCleaner" (include "jaeger.fullname" .)) .Values.esIndexCleaner.serviceAccount.name }}
+    {{ default (printf "%s-es-index-cleaner" (include "jaeger.fullname" .)) .Values.esIndexCleaner.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.esIndexCleaner.serviceAccount.name }}
 {{- end -}}
