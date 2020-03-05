@@ -39,6 +39,16 @@ spec:
             args:
             - {{ .Values.esIndexCleaner.numberOfDays | quote }}
             - {{ template "elasticsearch.client.url" . }}
+            env:
+            {{- if .Values.storage.elasticsearch.usePassword }}
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+                  key: password
+            {{- end }}
+            - name: ES_USERNAME
+              value: {{ .Values.storage.elasticsearch.user }}
             resources:
 {{ toYaml .Values.esIndexCleaner.resources | indent 14 }}
             volumeMounts:
