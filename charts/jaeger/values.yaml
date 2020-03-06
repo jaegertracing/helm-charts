@@ -229,7 +229,8 @@ collector:
       # nodePort:
     # can accept Zipkin spans in JSON or Thrift
     zipkin:
-      # port: 9411
+      enabled: false
+      port: 9411
       # nodePort:
   resources: {}
     # limits:

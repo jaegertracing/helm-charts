@@ -33,7 +33,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: http
-{{- if .Values.collector.service.zipkin }}
+{{- if .Values.collector.service.zipkin.enabled }}
   - name: zipkin
     port: {{ .Values.collector.service.zipkin.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.zipkin.nodePort) }}

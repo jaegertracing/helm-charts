@@ -48,7 +48,7 @@ spec:
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
             value: {{ $value | quote }}
           {{- end }}
-          {{- if .Values.collector.service.zipkin }}
+          {{- if .Values.collector.service.zipkin.enabled }}
           - name: COLLECTOR_ZIPKIN_HTTP_PORT
             value: {{ .Values.collector.service.zipkin.port | quote }}
           {{- end }}
@@ -129,7 +129,7 @@ spec:
         - containerPort: 14269
           name: admin
           protocol: TCP
-        {{- if .Values.collector.service.zipkin }}
+        {{- if .Values.collector.service.zipkin.enabled }}
         - containerPort: {{ .Values.collector.service.zipkin.port }}
           name: zipkin
           protocol: TCP
