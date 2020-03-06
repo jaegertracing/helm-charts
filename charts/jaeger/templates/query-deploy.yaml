@@ -112,6 +112,12 @@ spec:
         resources:
 {{ toYaml .Values.query.resources | indent 10 }}
         volumeMounts:
+        {{- range .Values.query.extraSecretMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
         {{- range .Values.query.extraConfigmapMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
@@ -189,6 +195,12 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+      {{- range .Values.query.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
+{{- if .Values.query.agentSidecar.enabled }}
       {{- range .Values.agent.extraSecretMounts }}
         - name: {{ .name }}
           secret:
@@ -199,6 +211,7 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end }}
     {{- with .Values.query.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
