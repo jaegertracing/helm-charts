@@ -46,5 +46,8 @@ spec:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector
   type: {{ .Values.collector.service.type }}
+{{- if and (eq .Values.collector.service.type "LoadBalancer") (.Values.collector.service.loadBalancerIPEnabled) }}
+    LoadBalancerIP: {{ .Values.collector.service.type.loadBalancerIP }}
+{{- end -}}    
 {{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}
