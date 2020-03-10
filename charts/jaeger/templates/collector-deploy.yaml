@@ -110,6 +110,10 @@ spec:
           - name: ES_INDEX_PREFIX
             value: {{ .Values.storage.elasticsearch.indexPrefix }}
           {{- end }}
+          {{- if .Values.storage.elasticsearch.tagsAsFieldsAll }}
+          - name: ES_TAGS_AS_FIELDS_ALL
+            value: {{ .Values.storage.elasticsearch.tagsAsFieldsAll }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.collector.samplingConfig}}
