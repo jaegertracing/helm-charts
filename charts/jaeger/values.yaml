@@ -214,6 +214,8 @@ collector:
   service:
     annotations: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerIPEnabled: false
+    loadBalancerIP: ''
     loadBalancerSourceRanges: []
     type: ClusterIP
     grpc:
