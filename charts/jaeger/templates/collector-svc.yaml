@@ -47,7 +47,7 @@ spec:
     app.kubernetes.io/component: collector
   type: {{ .Values.collector.service.type }}
 {{- if and (eq .Values.collector.service.type "LoadBalancer") .Values.collector.service.loadBalancerIP }}
-    LoadBalancerIP: {{ .Values.collector.service.loadBalancerIP }}
+    loadBalancerIP: {{ .Values.collector.service.loadBalancerIP }}
 {{- end -}}    
 {{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}
