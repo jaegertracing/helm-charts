@@ -27,6 +27,18 @@ storage:
     keyspace: jaeger_v1_test
     ## Use existing secret (ignores previous password)
     # existingSecret:
+    ## Cassandra related env vars to be configured on the concerned components
+    env: {}
+      # CASSANDRA_SERVERS: cassandra
+      # CASSANDRA_PORT: 9042
+      # CASSANDRA_KEYSPACE: jaeger_v1_test
+      # CASSANDRA_TLS_ENABLED: false
+    ## Cassandra related cmd line opts to be configured on the concerned components
+    cmdlineParams: {}
+      # cassandra.servers: cassandra
+      # cassandra.port: 9042
+      # cassandra.keyspace: jaeger_v1_test
+      # cassandra.tls.enabled: false
   elasticsearch:
     scheme: http
     host: elasticsearch-master
@@ -38,6 +50,16 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     nodesWanOnly: false
+    env: {}
+    ## ES related env vars to be configured on the concerned components
+      # ES_SERVER_URLS: http://elasticsearch-master:9200
+      # ES_USERNAME: elastic
+      # ES_INDEX_PREFIX: test
+    ## ES related cmd line opts to be configured on the concerned components
+    cmdlineParams: {}
+      # es.server-urls: http://elasticsearch-master:9200
+      # es.username: elastic
+      # es.index-prefix: test
   kafka:
     brokers:
       - kafka:9092
@@ -75,8 +97,9 @@ schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
   pullPolicy: IfNotPresent
-  # Acceptable values are test and prod. Default is for production use.
-  mode: prod
+  ## Acceptable values are test and prod. Default is for production use.
+  ## DEPRECATED, please use env further below
+  # mode: prod
   resources: {}
     # limits:
     #   cpu: 500m
@@ -92,8 +115,12 @@ schema:
   podLabels: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
-  # traceTtl: 172800
-  # dependenciesTtl: 0
+  # traceTtl: 172800 <- DEPRECATED, please use env below
+  # dependenciesTtl: 0 <-DEPRECATED, please use env below
+  env:
+    MODE: prod
+    # TRACE_TTL: 172800
+    # DEPENDENCIES_TTL: 0
 
 # For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
@@ -108,6 +135,7 @@ ingester:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
+  env: {}
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -148,6 +176,7 @@ agent:
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
   cmdlineParams: {}
+  env: {}
   daemonset:
     useHostPort: false
   service:
@@ -204,6 +233,7 @@ collector:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
+  env: {}
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -303,6 +333,7 @@ query:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
+  env: {}
   replicaCount: 1
   service:
     annotations: {}
