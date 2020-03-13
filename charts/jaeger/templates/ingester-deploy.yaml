@@ -64,6 +64,8 @@ spec:
             value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_CONSUMER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
+          - name: KAFKA_CONSUMER_AUTHENTICATION
+            value: {{ .Values.storage.kafka.authentication }}
         ports:
         - containerPort: 14270
           name: admin
