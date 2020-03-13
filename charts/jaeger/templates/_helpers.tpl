@@ -56,9 +56,9 @@ Create the name of the cassandra schema service account to use
 */}}
 {{- define "jaeger.cassandraSchema.serviceAccountName" -}}
 {{- if .Values.schema.serviceAccount.create -}}
-    {{ default (printf "%s-cassandra-schema" (include "jaeger.fullname" .)) .Values.schema.serviceAccount.name }}
+  {{ default (printf "%s-cassandra-schema" (include "jaeger.fullname" .)) .Values.schema.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.schema.serviceAccount.name }}
+  {{ default "default" .Values.schema.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -67,9 +67,9 @@ Create the name of the spark service account to use
 */}}
 {{- define "jaeger.spark.serviceAccountName" -}}
 {{- if .Values.spark.serviceAccount.create -}}
-    {{ default (printf "%s-spark" (include "jaeger.fullname" .)) .Values.spark.serviceAccount.name }}
+  {{ default (printf "%s-spark" (include "jaeger.fullname" .)) .Values.spark.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.spark.serviceAccount.name }}
+  {{ default "default" .Values.spark.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -78,9 +78,9 @@ Create the name of the esIndexCleaner service account to use
 */}}
 {{- define "jaeger.esIndexCleaner.serviceAccountName" -}}
 {{- if .Values.esIndexCleaner.serviceAccount.create -}}
-    {{ default (printf "%s-es-index-cleaner" (include "jaeger.fullname" .)) .Values.esIndexCleaner.serviceAccount.name }}
+  {{ default (printf "%s-es-index-cleaner" (include "jaeger.fullname" .)) .Values.esIndexCleaner.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.esIndexCleaner.serviceAccount.name }}
+  {{ default "default" .Values.esIndexCleaner.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -89,9 +89,9 @@ Create the name of the hotrod service account to use
 */}}
 {{- define "jaeger.hotrod.serviceAccountName" -}}
 {{- if .Values.hotrod.serviceAccount.create -}}
-    {{ default (printf "%s-hotrod" (include "jaeger.fullname" .)) .Values.hotrod.serviceAccount.name }}
+  {{ default (printf "%s-hotrod" (include "jaeger.fullname" .)) .Values.hotrod.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.hotrod.serviceAccount.name }}
+  {{ default "default" .Values.hotrod.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -100,9 +100,9 @@ Create the name of the query service account to use
 */}}
 {{- define "jaeger.query.serviceAccountName" -}}
 {{- if .Values.query.serviceAccount.create -}}
-    {{ default (include "jaeger.query.name" .) .Values.query.serviceAccount.name }}
+  {{ default (include "jaeger.query.name" .) .Values.query.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.query.serviceAccount.name }}
+  {{ default "default" .Values.query.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -111,9 +111,9 @@ Create the name of the agent service account to use
 */}}
 {{- define "jaeger.agent.serviceAccountName" -}}
 {{- if .Values.agent.serviceAccount.create -}}
-    {{ default (include "jaeger.agent.name" .) .Values.agent.serviceAccount.name }}
+  {{ default (include "jaeger.agent.name" .) .Values.agent.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.agent.serviceAccount.name }}
+  {{ default "default" .Values.agent.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -122,9 +122,9 @@ Create the name of the collector service account to use
 */}}
 {{- define "jaeger.collector.serviceAccountName" -}}
 {{- if .Values.collector.serviceAccount.create -}}
-    {{ default (include "jaeger.collector.name" .) .Values.collector.serviceAccount.name }}
+  {{ default (include "jaeger.collector.name" .) .Values.collector.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.collector.serviceAccount.name }}
+  {{ default "default" .Values.collector.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -133,9 +133,9 @@ Create the name of the ingester service account to use
 */}}
 {{- define "jaeger.ingester.serviceAccountName" -}}
 {{- if .Values.ingester.serviceAccount.create -}}
-    {{ default (include "jaeger.ingester.name" .) .Values.ingester.serviceAccount.name }}
+  {{ default (include "jaeger.ingester.name" .) .Values.ingester.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.ingester.serviceAccount.name }}
+  {{ default "default" .Values.ingester.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -247,4 +247,118 @@ Configure list of IP CIDRs allowed access to load balancer (if supported)
 {{- define "helm-toolkit.utils.joinListWithComma" -}}
 {{- $local := dict "first" true -}}
 {{- range $k, $v := . -}}{{- if not $local.first -}},{{- end -}}{{- $v -}}{{- $_ := set $local "first" false -}}{{- end -}}
+{{- end -}}
+
+
+{{/*
+Cassandra related environment variables
+*/}}
+{{- define "cassandra.env" -}}
+- name: CASSANDRA_SERVERS
+  value: {{ include "cassandra.host" . }}
+- name: CASSANDRA_PORT
+  value: {{ .Values.storage.cassandra.port | quote }}
+{{ if .Values.storage.cassandra.tls.enabled }}
+- name: CASSANDRA_TLS_ENABLED
+  value: "true"
+- name: CASSANDRA_TLS_SERVER_NAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.storage.cassandra.tls.secretName }}
+      key: commonName
+- name: CASSANDRA_TLS_KEY
+  value: "/cassandra-tls/client-key.pem"
+- name: CASSANDRA_TLS_CERT
+  value: "/cassandra-tls/client-cert.pem"
+- name: CASSANDRA_TLS_CA
+  value: "/cassandra-tls/ca-cert.pem"
+{{- end }}
+{{- if .Values.storage.cassandra.keyspace }}
+- name: CASSANDRA_KEYSPACE
+  value: {{ .Values.storage.cassandra.keyspace }}
+{{- end }}
+- name: CASSANDRA_USERNAME
+  value: {{ .Values.storage.cassandra.user }}
+- name: CASSANDRA_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
+      key: password
+{{- range $key, $value := .Values.storage.cassandra.env -}}
+- name: {{ $key | quote }}
+  value: {{ $value | quote }}
+{{ end -}}
+{{- end -}}
+
+{{/*
+Elasticsearch related environment variables
+*/}}
+{{- define "elasticsearch.env" -}}
+- name: ES_SERVER_URLS
+  value: {{ include "elasticsearch.client.url" . }}
+- name: ES_USERNAME
+  value: {{ .Values.storage.elasticsearch.user }}
+{{- if .Values.storage.elasticsearch.usePassword }}
+- name: ES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
+      key: password
+{{- end }}
+{{- if .Values.storage.elasticsearch.indexPrefix }}
+- name: ES_INDEX_PREFIX
+  value: {{ .Values.storage.elasticsearch.indexPrefix }}
+{{- end }}
+{{- range $key, $value := .Values.storage.elasticsearch.env -}}
+- name: {{ $key | quote }}
+  value: {{ $value | quote }}
+{{ end -}}
+{{- end -}}
+
+{{/*
+Cassandra or Elasticsearch related environment variables depending on which is used
+*/}}
+{{- define "storage.env" -}}
+{{- if eq .Values.storage.type "cassandra" -}}
+{{ include "cassandra.env" . }}
+{{- else if eq .Values.storage.type "elasticsearch" -}}
+{{ include "elasticsearch.env" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Cassandra related command line options
+*/}}
+{{- define "cassandra.cmdArgs" -}}
+{{- range $key, $value := .Values.storage.cassandra.cmdlineParams -}}
+{{- if $value -}}
+- --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Elasticsearch related command line options
+*/}}
+{{- define "elasticsearch.cmdArgs" -}}
+{{- range $key, $value := .Values.storage.elasticsearch.cmdlineParams -}}
+{{- if $value -}}
+- --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Cassandra or Elasticsearch related command line options depending on which is used
+*/}}
+{{- define "storage.cmdArgs" -}}
+{{- if eq .Values.storage.type "cassandra" -}}
+{{- include "cassandra.cmdArgs" . -}}
+{{- else if eq .Values.storage.type "elasticsearch" -}}
+{{- include "elasticsearch.cmdArgs" . -}}
+{{- end -}}
 {{- end -}}

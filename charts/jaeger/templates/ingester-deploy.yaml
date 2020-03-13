@@ -47,64 +47,23 @@ spec:
 {{ toYaml .Values.ingester.securityContext | indent 10 }}
         image: {{ .Values.ingester.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
-        env:
+        args:
           {{- range $key, $value := .Values.ingester.cmdlineParams }}
-          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-            value: {{ $value | quote }}
+          {{- if $value }}
+          - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
           {{- end }}
+          {{- end }}
+          {{- include "storage.cmdArgs" . | nindent 10 }}
+        env:
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
+          {{- include "storage.env" . | nindent 10 }}
           - name: KAFKA_CONSUMER_BROKERS
             value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_CONSUMER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
-          {{- if eq .Values.storage.type "cassandra" }}
-          - name: CASSANDRA_SERVERS
-            value: {{ .Values.storage.cassandra.host | quote }}
-          - name: CASSANDRA_PORT
-            value: {{ .Values.storage.cassandra.port | quote }}
-          {{ if .Values.storage.cassandra.tls.enabled }}
-          - name: CASSANDRA_TLS
-            value: "true"
-          - name: CASSANDRA_TLS_SERVER_NAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: commonName
-          - name: CASSANDRA_TLS_KEY
-            value: "/cassandra-tls/client-key.pem"
-          - name: CASSANDRA_TLS_CERT
-            value: "/cassandra-tls/client-cert.pem"
-          - name: CASSANDRA_TLS_CA
-            value: "/cassandra-tls/ca-cert.pem"
-          {{- end }}
-          - name: CASSANDRA_KEYSPACE
-            value: {{ .Values.storage.cassandra.keyspace | quote }}
-          - name: CASSANDRA_USERNAME
-            value: {{ .Values.storage.cassandra.user }}
-          - name: CASSANDRA_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
-                key: password
-          {{- end }}
-          {{- if eq .Values.storage.type "elasticsearch" }}
-          {{- if .Values.storage.elasticsearch.usePassword }}
-          - name: ES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
-                key: password
-          {{- end }}
-          - name: ES_SERVER_URLS
-            value: {{ template "elasticsearch.client.url" . }}
-          - name: ES_USERNAME
-            value: {{ .Values.storage.elasticsearch.user }}
-          {{- if .Values.storage.elasticsearch.indexPrefix }}
-          - name: ES_INDEX_PREFIX
-            value: {{ .Values.storage.elasticsearch.indexPrefix }}
-          {{- end }}
-          {{- end }}
         ports:
         - containerPort: 14270
           name: admin

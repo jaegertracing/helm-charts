@@ -226,6 +226,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
+| `<agent|collector|query|ingester>.cmdlineParams` | Additional command line parameters | `nil` |
+| `<component>.env` | Additional environment variables | {} |
 | `<component>.nodeSelector` | Node selector | {} |
 | `<component>.tolerations` | Node tolerations | [] |
 | `<component.affinity` | Affinity | {} |
@@ -234,7 +236,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `<component>.serviceAccount.create` | Create service account | `true` |
 | `<component>.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
 | `agent.annotations` | Annotations for Agent | `nil` |
-| `agent.cmdlineParams` |Additional command line parameters| `nil` |
 | `agent.dnsPolicy` | Configure DNS policy for agents | `ClusterFirst` |
 | `agent.service.annotations` | Annotations for Agent SVC | `nil` |
 | `agent.service.binaryPort` | jaeger.thrift over binary thrift | `6832` |
@@ -255,7 +256,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.autoscaling.maxReplicas` | Maximum replicas |  10 |
 | `collector.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
 | `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
-| `collector.cmdlineParams` | Additional command line parameters | `nil` |
 | `collector.podAnnotations` | Annotations for Collector pod | `nil` |
 | `collector.image` | Image for jaeger collector | `jaegertracing/jaeger-collector` |
 | `collector.pullPolicy` | Collector image pullPolicy | `IfNotPresent` |
@@ -275,7 +275,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `ingester.autoscaling.maxReplicas` | Maximum replicas |  10 |
 | `ingester.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
 | `ingester.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
-| `ingester.cmdlineParams` | Additional command line parameters | `nil` |
 | `ingester.podAnnotations` | Annotations for Ingester pod | `nil` |
 | `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
 | `ingester.image` | Image for jaeger Ingester | `jaegertracing/jaeger-ingester` |
@@ -294,7 +293,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `provisionDataStore.kafka` | Provision Kafka Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
-| `query.cmdlineParams` | Additional command line parameters | `nil` |
 | `query.image` | Image for Jaeger Query UI | `jaegertracing/jaeger-query` |
 | `query.ingress.enabled` | Allow external traffic access | `false` |
 | `query.ingress.annotations` | Configure annotations for Ingress | `{}` |
@@ -310,12 +308,13 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.annotations` | Annotations for the schema job| `nil` |
 | `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |
-| `schema.mode` | Schema mode (prod or test) | `prod` |
+| `schema.env` | Environment variables for cassandra-schema-job | `MODE: prod` |
+| `schema.mode` | (DEPRECATED, use `schema.env`) Schema mode (prod or test) | `prod` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.traceTtl` | Time to live for trace data in seconds | `nil` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
-| `schema.dependenciesTtl` | Time to live for dependencies data in seconds | `nil` |
+| `schema.dependenciesTtl` | (DEPRECATED, use `schema.env`) Time to live for dependencies data in seconds | `nil` |
 | `spark.enabled` | Enables the dependencies job| `false` |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |
@@ -335,6 +334,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `esIndexCleaner.tag` | Tag of the dependencies job image | `latest` |
 | `esIndexCleaner.extraConfigmapMounts` | Additional esIndexCleaner configMap mounts | `[]` |
 | `esIndexCleaner.extraSecretMounts` | Additional esIndexCleaner secret mounts | `[]` |
+| `storage.cassandra.env` | Extra cassandra related env vars to be configured on components that talk to cassandra | `cassandra` |
+| `storage.cassandra.cmdlineParams` | Extra cassandra related command line options to be configured on components that talk to cassandra | `cassandra` |
 | `storage.cassandra.existingSecret` | Name of existing password secret object (for password authentication | `nil`
 | `storage.cassandra.host` | Provisioned cassandra host | `cassandra` |
 | `storage.cassandra.keyspace` | Schema name for cassandra | `jaeger_v1_test` |
@@ -344,6 +345,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.tls.secretName` | Provisioned cassandra TLS connection existing secret name (possible keys in secret: `ca-cert.pem`, `client-key.pem`, `client-cert.pem`, `cqlshrc`, `commonName`) | `` |
 | `storage.cassandra.usePassword` | Use password | `true` |
 | `storage.cassandra.user` | Provisioned cassandra username | `user` |
+| `storage.elasticsearch.env` | Extra ES related env vars to be configured on components that talk to ES | `nil` |
+| `storage.elasticsearch.cmdlineParams` | Extra ES related command line options to be configured on components that talk to ES | `nil` |
 | `storage.elasticsearch.existingSecret` | Name of existing password secret object (for password authentication | `nil` |
 | `storage.elasticsearch.host` | Provisioned elasticsearch host| `elasticsearch` |
 | `storage.elasticsearch.password` | Provisioned elasticsearch password  (ignored if storage.elasticsearch.existingSecret set | `changeme` |

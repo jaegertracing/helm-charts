@@ -38,7 +38,13 @@ spec:
             imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
             args:
             - {{ .Values.esIndexCleaner.numberOfDays | quote }}
-            - {{ template "elasticsearch.client.url" . }}
+            - {{ include "elasticsearch.client.url" . }}
+            env:
+              {{- range $key, $value := .Values.esIndexCleaner.env }}
+              - name: {{ $key | quote }}
+                value: {{ $value | quote }}
+              {{- end }}
+              {{ include "elasticsearch.env" . | nindent 14 }}
             resources:
 {{ toYaml .Values.esIndexCleaner.resources | indent 14 }}
             volumeMounts:
