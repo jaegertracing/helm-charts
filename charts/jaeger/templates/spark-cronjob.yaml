@@ -32,7 +32,11 @@ spec:
             imagePullPolicy: {{ .Values.spark.pullPolicy }}
             args:
               {{- range $key, $value := .Values.spark.cmdlineParams }}
+              {{- if $value }}
               - --{{ $key }}={{ $value }}
+              {{- else }}
+              - --{{ $key }}
+              {{- end }}
               {{- end }}
             env:
               - name: STORAGE

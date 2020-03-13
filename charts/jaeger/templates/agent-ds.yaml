@@ -43,7 +43,11 @@ spec:
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:
           {{- range $key, $value := .Values.agent.cmdlineParams }}
+          {{- if $value }}
           - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
           {{- end }}
         env:
         {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}

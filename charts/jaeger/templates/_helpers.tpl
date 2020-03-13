@@ -326,13 +326,16 @@ Cassandra or Elasticsearch related environment variables depending on which is u
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Cassandra related command line options
 */}}
 {{- define "cassandra.cmdArgs" -}}
-{{- range $key, $value := .Values.storage.cassandra.cmdlineParams }}
+{{- range $key, $value := .Values.storage.cassandra.cmdlineParams -}}
+{{- if $value -}}
 - --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -340,8 +343,12 @@ Cassandra related command line options
 Elasticsearch related command line options
 */}}
 {{- define "elasticsearch.cmdArgs" -}}
-{{- range $key, $value := .Values.storage.elasticsearch.cmdlineParams }}
+{{- range $key, $value := .Values.storage.elasticsearch.cmdlineParams -}}
+{{- if $value -}}
 - --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -350,8 +357,8 @@ Cassandra or Elasticsearch related command line options depending on which is us
 */}}
 {{- define "storage.cmdArgs" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
-{{ include "cassandra.cmdArgs" . }}
+{{- include "cassandra.cmdArgs" . -}}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
-{{ include "elasticsearch.cmdArgs" . }}
+{{- include "elasticsearch.cmdArgs" . -}}
 {{- end -}}
 {{- end -}}

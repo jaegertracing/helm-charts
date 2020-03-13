@@ -49,7 +49,11 @@ spec:
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
           {{- range $key, $value := .Values.ingester.cmdlineParams }}
+          {{- if $value }}
           - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
           {{- end }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
         env:
