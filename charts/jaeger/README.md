@@ -262,7 +262,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.annotations` | Annotations for Collector SVC | `nil` |
 | `collector.service.grpc.port` | Jaeger Agent port for model.proto | `14250` |
 | `collector.service.http.port` | Client port for HTTP thrift | `14268` |
-| `collector.service.loadBalancerIP` | IP Address to be assigned to the Load Balancer | `nil` |
+| `collector.service.loadBalancerIP` | The IP address to be used by the load balancer (if supported) | `nil` |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `collector.service.tchannel.port` | Jaeger Agent port for thrift| `14267` |
 | `collector.service.type` | Service type | `ClusterIP` |
