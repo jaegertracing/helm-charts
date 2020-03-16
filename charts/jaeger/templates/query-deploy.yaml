@@ -40,62 +40,19 @@ spec:
 {{ toYaml .Values.query.securityContext | indent 10 }}
         image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
-        env:
+        args:
           {{- range $key, $value := .Values.query.cmdlineParams }}
-          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-            value: {{ $value | quote }}
+          {{- if $value }}
+          - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
           {{- end }}
+          {{- end }}
+          {{- include "storage.cmdArgs" . | nindent 10 }}
+        env:
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
-          {{- if eq .Values.storage.type "cassandra" }}
-          - name: CASSANDRA_SERVERS
-            value: {{ template "cassandra.host" . }}
-          - name: CASSANDRA_PORT
-            value: {{ .Values.storage.cassandra.port | quote }}
-          {{ if .Values.storage.cassandra.tls.enabled }}
-          - name: CASSANDRA_TLS
-            value: "true"
-          - name: CASSANDRA_TLS_SERVER_NAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.cassandra.tls.secretName }}
-                key: commonName
-          - name: CASSANDRA_TLS_KEY
-            value: "/cassandra-tls/client-key.pem"
-          - name: CASSANDRA_TLS_CERT
-            value: "/cassandra-tls/client-cert.pem"
-          - name: CASSANDRA_TLS_CA
-            value: "/cassandra-tls/ca-cert.pem"
-          {{- end }}
-          {{- if .Values.storage.cassandra.keyspace }}
-          - name: CASSANDRA_KEYSPACE
-            value: {{ .Values.storage.cassandra.keyspace | quote }}
-          {{- end }}
-          - name: CASSANDRA_USERNAME
-            value: {{ .Values.storage.cassandra.user }}
-          - name: CASSANDRA_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
-                key: password
-          {{- end }}
-          {{- if eq .Values.storage.type "elasticsearch" }}
-          {{- if .Values.storage.elasticsearch.usePassword }}
-          - name: ES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
-                key: password
-          {{- end }}
-          - name: ES_SERVER_URLS
-            value: {{ template "elasticsearch.client.url" . }}
-          - name: ES_USERNAME
-            value: {{ .Values.storage.elasticsearch.user }}
-          {{- if .Values.storage.elasticsearch.indexPrefix }}
-          - name: ES_INDEX_PREFIX
-            value: {{ .Values.storage.elasticsearch.indexPrefix }}
-          {{- end }}
-          {{- end }}
+          {{- include "storage.env" . | nindent 10 }}
           {{- if .Values.query.basePath }}
           - name: QUERY_BASE_PATH
             value: {{ .Values.query.basePath | quote }}
@@ -152,14 +109,18 @@ spec:
 {{ toYaml .Values.query.securityContext | indent 10 }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        args:
+          {{- range $key, $value := .Values.agent.cmdlineParams }}
+          {{- if $value }}
+          - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
+          {{- end }}
         env:
         {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
         - name: REPORTER_GRPC_HOST_PORT
           value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
-        {{- end }}
-        {{- range $key, $value := .Values.agent.cmdlineParams }}
-        - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-          value: {{ $value | quote }}
         {{- end }}
         ports:
         - name: admin

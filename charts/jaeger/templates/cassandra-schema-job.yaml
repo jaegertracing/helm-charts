@@ -27,6 +27,11 @@ spec:
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
+        {{ range $key, $value := .Values.schema.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+        {{ end }}
+        {{- include "cassandra.env" . | nindent 8 }}
         - name: CQLSH_HOST
           value: {{ template "cassandra.host" . }}
         {{ if .Values.storage.cassandra.tls.enabled }}
@@ -37,19 +42,6 @@ spec:
           value: {{ .Values.schema.mode | quote }}
         - name: DATACENTER
           value: {{ .Values.cassandra.config.dc_name | quote }}
-        - name: CASSANDRA_PORT
-          value: {{ .Values.storage.cassandra.port | quote }}
-        - name: CASSANDRA_USERNAME
-          value: {{ .Values.storage.cassandra.user }}
-        - name: CASSANDRA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
-              key: password
-      {{- if .Values.storage.cassandra.keyspace }}
-        - name: KEYSPACE
-          value: {{ .Values.storage.cassandra.keyspace | quote }}
-      {{- end }}
       {{- if .Values.schema.traceTtl }}
         - name: TRACE_TTL
           value: {{ .Values.schema.traceTtl | quote }}
@@ -57,6 +49,10 @@ spec:
       {{- if .Values.schema.dependenciesTtl }}
         - name: DEPENDENCIES_TTL
           value: {{ .Values.schema.dependenciesTtl | quote }}
+      {{- end }}
+      {{- if .Values.storage.cassandra.keyspace }}
+        - name: KEYSPACE
+          value: {{ .Values.storage.cassandra.keyspace }}
       {{- end }}
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
