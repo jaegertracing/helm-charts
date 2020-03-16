@@ -309,7 +309,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |
 | `schema.env` | Environment variables for cassandra-schema-job | `MODE: prod` |
-| `schema.mode` | (DEPRECATED, use `schema.env`) Schema mode (prod or test) | `prod` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.traceTtl` | Time to live for trace data in seconds | `nil` |

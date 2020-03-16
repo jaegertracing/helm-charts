@@ -38,8 +38,6 @@ spec:
         - name: CQLSH_SSL
           value: "--ssl"
         {{- end }}
-        - name: MODE
-          value: {{ .Values.schema.mode | quote }}
         - name: DATACENTER
           value: {{ .Values.cassandra.config.dc_name | quote }}
       {{- if .Values.schema.traceTtl }}

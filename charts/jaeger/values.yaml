@@ -98,9 +98,6 @@ schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
   pullPolicy: IfNotPresent
-  ## Acceptable values are test and prod. Default is for production use.
-  ## DEPRECATED, please use env further below
-  # mode: prod
   resources: {}
     # limits:
     #   cpu: 500m
