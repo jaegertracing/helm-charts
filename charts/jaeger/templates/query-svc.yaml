@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: query
 {{- if .Values.query.service.annotations }}
   annotations:
-{{ toYaml .Values.query.service.annotations | indent 4 }}
+    {{- toYaml .Values.query.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   ports:

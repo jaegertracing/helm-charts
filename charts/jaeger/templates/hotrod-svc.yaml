@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: hotrod
 {{- if .Values.hotrod.service.annotations }}
   annotations:
-{{ toYaml .Values.hotrod.service.annotations | indent 4 }}
+    {{- toYaml .Values.hotrod.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.hotrod.service.type }}

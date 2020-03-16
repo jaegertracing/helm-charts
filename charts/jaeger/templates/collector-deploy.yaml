@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: collector
 {{- if .Values.collector.annotations }}
   annotations:
-{{ toYaml .Values.collector.annotations | indent 4 }}
+    {{- toYaml .Values.collector.annotations | nindent 4 }}
 {{- end }}
 spec:
 {{- if not .Values.collector.autoscaling.enabled }}
@@ -25,22 +25,22 @@ spec:
       annotations:
         checksum/config-env: {{ include (print $.Template.BasePath "/collector-configmap.yaml") . | sha256sum }}
 {{- if .Values.collector.podAnnotations }}
-{{ toYaml .Values.collector.podAnnotations | indent 8 }}
+        {{- toYaml .Values.collector.podAnnotations | nindent 8 }}
 {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: collector
 {{- if .Values.collector.podLabels }}
-{{ toYaml .Values.collector.podLabels | indent 8 }}
+        {{- toYaml .Values.collector.podLabels | nindent 8 }}
 {{- end }}
     spec:
       securityContext:
-{{ toYaml .Values.collector.podSecurityContext | indent 8 }}
+        {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
         securityContext:
-{{ toYaml .Values.collector.securityContext | indent 10 }}
+          {{- toYaml .Values.collector.securityContext | nindent 10 }}
         image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         args:
@@ -108,7 +108,7 @@ spec:
             path: /
             port: admin
         resources:
-{{ toYaml .Values.collector.resources | indent 10 }}
+          {{- toYaml .Values.collector.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.collector.extraConfigmapMounts }}
           - name: {{ .name }}

@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: ingester
 {{- if .Values.ingester.annotations }}
   annotations:
-{{ toYaml .Values.ingester.annotations | indent 4 }}
+    {{- toYaml .Values.ingester.annotations | nindent 4 }}
 {{- end }}
 spec:
 {{- if not .Values.ingester.autoscaling.enabled }}
@@ -24,27 +24,27 @@ spec:
     metadata:
       annotations:
 {{- if .Values.ingester.podAnnotations }}
-{{ toYaml .Values.ingester.podAnnotations | indent 8 }}
+        {{- toYaml .Values.ingester.podAnnotations | nindent 8 }}
 {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: ingester
 {{- if .Values.ingester.podLabels }}
-{{ toYaml .Values.ingester.podLabels | indent 8 }}
+        {{- toYaml .Values.ingester.podLabels | nindent 8 }}
 {{- end }}
     spec:
       securityContext:
-{{ toYaml .Values.ingester.podSecurityContext | indent 8 }}
+        {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
       nodeSelector:
-{{ toYaml .Values.ingester.nodeSelector | indent 8 }}
+        {{- toYaml .Values.ingester.nodeSelector | nindent 8 }}
 {{- if .Values.ingester.tolerations }}
       tolerations:
-{{ toYaml .Values.ingester.tolerations | indent 8 }}
+        {{- toYaml .Values.ingester.tolerations | nindent 8 }}
 {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
         securityContext:
-{{ toYaml .Values.ingester.securityContext | indent 10 }}
+          {{- toYaml .Values.ingester.securityContext | nindent 10 }}
         image: {{ .Values.ingester.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
@@ -79,7 +79,7 @@ spec:
             path: /
             port: admin
         resources:
-{{ toYaml .Values.ingester.resources | indent 10 }}
+          {{- toYaml .Values.ingester.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.ingester.extraConfigmapMounts }}
           - name: {{ .name }}

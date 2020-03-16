@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: collector
 {{- if .Values.collector.service.annotations }}
   annotations:
-{{ toYaml .Values.collector.service.annotations | indent 4 }}
+    {{- toYaml .Values.collector.service.annotations | nindent 4 }}
 {{- end }}
 spec:
   ports:
