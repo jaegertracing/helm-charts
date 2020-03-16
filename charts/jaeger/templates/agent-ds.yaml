@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: agent
 {{- if .Values.agent.annotations }}
   annotations:
-{{ toYaml .Values.agent.annotations | indent 4 }}
+    {{- toYaml .Values.agent.annotations | nindent 4 }}
 {{- end }}
 spec:
   selector:
@@ -19,17 +19,17 @@ spec:
     metadata:
 {{- if .Values.agent.podAnnotations }}
       annotations:
-{{ toYaml .Values.agent.podAnnotations | indent 8 }}
+        {{- toYaml .Values.agent.podAnnotations | nindent 8 }}
 {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: agent
 {{- if .Values.agent.podLabels }}
-{{ toYaml .Values.agent.podLabels | indent 8 }}
+        {{- toYaml .Values.agent.podLabels | nindent 8 }}
 {{- end }}
     spec:
       securityContext:
-{{ toYaml .Values.agent.podSecurityContext | indent 8 }}
+        {{- toYaml .Values.agent.podSecurityContext | nindent 8 }}
       {{- if .Values.agent.useHostNetwork }}
       hostNetwork: true
       {{- end }}
@@ -38,7 +38,7 @@ spec:
       containers:
       - name: {{ template "jaeger.agent.name" . }}
         securityContext:
-{{ toYaml .Values.agent.securityContext | indent 10 }}
+          {{- toYaml .Values.agent.securityContext | nindent 10 }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:
@@ -91,7 +91,7 @@ spec:
             path: /
             port: admin
         resources:
-{{ toYaml .Values.agent.resources | indent 10 }}
+          {{- toYaml .Values.agent.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.agent.extraConfigmapMounts }}
           - name: {{ .name }}

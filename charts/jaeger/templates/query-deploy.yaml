@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: query
 {{- if .Values.query.annotations }}
   annotations:
-{{ toYaml .Values.query.annotations | indent 4 }}
+    {{- toYaml .Values.query.annotations | nindent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.query.replicaCount }}
@@ -22,22 +22,22 @@ spec:
     metadata:
 {{- if .Values.query.podAnnotations }}
       annotations:
-{{ toYaml .Values.query.podAnnotations | indent 8 }}
+        {{- toYaml .Values.query.podAnnotations | nindent 8 }}
 {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: query
 {{- if .Values.query.podLabels }}
-{{ toYaml .Values.query.podLabels | indent 8 }}
+        {{- toYaml .Values.query.podLabels | nindent 8 }}
 {{- end }}
     spec:
       securityContext:
-{{ toYaml .Values.query.podSecurityContext | indent 8 }}
+        {{- toYaml .Values.query.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
         securityContext:
-{{ toYaml .Values.query.securityContext | indent 10 }}
+          {{- toYaml .Values.query.securityContext | nindent 10 }}
         image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         args:
@@ -67,7 +67,7 @@ spec:
           containerPort: 16687
           protocol: TCP
         resources:
-{{ toYaml .Values.query.resources | indent 10 }}
+          {{- toYaml .Values.query.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.query.extraSecretMounts }}
           - name: {{ .name }}
@@ -106,7 +106,7 @@ spec:
 {{- if .Values.query.agentSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-sidecar
         securityContext:
-{{ toYaml .Values.query.securityContext | indent 10 }}
+          {{- toYaml .Values.query.securityContext | nindent 10 }}
         image: {{ .Values.agent.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:

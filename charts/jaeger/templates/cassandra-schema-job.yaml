@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/component: cassandra-schema
 {{- if .Values.schema.annotations }}
   annotations:
-{{ toYaml .Values.schema.annotations | indent 4 }}
+    {{- toYaml .Values.schema.annotations | nindent 4 }}
 {{- end }}
 spec:
   activeDeadlineSeconds: {{ .Values.schema.activeDeadlineSeconds }}
@@ -18,7 +18,7 @@ spec:
       name: {{ include "jaeger.fullname" . }}-cassandra-schema
 {{- if .Values.schema.podLabels }}
       labels:
-{{ toYaml .Values.schema.podLabels | indent 8 }}
+        {{- toYaml .Values.schema.podLabels | nindent 8 }}
 {{- end }}
     spec:
       serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
@@ -55,7 +55,7 @@ spec:
           value: {{ .Values.storage.cassandra.keyspace }}
       {{- end }}
         resources:
-{{ toYaml .Values.schema.resources | indent 10 }}
+          {{- toYaml .Values.schema.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.schema.extraConfigmapMounts }}
           - name: {{ .name }}

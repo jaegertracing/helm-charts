@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/component: query
   {{- if .Values.query.ingress.annotations }}
   annotations:
-{{ toYaml .Values.query.ingress.annotations | indent 4 }}
+    {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
   rules:
@@ -25,6 +25,6 @@ spec:
     {{- end -}}
   {{- if .Values.query.ingress.tls }}
   tls:
-{{ toYaml .Values.query.ingress.tls | indent 4 }}
+    {{- toYaml .Values.query.ingress.tls | nindent 4 }}
   {{- end -}}
 {{- end -}}

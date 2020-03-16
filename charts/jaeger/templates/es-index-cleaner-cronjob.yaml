@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: es-index-cleaner
 {{- if .Values.esIndexCleaner.annotations }}
   annotations:
-{{ toYaml .Values.esIndexCleaner.annotations | indent 4 }}
+    {{- toYaml .Values.esIndexCleaner.annotations | nindent 4 }}
 {{- end }}
 spec:
   concurrencyPolicy: "Forbid"
@@ -24,16 +24,16 @@ spec:
             {{- include "jaeger.selectorLabels" . | nindent 12 }}
             app.kubernetes.io/component: es-index-cleaner
             {{- if .Values.esIndexCleaner.podLabels }}
-{{ toYaml .Values.esIndexCleaner.podLabels | indent 12 }}
+            {{- toYaml .Values.esIndexCleaner.podLabels | nindent 12 }}
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esIndexCleaner.serviceAccountName" . }}
           securityContext:
-{{ toYaml .Values.esIndexCleaner.podSecurityContext | indent 12 }}
+            {{- toYaml .Values.esIndexCleaner.podSecurityContext | nindent 12 }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
             securityContext:
-{{ toYaml .Values.esIndexCleaner.securityContext | indent 14 }}
+              {{- toYaml .Values.esIndexCleaner.securityContext | nindent 14 }}
             image: "{{ .Values.esIndexCleaner.image }}:{{ .Values.esIndexCleaner.tag }}"
             imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
             args:
@@ -46,7 +46,7 @@ spec:
               {{- end }}
               {{ include "elasticsearch.env" . | nindent 14 }}
             resources:
-{{ toYaml .Values.esIndexCleaner.resources | indent 14 }}
+              {{- toYaml .Values.esIndexCleaner.resources | nindent 14 }}
             volumeMounts:
             {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
               - name: {{ .name }}
