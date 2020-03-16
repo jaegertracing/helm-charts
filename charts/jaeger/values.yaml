@@ -113,8 +113,6 @@ schema:
   podLabels: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
-  # traceTtl: 172800 <- DEPRECATED, please use env below
-  # dependenciesTtl: 0 <-DEPRECATED, please use env below
   env:
     MODE: prod
     # TRACE_TTL: 172800

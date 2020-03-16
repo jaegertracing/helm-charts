@@ -311,9 +311,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.env` | Environment variables for cassandra-schema-job | `MODE: prod` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
-| `schema.traceTtl` | Time to live for trace data in seconds | `nil` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
-| `schema.dependenciesTtl` | (DEPRECATED, use `schema.env`) Time to live for dependencies data in seconds | `nil` |
 | `spark.enabled` | Enables the dependencies job| `false` |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |

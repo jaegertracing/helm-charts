@@ -40,14 +40,6 @@ spec:
         {{- end }}
         - name: DATACENTER
           value: {{ .Values.cassandra.config.dc_name | quote }}
-      {{- if .Values.schema.traceTtl }}
-        - name: TRACE_TTL
-          value: {{ .Values.schema.traceTtl | quote }}
-      {{- end }}
-      {{- if .Values.schema.dependenciesTtl }}
-        - name: DEPENDENCIES_TTL
-          value: {{ .Values.schema.dependenciesTtl | quote }}
-      {{- end }}
       {{- if .Values.storage.cassandra.keyspace }}
         - name: KEYSPACE
           value: {{ .Values.storage.cassandra.keyspace }}
