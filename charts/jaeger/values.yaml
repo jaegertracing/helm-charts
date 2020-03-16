@@ -64,6 +64,7 @@ storage:
     brokers:
       - kafka:9092
     topic: jaeger_v1_test
+    authentication: none
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:

@@ -70,6 +70,8 @@ spec:
             value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_PRODUCER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
+          - name: KAFKA_PRODUCER_AUTHENTICATION
+            value: {{ .Values.storage.kafka.authentication }}
           {{ else }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}

@@ -328,7 +328,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `esIndexCleaner.enabled` | Enables the ElasticSearch indices cleanup job| `false` |
 | `esIndexCleaner.image` | Image for the ElasticSearch indices cleanup job| `jaegertracing/jaeger-es-index-cleaner` |
 | `esIndexCleaner.pullPolicy` | Image pull policy of the ES cleanup image | `Always` |
-| `esIndexCleaner.numberOfDays` | ElasticSearch indicess older than this number (Number of days) would be deleted by the CronJob | `7`
+| `esIndexCleaner.numberOfDays` | ElasticSearch indices older than this number (Number of days) would be deleted by the CronJob | `7`
 | `esIndexCleaner.schedule` | Schedule of the cron job | `"55 23 * * *"` |
 | `esIndexCleaner.successfulJobsHistoryLimit` | successfulJobsHistoryLimit for ElasticSearch indices cleanup CronJob | `5` |
 | `esIndexCleaner.failedJobsHistoryLimit` | failedJobsHistoryLimit for ElasticSearch indices cleanup CronJob | `5` |
@@ -357,6 +357,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user` | Provisioned elasticsearch user| `elastic` |
 | `storage.elasticsearch.indexPrefix` | Index Prefix for elasticsearch | `nil` |
 | `storage.elasticsearch.nodesWanOnly` | Only access specified es host | `false` |
+| `storage.kafka.authentication` | Authentication type used to authenticate with kafka cluster. e.g. none, kerberos, tls | `none` |
 | `storage.kafka.brokers` | Broker List for Kafka with port | `kafka:9092` |
 | `storage.kafka.topic` | Topic name for Kafka | `jaeger_v1_test` |
 | `storage.type` | Storage type (ES or Cassandra)| `cassandra` |
