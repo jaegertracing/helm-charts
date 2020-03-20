@@ -16,6 +16,10 @@ spec:
   template:
     metadata:
       name: {{ include "jaeger.fullname" . }}-cassandra-schema
+{{- if .Values.schema.podAnnotations }}
+      annotations:
+        {{- toYaml .Values.schema.podAnnotations | nindent 8 }}
+{{- end }}
 {{- if .Values.schema.podLabels }}
       labels:
         {{- toYaml .Values.schema.podLabels | nindent 8 }}

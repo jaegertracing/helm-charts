@@ -108,8 +108,7 @@ schema:
   serviceAccount:
     create: true
     name:
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podAnnotations: {}
   podLabels: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
