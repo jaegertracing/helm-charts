@@ -99,6 +99,12 @@ rules:
   - kafkausers
   verbs:
   - '*'
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - '*'
 {{- if .Values.rbac.pspEnabled }}
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']
