@@ -16,6 +16,9 @@ spec:
     port: {{ .Values.query.service.port }}
     protocol: TCP
     targetPort: query
+{{- if and (eq .Values.query.service.type "NodePort") (.Values.query.service.nodePort) }}
+    nodePort: {{ .Values.query.service.nodePort }}
+{{- end }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query
