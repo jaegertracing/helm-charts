@@ -230,7 +230,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `<component>.env` | Additional environment variables | {} |
 | `<component>.nodeSelector` | Node selector | {} |
 | `<component>.tolerations` | Node tolerations | [] |
-| `<component.affinity` | Affinity | {} |
+| `<component>.affinity` | Affinity | {} |
+| `<component>.podAnnotations` | Pod annotations | `nil` |
 | `<component>.podSecurityContext` | Pod security context | {} |
 | `<component>.securityContext` | Container security context | {} |
 | `<component>.serviceAccount.create` | Create service account | `true` |
@@ -241,7 +242,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort` | jaeger.thrift over binary thrift | `6832` |
 | `agent.service.compactPort` | jaeger.thrift over compact thrift| `6831` |
 | `agent.image` | Image for Jaeger Agent | `jaegertracing/jaeger-agent` |
-| `agent.podAnnotations` | Annotations for Agent pod | `nil` |
 | `agent.pullPolicy` | Agent image pullPolicy | `IfNotPresent` |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `agent.service.annotations` | Annotations for Agent SVC | `nil` |
@@ -256,7 +256,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.autoscaling.maxReplicas` | Maximum replicas |  10 |
 | `collector.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
 | `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
-| `collector.podAnnotations` | Annotations for Collector pod | `nil` |
 | `collector.image` | Image for jaeger collector | `jaegertracing/jaeger-collector` |
 | `collector.pullPolicy` | Collector image pullPolicy | `IfNotPresent` |
 | `collector.service.annotations` | Annotations for Collector SVC | `nil` |
@@ -275,7 +274,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `ingester.autoscaling.maxReplicas` | Maximum replicas |  10 |
 | `ingester.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
 | `ingester.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
-| `ingester.podAnnotations` | Annotations for Ingester pod | `nil` |
 | `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
 | `ingester.image` | Image for jaeger Ingester | `jaegertracing/jaeger-ingester` |
 | `ingester.pullPolicy` | Ingester image pullPolicy | `IfNotPresent` |
@@ -298,7 +296,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.ingress.annotations` | Configure annotations for Ingress | `{}` |
 | `query.ingress.hosts` | Configure host for Ingress | `nil` |
 | `query.ingress.tls` | Configure tls for Ingress | `nil` |
-| `query.podAnnotations` | Annotations for Query pod | `nil` |
 | `query.pullPolicy` | Query UI image pullPolicy | `IfNotPresent` |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `query.service.nodePort` | Specific node port to use when type is NodePort | `nil` |
