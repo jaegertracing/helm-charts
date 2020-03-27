@@ -298,6 +298,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.ingress.tls` | Configure tls for Ingress | `nil` |
 | `query.pullPolicy` | Query UI image pullPolicy | `IfNotPresent` |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
+| `query.service.nodePort` | Specific node port to use when type is NodePort | `nil` |
 | `query.service.port` | External accessible port | `80` |
 | `query.service.type` | Service type | `ClusterIP` |
 | `query.basePath` | Base path of Query UI, used for ingress as well (if it is enabled) | `/` |
