@@ -226,7 +226,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `<agent|collector|query|ingester>.cmdlineParams` | Additional command line parameters | `nil` |
+| `<agent\|collector\|query\|ingester>.cmdlineParams` | Additional command line parameters | `nil` |
 | `<component>.env` | Additional environment variables | {} |
 | `<component>.nodeSelector` | Node selector | {} |
 | `<component>.tolerations` | Node tolerations | [] |
