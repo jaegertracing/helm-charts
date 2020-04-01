@@ -435,6 +435,7 @@ esIndexCleaner:
   affinity: {}
   extraSecretMounts: []
   extraConfigmapMounts: []
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
