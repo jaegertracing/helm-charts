@@ -20,6 +20,10 @@ spec:
     spec:
       template:
         metadata:
+      {{- if .Values.esIndexCleaner.podAnnotations }}
+      annotations:
+        {{- toYaml .Values.esIndexCleaner.podAnnotations | nindent 8 }}
+      {{- end }}
           labels:
             {{- include "jaeger.selectorLabels" . | nindent 12 }}
             app.kubernetes.io/component: es-index-cleaner
