@@ -251,6 +251,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.extraConfigmapMounts` | Additional agent configMap mounts | `[]` |
 | `agent.extraSecretMounts` | Additional agent secret mounts | `[]` |
 | `agent.useHostNetwork` | Enable hostNetwork for agents | `false` |
+| `agent.priorityClassName` | Priority class name for the agent pods | `` |
 | `collector.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `collector.autoscaling.minReplicas` | Minimum replicas |  2 |
 | `collector.autoscaling.maxReplicas` | Maximum replicas |  10 |
