@@ -218,6 +218,7 @@ agent:
   #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
+  priorityClassName: ""
 
 collector:
   podSecurityContext: {}
