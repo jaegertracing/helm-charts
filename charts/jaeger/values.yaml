@@ -170,7 +170,7 @@ ingester:
 agent:
   podSecurityContext: {}
   securityContext: {}
-  enabled: false
+  enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
