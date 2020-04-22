@@ -163,6 +163,10 @@ ingester:
   extraSecretMounts: []
   extraConfigmapMounts: []
 
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
 agent:
   podSecurityContext: {}
   securityContext: {}
@@ -218,6 +222,11 @@ agent:
   #   readOnly: true
   useHostNetwork: false
   dnsPolicy: ClusterFirst
+  priorityClassName: ""
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 collector:
   podSecurityContext: {}
@@ -316,6 +325,9 @@ collector:
   #       "param": 1
   #     }
   #   }
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 query:
   enabled: true
@@ -375,6 +387,9 @@ query:
   #   subPath: ""
   #   configMap: jaeger-config
   #   readOnly: true
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
 
 spark:
   enabled: false

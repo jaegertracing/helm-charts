@@ -42,6 +42,9 @@ spec:
     protocol: TCP
     targetPort: zipkin
 {{- end }}
+  - name: admin
+    port: 14269
+    targetPort: admin
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector

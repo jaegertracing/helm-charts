@@ -34,6 +34,9 @@ spec:
       hostNetwork: true
       {{- end }}
       dnsPolicy: {{ .Values.agent.dnsPolicy }}
+      {{- with .Values.agent.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       serviceAccountName: {{ template "jaeger.agent.serviceAccountName" . }}
       containers:
       - name: {{ template "jaeger.agent.name" . }}
