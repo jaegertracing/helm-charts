@@ -284,7 +284,7 @@ Cassandra related environment variables
     secretKeyRef:
       name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
       key: password
-{{- range $key, $value := .Values.storage.cassandra.env -}}
+{{- range $key, $value := .Values.storage.cassandra.env }}
 - name: {{ $key | quote }}
   value: {{ $value | quote }}
 {{ end -}}
@@ -309,7 +309,7 @@ Elasticsearch related environment variables
 - name: ES_INDEX_PREFIX
   value: {{ .Values.storage.elasticsearch.indexPrefix }}
 {{- end }}
-{{- range $key, $value := .Values.storage.elasticsearch.env -}}
+{{- range $key, $value := .Values.storage.elasticsearch.env }}
 - name: {{ $key | quote }}
   value: {{ $value | quote }}
 {{ end -}}
