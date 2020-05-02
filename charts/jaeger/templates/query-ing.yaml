@@ -1,7 +1,7 @@
 {{- if .Values.query.ingress.enabled -}}
 {{- $servicePort := .Values.query.service.port -}}
 {{- $basePath := .Values.query.basePath -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
