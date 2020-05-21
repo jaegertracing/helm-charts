@@ -59,7 +59,8 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
 | `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
-| `rbac.clusterRole`      | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
+| `rbac.clusterRole`      | ClusterRole will be used with ClusterRoleBinding by operator ServiceAccount to watch all namespaces         | `false`                         |
+| `rbac.watchNamespaces`  | ClusterRole will be used with RoleBindings in all specified namespaces by operator ServiceAccount           | `[]`                            |
 | `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
 | `resources`             | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |

@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create }}
-kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}Role
+kind: {{ if or .Values.rbac.clusterRole .Values.rbac.watchNamespaces }}Cluster{{ end }}Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}

@@ -40,6 +40,8 @@ spec:
             - name: WATCH_NAMESPACE
               {{- if .Values.rbac.clusterRole }}
               value: ""
+              {{- else if .Values.rbac.watchNamespaces }}
+              value: {{ join "," .Values.rbac.watchNamespaces | quote }}
               {{- else }}
               valueFrom:
                 fieldRef:
