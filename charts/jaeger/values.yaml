@@ -49,6 +49,7 @@ storage:
     # indexPrefix: test
     ## Use existing secret (ignores previous password)
     # existingSecret:
+    # existingSecretKey:
     nodesWanOnly: false
     env: {}
     ## ES related env vars to be configured on the concerned components
