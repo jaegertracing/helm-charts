@@ -303,7 +303,7 @@ Elasticsearch related environment variables
   valueFrom:
     secretKeyRef:
       name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
-      key: password
+      key: {{ default "password" .Values.storage.elasticsearch.existingSecretKey }}
 {{- end }}
 {{- if .Values.storage.elasticsearch.indexPrefix }}
 - name: ES_INDEX_PREFIX

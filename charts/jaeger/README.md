@@ -346,6 +346,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.env` | Extra ES related env vars to be configured on components that talk to ES | `nil` |
 | `storage.elasticsearch.cmdlineParams` | Extra ES related command line options to be configured on components that talk to ES | `nil` |
 | `storage.elasticsearch.existingSecret` | Name of existing password secret object (for password authentication | `nil` |
+| `storage.elasticsearch.existingSecretKey` | Key of the declared password secret | `password` |
 | `storage.elasticsearch.host` | Provisioned elasticsearch host| `elasticsearch` |
 | `storage.elasticsearch.password` | Provisioned elasticsearch password  (ignored if storage.elasticsearch.existingSecret set | `changeme` |
 | `storage.elasticsearch.port` | Provisioned elasticsearch port| `9200` |
