@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | Parameter               | Description                                                                                                 | Default                         |
 | :---------------------- | :---------------------------------------------------------------------------------------------------------- | :------------------------------ |
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
-| `image.tag`             | Controller container image tag                                                                              | `1.17.1`                        |
+| `image.tag`             | Controller container image tag                                                                              | `1.18.0`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |

@@ -85,9 +85,6 @@ spec:
         - containerPort: {{ .Values.collector.service.grpc.port }}
           name: grpc
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.tchannel.port }}
-          name: tchannel
-          protocol: TCP
         - containerPort: {{ .Values.collector.service.http.port }}
           name: http
           protocol: TCP

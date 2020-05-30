@@ -19,13 +19,6 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: grpc
-  - name: tchannel
-    port: {{ .Values.collector.service.tchannel.port }}
-{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.tchannel.nodePort) }}
-    nodePort: {{ .Values.collector.service.tchannel.nodePort }}
-{{- end }}
-    protocol: TCP
-    targetPort: tchannel
   - name: http
     port: {{ .Values.collector.service.http.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.http.nodePort) }}

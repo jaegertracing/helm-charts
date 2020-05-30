@@ -265,7 +265,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.grpc.port` | Jaeger Agent port for model.proto | `14250` |
 | `collector.service.http.port` | Client port for HTTP thrift | `14268` |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
-| `collector.service.tchannel.port` | Jaeger Agent port for thrift| `14267` |
 | `collector.service.type` | Service type | `ClusterIP` |
 | `collector.service.zipkin.port` | Zipkin port for JSON/thrift HTTP | `nil` |
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
@@ -359,7 +358,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.kafka.brokers` | Broker List for Kafka with port | `kafka:9092` |
 | `storage.kafka.topic` | Topic name for Kafka | `jaeger_v1_test` |
 | `storage.type` | Storage type (ES or Cassandra)| `cassandra` |
-| `tag` | Image tag/version | `1.17.1` |
+| `tag` | Image tag/version | `1.18.0` |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 

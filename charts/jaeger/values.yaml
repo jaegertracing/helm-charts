@@ -7,7 +7,7 @@ provisionDataStore:
   elasticsearch: false
   kafka: false
 
-tag: 1.17.1
+tag: 1.18.0
 
 nameOverride: ""
 fullnameOverride: ""
@@ -253,10 +253,6 @@ collector:
     type: ClusterIP
     grpc:
       port: 14250
-      # nodePort:
-    # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
-    tchannel:
-      port: 14267
       # nodePort:
     # httpPort: can accept spans directly from clients in jaeger.thrift format
     http:
