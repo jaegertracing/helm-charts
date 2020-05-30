@@ -2,6 +2,33 @@ apiVersion: v1
 entries:
   jaeger:
   - apiVersion: v1
+    appVersion: 1.18.0
+    created: "2020-05-30T15:05:43.17369897Z"
+    description: A Jaeger Helm chart for Kubernetes
+    digest: 8e045b3ee8d2d56a0403fbcc315b73f236faf036c1a4acf96d67604207c4a3e6
+    home: https://jaegertracing.io
+    icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+    keywords:
+    - jaeger
+    - opentracing
+    - tracing
+    - instrumentation
+    maintainers:
+    - email: david.vonthenen@dell.com
+      name: dvonthenen
+    - email: michael.lorant@fairfaxmedia.com.au
+      name: mikelorant
+    - email: naseem@transit.app
+      name: naseemkullah
+    - email: pavel.nikolov@fairfaxmedia.com.au
+      name: pavelnikolov
+    name: jaeger
+    sources:
+    - https://hub.docker.com/u/jaegertracing/
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-0.30.0/jaeger-0.30.0.tgz
+    version: 0.30.0
+  - apiVersion: v1
     appVersion: 1.17.1
     created: "2020-05-29T15:06:30.79562986Z"
     description: A Jaeger Helm chart for Kubernetes
@@ -1109,6 +1136,22 @@ entries:
     - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-0.17.3/jaeger-0.17.3.tgz
     version: 0.17.3
   jaeger-operator:
+  - apiVersion: v1
+    appVersion: 1.18.0
+    created: "2020-05-30T15:05:43.268548419Z"
+    description: jaeger-operator Helm chart for Kubernetes
+    digest: 9a577a35fb08f945db89d02276a3ead0ee9c6bf91cc1d901f915a7cd3641c1f6
+    home: https://www.jaegertracing.io/
+    icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
+    maintainers:
+    - email: ctadeu@gmail.com
+      name: cpanato
+    - email: batazor111@gmail.com
+      name: batazor
+    name: jaeger-operator
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-operator-2.15.0/jaeger-operator-2.15.0.tgz
+    version: 2.15.0
   - apiVersion: v1
     appVersion: 1.17.1
     created: "2020-04-22T18:14:27.616913027Z"
