@@ -313,6 +313,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
 | `spark.enabled` | Enables the dependencies job| `false` |
+| `spark.extraEnv` | Additional environment variables | {} |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |
 | `spark.schedule` | Schedule of the cron job | `"49 23 * * *"` |

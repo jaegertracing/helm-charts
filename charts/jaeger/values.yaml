@@ -395,6 +395,7 @@ spark:
   tag: latest
   pullPolicy: Always
   cmdlineParams: {}
+  extraEnv: []
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
