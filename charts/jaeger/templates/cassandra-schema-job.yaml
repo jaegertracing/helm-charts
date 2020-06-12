@@ -31,23 +31,26 @@ spec:
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
-        {{ range $key, $value := .Values.schema.env }}
-        - name: {{ $key | quote }}
-          value: {{ $value | quote }}
-        {{ end }}
-        {{- include "cassandra.env" . | nindent 8 }}
-        - name: CQLSH_HOST
-          value: {{ template "cassandra.host" . }}
-        {{ if .Values.storage.cassandra.tls.enabled }}
-        - name: CQLSH_SSL
-          value: "--ssl"
+        {{- if .Values.schema.extraEnv }}
+          {{- toYaml .Values.schema.extraEnv | nindent 10 }}
         {{- end }}
-        - name: DATACENTER
-          value: {{ .Values.cassandra.config.dc_name | quote }}
-      {{- if .Values.storage.cassandra.keyspace }}
-        - name: KEYSPACE
-          value: {{ .Values.storage.cassandra.keyspace }}
-      {{- end }}
+          {{ range $key, $value := .Values.schema.env }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{ end }}
+          {{- include "cassandra.env" . | nindent 10 }}
+          - name: CQLSH_HOST
+            value: {{ template "cassandra.host" . }}
+          {{ if .Values.storage.cassandra.tls.enabled }}
+          - name: CQLSH_SSL
+            value: "--ssl"
+          {{- end }}
+          - name: DATACENTER
+            value: {{ .Values.cassandra.config.dc_name | quote }}
+        {{- if .Values.storage.cassandra.keyspace }}
+          - name: KEYSPACE
+            value: {{ .Values.storage.cassandra.keyspace }}
+        {{- end }}
         resources:
           {{- toYaml .Values.schema.resources | nindent 10 }}
         volumeMounts:
