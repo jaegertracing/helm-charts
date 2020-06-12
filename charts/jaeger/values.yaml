@@ -387,6 +387,18 @@ query:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+  # config: |-
+  #   {
+  #     "dependencies": {
+  #       "dagMaxNumServices": 200,
+  #       "menuEnabled": true
+  #     },
+  #     "archiveEnabled": true,
+  #     "tracking": {
+  #       "gaID": "UA-000000-2",
+  #       "trackErrors": true
+  #     }
+  #   }
 
 spark:
   enabled: false
