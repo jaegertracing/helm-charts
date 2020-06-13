@@ -292,6 +292,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
 | `provisionDataStore.kafka` | Provision Kafka Data Store | `false` |
 | `query.agentSidecar.enabled` | Enable agent sidecare for query deployment | `true` |
+| `query.config` | [UI Config json file](https://www.jaegertracing.io/docs/latest/frontend-ui/) | `nil` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.image` | Image for Jaeger Query UI | `jaegertracing/jaeger-query` |
 | `query.ingress.enabled` | Allow external traffic access | `false` |

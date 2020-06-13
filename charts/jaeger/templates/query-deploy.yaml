@@ -59,6 +59,10 @@ spec:
           {{- end }}
           - name: JAEGER_AGENT_PORT
             value: "6831"
+          {{- if .Values.query.config}}
+          - name: QUERY_UI_CONFIG
+            value: /etc/conf/query-ui-config.json
+          {{- end }}
         ports:
         - name: query
           containerPort: 16686
@@ -94,6 +98,10 @@ spec:
             mountPath: "/cassandra-tls/client-key.pem"
             subPath: "client-key.pem"
             readOnly: true
+        {{- end }}
+        {{- if .Values.query.config}}
+          - name: ui-configuration
+            mountPath: /etc/conf/
         {{- end }}
         livenessProbe:
           httpGet:
@@ -160,6 +168,11 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- if .Values.query.config}}
+        - name: ui-configuration
+          configMap:
+            name: {{ include "jaeger.fullname" . }}-ui-configuration
       {{- end }}
 {{- if .Values.query.agentSidecar.enabled }}
       {{- range .Values.agent.extraSecretMounts }}
