@@ -50,6 +50,9 @@ spec:
           {{- end }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
         env:
+        {{- if .Values.query.extraEnv }}
+          {{- toYaml .Values.query.extraEnv | nindent 10 }}
+        {{- end }}
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
           {{- include "storage.env" . | nindent 10 }}

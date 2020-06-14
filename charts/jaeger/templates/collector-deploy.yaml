@@ -66,6 +66,9 @@ spec:
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
           {{- end }}
+        {{- if .Values.storage.kafka.extraEnv }}
+          {{- toYaml .Values.storage.kafka.extraEnv | nindent 10 }}
+        {{- end }}
           - name: KAFKA_PRODUCER_BROKERS
             value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
           - name: KAFKA_PRODUCER_TOPIC

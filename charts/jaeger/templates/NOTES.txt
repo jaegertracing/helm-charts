@@ -1,3 +1,9 @@
+
+###################################################################
+### IMPORTANT: The use of <component>.env: {...} is deprecated. ###
+### Please use <component>.extraEnv: [] instead.                ###
+###################################################################
+
 You can log into the Jaeger Query UI here:
 
 {{- if contains "NodePort" .Values.query.service.type }}

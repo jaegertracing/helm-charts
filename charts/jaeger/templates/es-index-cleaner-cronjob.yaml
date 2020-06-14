@@ -41,13 +41,12 @@ spec:
             image: "{{ .Values.esIndexCleaner.image }}:{{ .Values.esIndexCleaner.tag }}"
             imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
             args:
-            - {{ .Values.esIndexCleaner.numberOfDays | quote }}
-            - {{ include "elasticsearch.client.url" . }}
+              - {{ .Values.esIndexCleaner.numberOfDays | quote }}
+              - {{ include "elasticsearch.client.url" . }}
             env:
-              {{- range $key, $value := .Values.esIndexCleaner.env }}
-              - name: {{ $key | quote }}
-                value: {{ $value | quote }}
-              {{- end }}
+            {{- if .Values.esIndexCleaner.extraEnv }}
+              {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}
+            {{- end }}
               {{ include "elasticsearch.env" . | nindent 14 }}
             resources:
               {{- toYaml .Values.esIndexCleaner.resources | nindent 14 }}

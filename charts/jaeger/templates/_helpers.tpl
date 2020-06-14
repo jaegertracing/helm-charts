@@ -288,6 +288,9 @@ Cassandra related environment variables
 - name: {{ $key | quote }}
   value: {{ $value | quote }}
 {{ end -}}
+{{- if .Values.storage.cassandra.extraEnv }}
+{{ toYaml .Values.storage.cassandra.extraEnv }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -313,6 +316,9 @@ Elasticsearch related environment variables
 - name: {{ $key | quote }}
   value: {{ $value | quote }}
 {{ end -}}
+{{- if .Values.storage.elasticsearch.extraEnv }}
+{{ toYaml .Values.storage.elasticsearch.extraEnv }}
+{{- end }}
 {{- end -}}
 
 {{/*

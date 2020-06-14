@@ -42,7 +42,9 @@ spec:
               - name: STORAGE
                 value: {{ .Values.storage.type }}
               {{- include "storage.env" . | nindent 14 }}
+            {{- if .Values.spark.extraEnv }}
               {{- toYaml .Values.spark.extraEnv | nindent 14 }}
+            {{- end }}
               - name: CASSANDRA_CONTACT_POINTS
                 value: {{ include "cassandra.contact_points" . }}
               - name: ES_NODES

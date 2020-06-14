@@ -28,11 +28,15 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     ## Cassandra related env vars to be configured on the concerned components
-    env: {}
-      # CASSANDRA_SERVERS: cassandra
-      # CASSANDRA_PORT: 9042
-      # CASSANDRA_KEYSPACE: jaeger_v1_test
-      # CASSANDRA_TLS_ENABLED: false
+    extraEnv: []
+      # - name: CASSANDRA_SERVERS
+      #   value: cassandra
+      # - name: CASSANDRA_PORT
+      #   value: 9042
+      # - name: CASSANDRA_KEYSPACE
+      #   value: jaeger_v1_test
+      # - name: CASSANDRA_TLS_ENABLED
+      #   value: false
     ## Cassandra related cmd line opts to be configured on the concerned components
     cmdlineParams: {}
       # cassandra.servers: cassandra
@@ -51,11 +55,14 @@ storage:
     # existingSecret:
     # existingSecretKey:
     nodesWanOnly: false
-    env: {}
+    extraEnv: []
     ## ES related env vars to be configured on the concerned components
-      # ES_SERVER_URLS: http://elasticsearch-master:9200
-      # ES_USERNAME: elastic
-      # ES_INDEX_PREFIX: test
+      # - name: ES_SERVER_URLS
+      #   value: http://elasticsearch-master:9200
+      # - name: ES_USERNAME
+      #   value: elastic
+      # - name: ES_INDEX_PREFIX
+      #   value: test
     ## ES related cmd line opts to be configured on the concerned components
     cmdlineParams: {}
       # es.server-urls: http://elasticsearch-master:9200
@@ -66,6 +73,7 @@ storage:
       - kafka:9092
     topic: jaeger_v1_test
     authentication: none
+    extraEnv: []
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -113,10 +121,13 @@ schema:
   podLabels: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
-  env:
-    MODE: prod
-    # TRACE_TTL: 172800
-    # DEPENDENCIES_TTL: 0
+  extraEnv: []
+    # - name: MODE
+    #   value: prod
+    # - name: TRACE_TTL
+    #   value: 172800
+    # - name: DEPENDENCIES_TTL
+    #   value: 0
 
 # For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
@@ -131,7 +142,6 @@ ingester:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  env: {}
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -176,7 +186,7 @@ agent:
   image: jaegertracing/jaeger-agent
   pullPolicy: IfNotPresent
   cmdlineParams: {}
-  env: {}
+  extraEnv: []
   daemonset:
     useHostPort: false
   service:
@@ -238,7 +248,6 @@ collector:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  env: {}
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -337,7 +346,7 @@ query:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  env: {}
+  extraEnv: []
   replicaCount: 1
   service:
     annotations: {}
@@ -441,6 +450,7 @@ esIndexCleaner:
   tag: latest
   pullPolicy: Always
   cmdlineParams: {}
+  extraEnv: []
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3

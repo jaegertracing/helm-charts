@@ -184,6 +184,7 @@ spark:
 ```
 
 Generate configmap jaeger-tls:
+
 ```bash
 keytool -import -trustcacerts -keystore trust.store -storepass changeit -alias es-root -file es.pem
 kubectl create configmap jaeger-tls --from-file=trust.store --from-file=es.pem
@@ -227,7 +228,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `<agent\|collector\|query\|ingester>.cmdlineParams` | Additional command line parameters | `nil` |
-| `<component>.env` | Additional environment variables | {} |
+| `<component>.extraEnv` | Additional environment variables | [] |
 | `<component>.nodeSelector` | Node selector | {} |
 | `<component>.tolerations` | Node tolerations | [] |
 | `<component>.affinity` | Affinity | {} |
@@ -235,9 +236,9 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `<component>.podSecurityContext` | Pod security context | {} |
 | `<component>.securityContext` | Container security context | {} |
 | `<component>.serviceAccount.create` | Create service account | `true` |
-| `<component>.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `` |
+| `<component>.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `nil` |
 | `<component>.serviceMonitor.enabled` | Create serviceMonitor | `false` |
-| `<component>.serviceMonitor.additionalLables` | Add additional labels to serviceMonitor | {} |
+| `<component>.serviceMonitor.additionalLabels` | Add additional labels to serviceMonitor | {} |
 | `agent.annotations` | Annotations for Agent | `nil` |
 | `agent.dnsPolicy` | Configure DNS policy for agents | `ClusterFirst` |
 | `agent.service.annotations` | Annotations for Agent SVC | `nil` |
@@ -253,7 +254,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.extraConfigmapMounts` | Additional agent configMap mounts | `[]` |
 | `agent.extraSecretMounts` | Additional agent secret mounts | `[]` |
 | `agent.useHostNetwork` | Enable hostNetwork for agents | `false` |
-| `agent.priorityClassName` | Priority class name for the agent pods | `` |
+| `agent.priorityClassName` | Priority class name for the agent pods | `nil` |
 | `collector.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `collector.autoscaling.minReplicas` | Minimum replicas |  2 |
 | `collector.autoscaling.maxReplicas` | Maximum replicas |  10 |
@@ -309,12 +310,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.annotations` | Annotations for the schema job| `nil` |
 | `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |
-| `schema.env` | Environment variables for cassandra-schema-job | `MODE: prod` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
 | `spark.enabled` | Enables the dependencies job| `false` |
-| `spark.extraEnv` | Additional environment variables | {} |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |
 | `spark.schedule` | Schedule of the cron job | `"49 23 * * *"` |
