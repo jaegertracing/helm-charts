@@ -245,6 +245,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort` | jaeger.thrift over binary thrift | `6832` |
 | `agent.service.compactPort` | jaeger.thrift over compact thrift| `6831` |
 | `agent.image` | Image for Jaeger Agent | `jaegertracing/jaeger-agent` |
+| `agent.imagePullSecrets` | Secret to pull the Image for Jaeger Agent | `[]` |
 | `agent.pullPolicy` | Agent image pullPolicy | `IfNotPresent` |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `agent.service.annotations` | Annotations for Agent SVC | `nil` |
@@ -261,6 +262,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization |  80 |
 | `collector.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
 | `collector.image` | Image for jaeger collector | `jaegertracing/jaeger-collector` |
+| `collector.imagePullSecrets` | Secret to pull the Image for Jaeger Collector | `[]` |
 | `collector.pullPolicy` | Collector image pullPolicy | `IfNotPresent` |
 | `collector.service.annotations` | Annotations for Collector SVC | `nil` |
 | `collector.service.grpc.port` | Jaeger Agent port for model.proto | `14250` |
@@ -279,6 +281,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `ingester.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization | `nil` |
 | `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
 | `ingester.image` | Image for jaeger Ingester | `jaegertracing/jaeger-ingester` |
+| `ingester.imagePullSecrets` | Secret to pull the Image for Jaeger Ingester | `[]` |
 | `ingester.pullPolicy` | Ingester image pullPolicy | `IfNotPresent` |
 | `ingester.service.annotations` | Annotations for Ingester SVC | `nil` |
 | `ingester.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
@@ -288,6 +291,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `fullnameOverride` | Override full name | `nil` |
 | `hotrod.enabled` | Enables the Hotrod demo app | `false` |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
+| `hotrod.image.pullSecrets` | Secret to pull the Image for the Hotrod demo app | `[]` |
 | `nameOverride` | Override name| `nil` |
 | `provisionDataStore.cassandra` | Provision Cassandra Data Store| `true` |
 | `provisionDataStore.elasticsearch` | Provision Elasticsearch Data Store | `false` |
@@ -296,6 +300,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.config` | [UI Config json file](https://www.jaegertracing.io/docs/latest/frontend-ui/) | `nil` |
 | `query.service.annotations` | Annotations for Query SVC | `nil` |
 | `query.image` | Image for Jaeger Query UI | `jaegertracing/jaeger-query` |
+| `query.imagePullSecrets` | Secret to pull the Image for Jaeger Query UI | `[]` |
 | `query.ingress.enabled` | Allow external traffic access | `false` |
 | `query.ingress.annotations` | Configure annotations for Ingress | `{}` |
 | `query.ingress.hosts` | Configure host for Ingress | `nil` |
@@ -310,11 +315,13 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `schema.annotations` | Annotations for the schema job| `nil` |
 | `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |
+| `schema.imagePullSecrets` | Secret to pull the Image for the Cassandra schema setup job | `[]` |
 | `schema.pullPolicy` | Schema image pullPolicy | `IfNotPresent` |
 | `schema.activeDeadlineSeconds` | Deadline in seconds for cassandra schema creation job to complete | `120` |
 | `schema.keyspace` | Set explicit keyspace name | `nil` |
 | `spark.enabled` | Enables the dependencies job| `false` |
 | `spark.image` | Image for the dependencies job| `jaegertracing/spark-dependencies` |
+| `spark.imagePullSecrets` | Secret to pull the Image for the Spark dependencies job | `[]` |
 | `spark.pullPolicy` | Image pull policy of the deps image | `Always` |
 | `spark.schedule` | Schedule of the cron job | `"49 23 * * *"` |
 | `spark.successfulJobsHistoryLimit` | Cron job successfulJobsHistoryLimit | `5` |
@@ -324,6 +331,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.extraSecretMounts` | Additional spark secret mounts | `[]` |
 | `esIndexCleaner.enabled` | Enables the ElasticSearch indices cleanup job| `false` |
 | `esIndexCleaner.image` | Image for the ElasticSearch indices cleanup job| `jaegertracing/jaeger-es-index-cleaner` |
+| `esIndexCleaner.imagePullSecrets` | Secret to pull the Image for the ElasticSearch indices cleanup job | `[]` |
 | `esIndexCleaner.pullPolicy` | Image pull policy of the ES cleanup image | `Always` |
 | `esIndexCleaner.numberOfDays` | ElasticSearch indices older than this number (Number of days) would be deleted by the CronJob | `7`
 | `esIndexCleaner.schedule` | Schedule of the cron job | `"55 23 * * *"` |

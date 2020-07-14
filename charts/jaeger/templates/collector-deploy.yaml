@@ -37,6 +37,10 @@ spec:
       securityContext:
         {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
+      {{- with .Values.collector.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
         securityContext:

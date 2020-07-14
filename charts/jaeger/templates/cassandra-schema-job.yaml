@@ -26,6 +26,10 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
+      {{- with .Values.schema.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{ .Values.tag }}

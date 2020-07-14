@@ -26,6 +26,10 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
+          {{- with .Values.spark.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
