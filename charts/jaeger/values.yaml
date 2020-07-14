@@ -106,6 +106,7 @@ kafka:
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   resources: {}
     # limits:
@@ -139,6 +140,7 @@ ingester:
   securityContext: {}
   annotations: {}
   image: jaegertracing/jaeger-ingester
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -184,6 +186,7 @@ agent:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv: []
@@ -245,6 +248,7 @@ collector:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -343,6 +347,7 @@ query:
     enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -413,6 +418,7 @@ spark:
   enabled: false
   annotations: {}
   image: jaegertracing/spark-dependencies
+  imagePullSecrets: []
   tag: latest
   pullPolicy: Always
   cmdlineParams: {}
@@ -447,6 +453,7 @@ esIndexCleaner:
     runAsUser: 1000
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
+  imagePullSecrets: []
   tag: latest
   pullPolicy: Always
   cmdlineParams: {}
@@ -484,6 +491,7 @@ hotrod:
   image:
     repository: jaegertracing/example-hotrod
     pullPolicy: Always
+    pullSecrets: []
   service:
     annotations: {}
     name: hotrod

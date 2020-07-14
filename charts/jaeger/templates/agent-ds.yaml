@@ -38,6 +38,10 @@ spec:
       priorityClassName: {{ . }}
       {{- end }}
       serviceAccountName: {{ template "jaeger.agent.serviceAccountName" . }}
+      {{- with .Values.agent.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "jaeger.agent.name" . }}
         securityContext:

@@ -35,6 +35,10 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
+      {{- with .Values.ingester.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       nodeSelector:
         {{- toYaml .Values.ingester.nodeSelector | nindent 8 }}
 {{- if .Values.ingester.tolerations }}
