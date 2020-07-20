@@ -31,6 +31,9 @@ spec:
         {{- toYaml .Values.query.podLabels | nindent 8 }}
 {{- end }}
     spec:
+      {{- with .Values.query.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.query.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}

@@ -34,6 +34,9 @@ spec:
         {{- toYaml .Values.collector.podLabels | nindent 8 }}
 {{- end }}
     spec:
+      {{- with .Values.collector.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
