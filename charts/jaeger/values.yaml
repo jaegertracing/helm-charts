@@ -120,6 +120,8 @@ schema:
     name:
   podAnnotations: {}
   podLabels: {}
+  securityContext: {}
+  podSecurityContext: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
   extraEnv: []
