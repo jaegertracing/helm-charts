@@ -25,6 +25,8 @@ spec:
         {{- toYaml .Values.schema.podLabels | nindent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        {{- toYaml .Values.schema.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
       {{- with .Values.schema.imagePullSecrets }}
       imagePullSecrets:
@@ -34,6 +36,8 @@ spec:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
+        securityContext:
+          {{- toYaml .Values.schema.securityContext | nindent 10 }}
         env:
         {{- if .Values.schema.extraEnv }}
           {{- toYaml .Values.schema.extraEnv | nindent 10 }}
