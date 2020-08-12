@@ -273,6 +273,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.extraConfigmapMounts` | Additional collector configMap mounts | `[]` |
 | `collector.extraSecretMounts` | Additional collector secret mounts | `[]` |
 | `collector.samplingConfig` | [Sampling strategies json file](https://www.jaegertracing.io/docs/latest/sampling/#collector-sampling-configuration) | `nil` |
+| `collector.priorityClassName` | Priority class name for the collector pods | `nil` |
 | `ingester.enabled` | Enable ingester component, collectors will write to Kafka | `false` |
 | `ingester.autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
 | `ingester.autoscaling.minReplicas` | Minimum replicas |  2 |
@@ -312,6 +313,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.type` | Service type | `ClusterIP` |
 | `query.basePath` | Base path of Query UI, used for ingress as well (if it is enabled) | `/` |
 | `query.extraConfigmapMounts` | Additional query configMap mounts | `[]` |
+| `query.priorityClassName` | Priority class name for the Query UI pods | `nil` |
 | `schema.annotations` | Annotations for the schema job| `nil` |
 | `schema.extraConfigmapMounts` | Additional cassandra schema job configMap mounts | `[]`  |
 | `schema.image` | Image to setup cassandra schema | `jaegertracing/jaeger-cassandra-schema` |

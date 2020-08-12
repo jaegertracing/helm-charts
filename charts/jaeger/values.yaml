@@ -337,6 +337,7 @@ collector:
   #       "param": 1
   #     }
   #   }
+  priorityClassName: ""
   serviceMonitor:
     enabled: false
     additionalLabels: {}
@@ -400,6 +401,7 @@ query:
   #   subPath: ""
   #   configMap: jaeger-config
   #   readOnly: true
+  priorityClassName: ""
   serviceMonitor:
     enabled: false
     additionalLabels: {}
