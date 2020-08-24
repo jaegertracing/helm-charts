@@ -127,4 +127,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
+      {{- if .Values.storage.cassandra.tls.enabled }}
+        - name: {{ .Values.storage.cassandra.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.cassandra.tls.secretName }}
+      {{- end }}
 {{- end -}}
