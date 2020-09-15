@@ -8,6 +8,6 @@ dependencies:
     repository: https://helm.elastic.co
     condition: provisionDataStore.elasticsearch
   - name: kafka
-    version: ^0.20.6
-    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    version: ^11.8.4
+    repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka

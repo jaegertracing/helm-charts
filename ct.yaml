@@ -5,4 +5,5 @@ chart-dirs:
 chart-repos:
   - incubator=https://kubernetes-charts-incubator.storage.googleapis.com
   - elastic=https://helm.elastic.co
+  - bitnami=https://charts.bitnami.com/bitnami
 helm-extra-args: --timeout=600s

@@ -90,11 +90,13 @@ cassandra:
 
 # Begin: Override values on the Kafka subchart to customize for Jaeger
 kafka:
-  replicas: 1
-  configurationOverrides:
-    "auto.create.topics.enable": true
+  replicaCount: 1
+  autoCreateTopicsEnable: true
   zookeeper:
     replicaCount: 1
+    serviceAccount:
+      create: true
+
 # End: Override values on the Kafka subchart to customize for Jaeger
 
 # Begin: Default values for the various components of Jaeger
