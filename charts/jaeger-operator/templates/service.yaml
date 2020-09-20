@@ -11,6 +11,5 @@ spec:
     protocol: TCP
     targetPort: 8383
   selector:
-    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "jaeger-operator.labels" . | indent 4 }}
   type: ClusterIP
