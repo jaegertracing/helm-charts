@@ -43,3 +43,8 @@ tolerations: []
 affinity: {}
 
 securityContext: {}
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    # scrapeInterval: 15s

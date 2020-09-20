@@ -1,0 +1,17 @@
+{{- if .Values.metrics.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "jaeger-operator.fullname" . }}-metrics
+  labels:
+{{ include "jaeger-operator.labels" . | indent 4 }}
+spec:
+  endpoints:
+    - port: metrics
+      {{- if .Values.metrics.serviceMonitor.scrapeInterval }}
+      interval: {{ .Values.metrics.serviceMonitor.scrapeInterval }}
+      {{- end }}
+  selector:
+    matchLabels:
+      {{ include "jaeger-operator.labels" . | indent 6 }}
+{{- end }}
