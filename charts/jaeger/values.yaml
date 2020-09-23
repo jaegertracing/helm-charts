@@ -32,11 +32,11 @@ storage:
       # - name: CASSANDRA_SERVERS
       #   value: cassandra
       # - name: CASSANDRA_PORT
-      #   value: 9042
+      #   value: "9042"
       # - name: CASSANDRA_KEYSPACE
       #   value: jaeger_v1_test
       # - name: CASSANDRA_TLS_ENABLED
-      #   value: false
+      #   value: "false"
     ## Cassandra related cmd line opts to be configured on the concerned components
     cmdlineParams: {}
       # cassandra.servers: cassandra
@@ -130,9 +130,9 @@ schema:
     # - name: MODE
     #   value: prod
     # - name: TRACE_TTL
-    #   value: 172800
+    #   value: "172800"
     # - name: DEPENDENCIES_TTL
-    #   value: 0
+    #   value: "0"
 
 # For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
