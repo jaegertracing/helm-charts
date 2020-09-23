@@ -10,6 +10,6 @@ will close that issue when PR gets merged)*
 #### Checklist
 
 - [ ] [DCO](https://github.com/jaegertracing/helm-charts/blob/main/CONTRIBUTING.md#sign-off-your-work) signed
-- [ ] Commits are [GPG signed](https://docs.github.com/en/github/authenticating-to-github/signing-commits)
+- [ ] Commits are [GPG signed](https://docs.github.com/en/github/authenticating-to-github/about-commit-signature-verification)
 - [ ] Chart Version bumped
 - [ ] Title of the PR starts with chart name (`[jaeger]` or `[jaeger-operator]`)
