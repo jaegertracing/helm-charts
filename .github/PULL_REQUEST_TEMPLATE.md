@@ -1,4 +1,4 @@
-#### What this PR does / why we need it:
+#### What this PR does
 
 #### Which issue this PR fixes
 
