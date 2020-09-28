@@ -42,7 +42,7 @@ storage:
       # cassandra.servers: cassandra
       # cassandra.port: 9042
       # cassandra.keyspace: jaeger_v1_test
-      # cassandra.tls.enabled: false
+      # cassandra.tls.enabled: "false"
   elasticsearch:
     scheme: http
     host: elasticsearch-master
