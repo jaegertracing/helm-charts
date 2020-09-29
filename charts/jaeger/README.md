@@ -342,6 +342,27 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `esIndexCleaner.tag` | Tag of the dependencies job image | `latest` |
 | `esIndexCleaner.extraConfigmapMounts` | Additional esIndexCleaner configMap mounts | `[]` |
 | `esIndexCleaner.extraSecretMounts` | Additional esIndexCleaner secret mounts | `[]` |
+| `esRollover.enabled` | Enables the ElasticSearch rollover job | `false` |
+| `esRollover.image` | Image for the ElasticSearch rollover job | `jaegertracing/jaeger-es-rollover` |
+| `esRollover.imagePullSecrets` | Secret to pull the Image for the ElasticSearch rollover job | `[]` |
+| `esRollover.pullPolicy` | Image pull policy of the ES rollover image | `Always` |
+| `esRollover.schedule` | Schedule of the cron job | `"10 0 * * *"` |
+| `esRollover.successfulJobsHistoryLimit` | successfulJobsHistoryLimit for ElasticSearch rollover CronJob | `3` |
+| `esRollover.failedJobsHistoryLimit` | failedJobsHistoryLimit for ElasticSearch rollover CronJob | `3` |
+| `esRollover.tag` | Tag of the rollover job image | `latest` |
+| `esRollover.extraConfigmapMounts` | Additional esRollover configMap mounts | `[]` |
+| `esRollover.extraSecretMounts` | Additional esRollover secret mounts | `[]` |
+| `esRollover.initHook.ttlSecondsAfterFinished` | ttlSecondsAfterFinished for ElasticSearch rollover init hook | `120` |
+| `esLookback.enabled` | Enables the ElasticSearch rollover lookback job | `false` |
+| `esLookback.image` | Image for the ElasticSearch rollover lookback job | `jaegertracing/jaeger-es-rollover` |
+| `esLookback.imagePullSecrets` | Secret to pull the Image for the ElasticSearch rollover lookback job | `[]` |
+| `esLookback.pullPolicy` | Image pull policy of the ES rollover image | `Always` |
+| `esLookback.schedule` | Schedule of the cron job | `"5 0 * * *"` |
+| `esLookback.successfulJobsHistoryLimit` | successfulJobsHistoryLimit for ElasticSearch rollover lookback CronJob | `3` |
+| `esLookback.failedJobsHistoryLimit` | failedJobsHistoryLimit for ElasticSearch rollover lookback CronJob | `3` |
+| `esLookback.tag` | Tag of the rollover lookback job image | `latest` |
+| `esLookback.extraConfigmapMounts` | Additional esLookback configMap mounts | `[]` |
+| `esLookback.extraSecretMounts` | Additional esLookback secret mounts | `[]` |
 | `storage.cassandra.env` | Extra cassandra related env vars to be configured on components that talk to cassandra | `cassandra` |
 | `storage.cassandra.cmdlineParams` | Extra cassandra related command line options to be configured on components that talk to cassandra | `cassandra` |
 | `storage.cassandra.existingSecret` | Name of existing password secret object (for password authentication | `nil`

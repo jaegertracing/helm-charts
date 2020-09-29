@@ -464,6 +464,8 @@ esIndexCleaner:
   pullPolicy: Always
   cmdlineParams: {}
   extraEnv: []
+    # - name: ROLLOVER
+    #   value: 'true'
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
@@ -475,6 +477,90 @@ esIndexCleaner:
     #   cpu: 256m
     #   memory: 128Mi
   numberOfDays: 7
+  serviceAccount:
+    create: true
+    name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraSecretMounts: []
+  extraConfigmapMounts: []
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+
+esRollover:
+  enabled: false
+  securityContext: {}
+  podSecurityContext:
+    runAsUser: 1000
+  annotations: {}
+  image: jaegertracing/jaeger-es-rollover
+  imagePullSecrets: []
+  tag: latest
+  pullPolicy: Always
+  cmdlineParams: {}
+  extraEnv:
+    - name: CONDITIONS
+      value: '{"max_age": "1d"}'
+  schedule: "10 0 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraSecretMounts: []
+  extraConfigmapMounts: []
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  initHook:
+    extraEnv: []
+      # - name: SHARDS
+      #   value: "3"
+    annotations: {}
+    podAnnotations: {}
+    podLabels: {}
+    ttlSecondsAfterFinished: 120
+
+esLookback:
+  enabled: false
+  securityContext: {}
+  podSecurityContext:
+    runAsUser: 1000
+  annotations: {}
+  image: jaegertracing/jaeger-es-rollover
+  imagePullSecrets: []
+  tag: latest
+  pullPolicy: Always
+  cmdlineParams: {}
+  extraEnv:
+    - name: UNIT
+      value: days
+    - name: UNIT_COUNT
+      value: '7'
+  schedule: '5 0 * * *'
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
   serviceAccount:
     create: true
     name:
