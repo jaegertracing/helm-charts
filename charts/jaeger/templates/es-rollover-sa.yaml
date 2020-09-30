@@ -6,4 +6,9 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: es-index-rollover
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    # Must be created before the rollover init hook
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
 {{- end -}}
