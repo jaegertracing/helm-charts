@@ -359,7 +359,7 @@ Cassandra related command line options
 */}}
 {{- define "cassandra.cmdArgs" -}}
 {{- range $key, $value := .Values.storage.cassandra.cmdlineParams -}}
-{{- if $value -}}
+{{- if $value }}
 - --{{ $key }}={{ $value }}
 {{- else }}
 - --{{ $key }}
@@ -372,7 +372,7 @@ Elasticsearch related command line options
 */}}
 {{- define "elasticsearch.cmdArgs" -}}
 {{- range $key, $value := .Values.storage.elasticsearch.cmdlineParams -}}
-{{- if $value -}}
+{{- if $value }}
 - --{{ $key }}={{ $value }}
 {{- else }}
 - --{{ $key }}
