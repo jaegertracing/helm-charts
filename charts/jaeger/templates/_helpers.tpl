@@ -85,6 +85,28 @@ Create the name of the esIndexCleaner service account to use
 {{- end -}}
 
 {{/*
+Create the name of the esRollover service account to use
+*/}}
+{{- define "jaeger.esRollover.serviceAccountName" -}}
+{{- if .Values.esRollover.serviceAccount.create -}}
+  {{ default (printf "%s-es-rollover" (include "jaeger.fullname" .)) .Values.esRollover.serviceAccount.name }}
+{{- else -}}
+  {{ default "default" .Values.esRollover.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the esLookback service account to use
+*/}}
+{{- define "jaeger.esLookback.serviceAccountName" -}}
+{{- if .Values.esLookback.serviceAccount.create -}}
+  {{ default (printf "%s-es-lookback" (include "jaeger.fullname" .)) .Values.esLookback.serviceAccount.name }}
+{{- else -}}
+  {{ default "default" .Values.esLookback.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the hotrod service account to use
 */}}
 {{- define "jaeger.hotrod.serviceAccountName" -}}
