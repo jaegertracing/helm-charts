@@ -390,7 +390,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.kafka.brokers` | Broker List for Kafka with port | `kafka:9092` |
 | `storage.kafka.topic` | Topic name for Kafka | `jaeger_v1_test` |
 | `storage.type` | Storage type (ES or Cassandra)| `cassandra` |
-| `tag` | Image tag/version | `1.19.2` |
+| `tag` | Image tag/version | `1.20.0` |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
