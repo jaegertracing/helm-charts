@@ -32,9 +32,37 @@ components](https://www.jaegertracing.io/img/architecture-v1.png)
 
 ## Configurable Chart Values
 
+### Jaeger Chart
+
 ```bash
 helm show values jaegertracing/jaeger
 ```
+
+### Dependency Charts
+
+If installing with a dependency such as Cassandra, Elasticsearch and/or Kafka
+their, values can be shown by running:
+
+```bash
+# elasticsearch
+helm repo add elastic https://helm.elastic.co
+helm show values elastic/elasticsearch
+```
+
+```bash
+# cassandra
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+helm show values incubator/cassandra
+```
+
+```bash
+# bitnami
+helm repo add bitnami
+helm show values bitnami/kafka
+```
+
+Please note, any dependency values must be nested within the key named after the
+chart, i.e. `elasticsearch`, `cassandra` and/or `kafka`.
 
 ## Storage
 
