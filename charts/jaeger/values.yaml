@@ -618,6 +618,7 @@ hotrod:
   serviceAccount:
     create: true
     name:
+  podLabels: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}

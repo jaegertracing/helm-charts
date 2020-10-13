@@ -17,6 +17,9 @@ spec:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: hotrod
+        {{- if .Values.hotrod.podLabels }}
+        {{- toYaml .Values.hotrod.podLabels | nindent 8 }}
+        {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.hotrod.podSecurityContext | nindent 8 }}
