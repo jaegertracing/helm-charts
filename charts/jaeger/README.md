@@ -30,34 +30,52 @@ By default, the chart deploys the following:
 ![Jaeger with Default
 components](https://www.jaegertracing.io/img/architecture-v1.png)
 
-## Configurable Chart Values
+## Configuration
 
-### Jaeger Chart
+See [Customizing the Chart Before Installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing). To see all configurable options with detailed comments, visit the chart's [values.yaml](https://github.com/jaegertracing/helm-charts/blob/master/charts/jaeger/values.yaml), or run these configuration commands:
 
-```bash
-helm show values jaegertracing/jaeger
+```console
+# Helm 2
+$ helm inspect values jaegertracing/jaeger
+
+# Helm 3
+$ helm show values jaegertracing/jaeger
 ```
 
-### Dependency Charts
+You may also `helm show values` on this chart's [dependencies](#dependencies) for additional options.
+
+### Dependencies
 
 If installing with a dependency such as Cassandra, Elasticsearch and/or Kafka
 their, values can be shown by running:
 
-```bash
-# elasticsearch
+```console
 helm repo add elastic https://helm.elastic.co
+
+# Helm 2
+helm inspect values elastic/elasticsearch
+
+# Helm 3
 helm show values elastic/elasticsearch
 ```
 
-```bash
-# cassandra
+```console
 helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+
+# Helm 2
+helm inspect values incubator/cassandra
+
+# Helm 3
 helm show values incubator/cassandra
 ```
 
-```bash
-# bitnami
+```console
 helm repo add bitnami
+
+# Helm 2
+helm inspect values bitnami/kafka
+
+# Helm 3
 helm show values bitnami/kafka
 ```
 
@@ -85,7 +103,7 @@ complete successfully.
 
 To install the chart with the release name `jaeger` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger \
   --set provisionDataStore.cassandra=false \
   --set provisionDataStore.elasticsearch=true \
@@ -96,7 +114,7 @@ helm install jaeger jaegertracing/jaeger \
 
 A release can be configured as follows to use an existing ElasticSearch cluster as it as the storage backend:
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger \
   --set provisionDataStore.cassandra=false \
   --set storage.type=elasticsearch \
@@ -157,12 +175,12 @@ spark:
 
 Generate configmap jaeger-tls:
 
-```bash
+```console
 keytool -import -trustcacerts -keystore trust.store -storepass changeit -alias es-root -file es.pem
 kubectl create configmap jaeger-tls --from-file=trust.store --from-file=es.pem
 ```
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
@@ -172,7 +190,7 @@ helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 
 If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (make sure you replace `<HOST>`, `<PORT>`, etc with your values):
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger \
   --set provisionDataStore.cassandra=false \
   --set storage.cassandra.host=<HOST> \
@@ -231,7 +249,7 @@ data:
 
 ```
 
-```bash
+```console
 kubectl apply -f jaeger-tls-cassandra-secret.yaml
 helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
@@ -248,7 +266,7 @@ The architecture illustrated below can be achieved by enabling the ingester comp
 
 To provision a new Kafka cluster along with jaeger-ingester:
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger \
   --set provisionDataStore.kafka=true \
   --set ingester.enabled=true
@@ -258,7 +276,7 @@ helm install jaeger jaegertracing/jaeger \
 
 You can use an exisiting Kafka cluster with jaeger too
 
-```bash
+```console
 helm install jaeger jaegertracing/jaeger \
   --set ingester.enabled=true \
   --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
