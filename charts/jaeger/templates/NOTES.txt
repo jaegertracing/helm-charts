@@ -1,5 +1,8 @@
 
 ###################################################################
+### IMPORTANT: Ensure that storage is explicitly configured     ###
+### Default storage options are subject to change.              ###
+###                                                             ###
 ### IMPORTANT: The use of <component>.env: {...} is deprecated. ###
 ### Please use <component>.extraEnv: [] instead.                ###
 ###################################################################
