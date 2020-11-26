@@ -7,9 +7,6 @@ image:
   pullPolicy: IfNotPresent
   imagePullSecrets: []
 
-crd:
-  install: true
-
 jaeger:
   # Specifies whether Jaeger instance should be created
   create: false
