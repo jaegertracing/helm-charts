@@ -1,0 +1,30 @@
+{{- if .Values.collector.ingress.enabled -}}
+{{- $servicePort := .Values.collector.service.http.port -}}
+{{- $basePath := .Values.collector.basePath -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "jaeger.collector.name" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: collector
+  {{- if .Values.collector.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.collector.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.collector.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: {{ $basePath }}
+            backend:
+              serviceName: {{ template "jaeger.collector.name" $ }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.collector.ingress.tls }}
+  tls:
+    {{- toYaml .Values.collector.ingress.tls | nindent 4 }}
+  {{- end -}}
+{{- end -}}
