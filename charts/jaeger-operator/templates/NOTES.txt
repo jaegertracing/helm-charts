@@ -1,5 +1,9 @@
+{{- if .Values.operator.create }}
 jaeger-operator is installed.
-
+{{- end }}
+{{- if .Values.jaeger.create }}
+jager will be deployed by the operator.
+{{- end }}
 
 Check the jaeger-operator logs
   export POD=$(kubectl get pods-l app.kubernetes.io/instance={{ .Release.Name }} -lapp.kubernetes.io/name=jaeger-operator --namespace {{ .Release.Namespace }} --output name)
