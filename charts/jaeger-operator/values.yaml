@@ -10,6 +10,12 @@ image:
 crd:
   install: true
 
+operator:
+  # Specifies whether Jaeger Operator instance should be created or not.
+  # Useful if you just need to deploy Jaeger and you have the operator already
+  # running in the cluster
+  create: true
+
 jaeger:
   # Specifies whether Jaeger instance should be created
   create: false
