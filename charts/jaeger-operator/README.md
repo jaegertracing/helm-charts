@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
 | `image.tag`             | Controller container image tag                                                                              | `1.19.0`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
+| `operator.create`       | Jaeger Operator instance will be created. Useful when another operator is already deployed                  | `true`                          |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
 | `crd.install`           | CustomResourceDefinition will be installed                                                                  | `true`                          |
