@@ -16,8 +16,6 @@ spec:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: query
-  strategy:
-    type: Recreate
   template:
     metadata:
 {{- if .Values.query.podAnnotations }}
