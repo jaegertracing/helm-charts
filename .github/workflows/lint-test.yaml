@@ -16,6 +16,12 @@ jobs:
         with:
           version: v3.4.0
 
+      - name: Add dependency chart repos
+        run: |
+          helm repo add incubator https://charts.helm.sh/incubator
+          helm repo add elastic https://helm.elastic.co
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
       - uses: actions/setup-python@v2
         with:
           python-version: 3.7
