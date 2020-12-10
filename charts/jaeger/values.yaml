@@ -219,6 +219,7 @@ agent:
   serviceAccount:
     create: true
     name:
+    annotations: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -303,6 +304,7 @@ collector:
   serviceAccount:
     create: true
     name:
+    annotations: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -404,6 +406,7 @@ query:
   serviceAccount:
     create: true
     name:
+    annotations: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
