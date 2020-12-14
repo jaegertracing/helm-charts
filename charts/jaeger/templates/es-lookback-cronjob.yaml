@@ -11,7 +11,7 @@ metadata:
     {{- toYaml .Values.esLookback.annotations | nindent 4 }}
 {{- end }}
 spec:
-  concurrencyPolicy: "Forbid"
+  concurrencyPolicy: {{ .Values.esLookback.concurrencyPolicy }}
   schedule: {{ .Values.esLookback.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.esLookback.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.esLookback.failedJobsHistoryLimit }}

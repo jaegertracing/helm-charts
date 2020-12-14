@@ -15,6 +15,10 @@ spec:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: agent
+  {{- with .Values.agent.daemonset.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
 {{- if .Values.agent.podAnnotations }}
