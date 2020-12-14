@@ -196,6 +196,10 @@ agent:
   extraEnv: []
   daemonset:
     useHostPort: false
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
   service:
     annotations: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
@@ -449,6 +453,7 @@ spark:
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
   resources: {}
     # limits:
     #   cpu: 500m
@@ -486,6 +491,7 @@ esIndexCleaner:
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
   resources: {}
     # limits:
     #   cpu: 500m
@@ -524,6 +530,7 @@ esRollover:
   schedule: "10 0 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
   resources: {}
     # limits:
     #   cpu: 500m
@@ -571,6 +578,7 @@ esLookback:
   schedule: '5 0 * * *'
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
   resources: {}
     # limits:
     #   cpu: 500m

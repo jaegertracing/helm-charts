@@ -11,7 +11,7 @@ metadata:
     {{- toYaml .Values.esRollover.annotations | nindent 4 }}
 {{- end }}
 spec:
-  concurrencyPolicy: "Forbid"
+  concurrencyPolicy: {{ .Values.esRollover.concurrencyPolicy }}
   schedule: {{ .Values.esRollover.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.esRollover.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.esRollover.failedJobsHistoryLimit }}

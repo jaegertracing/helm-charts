@@ -11,7 +11,7 @@ metadata:
     {{- toYaml .Values.esIndexCleaner.annotations | nindent 4 }}
 {{- end }}
 spec:
-  concurrencyPolicy: "Forbid"
+  concurrencyPolicy: {{ .Values.esIndexCleaner.concurrencyPolicy }}
   schedule: {{ .Values.esIndexCleaner.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.esIndexCleaner.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.esIndexCleaner.failedJobsHistoryLimit }}
