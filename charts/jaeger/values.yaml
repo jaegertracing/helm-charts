@@ -196,10 +196,10 @@ agent:
   extraEnv: []
   daemonset:
     useHostPort: false
-    updateStrategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxUnavailable: 1
+    updateStrategy: {}
+      # type: RollingUpdate
+      # rollingUpdate:
+      #   maxUnavailable: 1
   service:
     annotations: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
