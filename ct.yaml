@@ -3,7 +3,7 @@ remote: origin
 chart-dirs:
   - charts
 chart-repos:
-  - incubator=https://kubernetes-charts-incubator.storage.googleapis.com
+  - incubator=https://charts.helm.sh/incubator
   - elastic=https://helm.elastic.co
   - bitnami=https://charts.bitnami.com/bitnami
 helm-extra-args: --timeout=600s
