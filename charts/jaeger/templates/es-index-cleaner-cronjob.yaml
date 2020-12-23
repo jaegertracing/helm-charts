@@ -80,4 +80,15 @@ spec:
           tolerations:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+          volumes:
+          {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esIndexCleaner.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+        {{- end }}
 {{- end -}}
