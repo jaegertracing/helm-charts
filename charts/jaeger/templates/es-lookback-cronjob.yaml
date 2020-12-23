@@ -81,4 +81,15 @@ spec:
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
             {{- end }}
+          volumes:
+          {{- range .Values.esLookback.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esLookback.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+        {{- end }}
 {{- end -}}
