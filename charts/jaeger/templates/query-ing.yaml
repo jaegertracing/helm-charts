@@ -22,6 +22,12 @@ spec:
             backend:
               serviceName: {{ template "jaeger.query.name" $ }}
               servicePort: {{ $servicePort }}
+    {{- if .Values.query.ingress.healthCheckEnabled }}
+          - path: /health
+            backend:
+              serviceName: {{ template "jaeger.query.name" $ }}
+              servicePort: 16687
+    {{- end -}}                
     {{- end -}}
   {{- if .Values.query.ingress.tls }}
   tls:
