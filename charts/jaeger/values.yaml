@@ -298,7 +298,8 @@ collector:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
-      # healthCheckEnabled: true
+      health
+        exposed: false
   resources: {}
     # limits:
     #   cpu: 1
