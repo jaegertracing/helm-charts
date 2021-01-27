@@ -400,6 +400,8 @@ query:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
+    health:
+      exposed: false
   resources: {}
     # limits:
     #   cpu: 500m
