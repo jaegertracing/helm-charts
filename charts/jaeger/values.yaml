@@ -7,7 +7,7 @@ provisionDataStore:
   elasticsearch: false
   kafka: false
 
-tag: 1.20.0
+tag: 1.21.0
 
 nameOverride: ""
 fullnameOverride: ""
