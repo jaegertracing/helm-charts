@@ -13,6 +13,8 @@ crd:
 jaeger:
   # Specifies whether Jaeger instance should be created
   create: false
+  # namespace where Jaeger resource should be created default to .Release.Namespace
+  namespace:
   spec: {}
 
 rbac:
