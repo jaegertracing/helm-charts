@@ -201,7 +201,7 @@ agent:
       # rollingUpdate:
       #   maxUnavailable: 1
   # Set to false if your release is called `jaeger`.
-  # Read More: https://github.com/jaegertracing/jaeger/issues/1986 
+  # Read More: https://github.com/jaegertracing/jaeger/issues/1986
   enableServiceLinks: true
   service:
     annotations: {}
