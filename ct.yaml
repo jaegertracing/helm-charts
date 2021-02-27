@@ -7,3 +7,4 @@ chart-repos:
   - elastic=https://helm.elastic.co
   - bitnami=https://charts.bitnami.com/bitnami
 helm-extra-args: --timeout=600s
+target-branch: main
