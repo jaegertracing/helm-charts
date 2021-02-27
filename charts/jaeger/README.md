@@ -35,10 +35,6 @@ components](https://www.jaegertracing.io/img/architecture-v1.png)
 See [Customizing the Chart Before Installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing). To see all configurable options with detailed comments, visit the chart's [values.yaml](https://github.com/jaegertracing/helm-charts/blob/master/charts/jaeger/values.yaml), or run these configuration commands:
 
 ```console
-# Helm 2
-$ helm inspect values jaegertracing/jaeger
-
-# Helm 3
 $ helm show values jaegertracing/jaeger
 ```
 
@@ -51,31 +47,16 @@ their, values can be shown by running:
 
 ```console
 helm repo add elastic https://helm.elastic.co
-
-# Helm 2
-helm inspect values elastic/elasticsearch
-
-# Helm 3
 helm show values elastic/elasticsearch
 ```
 
 ```console
 helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-
-# Helm 2
-helm inspect values incubator/cassandra
-
-# Helm 3
 helm show values incubator/cassandra
 ```
 
 ```console
 helm repo add bitnami
-
-# Helm 2
-helm inspect values bitnami/kafka
-
-# Helm 3
 helm show values bitnami/kafka
 ```
 

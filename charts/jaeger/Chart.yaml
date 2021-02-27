@@ -1,8 +1,9 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: 1.21.0
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
-version: 0.40.2
+type: application
+version: 0.41.0
 keywords:
   - jaeger
   - opentracing
@@ -23,3 +24,16 @@ maintainers:
     email: naseem@transit.app
   - name: pavelnikolov
     email: pavel.nikolov@fairfaxmedia.com.au
+dependencies:
+  - name: cassandra
+    version: 0.15.3
+    repository: https://charts.helm.sh/incubator
+    condition: provisionDataStore.cassandra
+  - name: elasticsearch
+    version: ^7.5.1
+    repository: https://helm.elastic.co
+    condition: provisionDataStore.elasticsearch
+  - name: kafka
+    version: ^11.8.4
+    repository: https://charts.bitnami.com/bitnami
+    condition: provisionDataStore.kafka
