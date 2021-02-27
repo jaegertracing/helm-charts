@@ -101,7 +101,7 @@ kafka:
 
 # Begin: Default values for the various components of Jaeger
 # This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/jaeger-production-template.yml
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/main/production/jaeger-production-template.yml
 #
 # This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
 # use by Jaeger
