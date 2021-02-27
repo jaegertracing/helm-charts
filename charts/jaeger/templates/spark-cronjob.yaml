@@ -17,6 +17,9 @@ spec:
   concurrencyPolicy: {{ .Values.spark.concurrencyPolicy }}
   jobTemplate:
     spec:
+      {{- if .Values.spark.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.spark.activeDeadlineSeconds }}
+      {{- end}}
       template:
         metadata:
           labels:
