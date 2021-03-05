@@ -61,7 +61,7 @@ spec:
           {{- end }}
         env:
           {{- if .Values.collector.service.zipkin }}
-          - name: COLLECTOR_ZIPKIN_HTTP_PORT
+          - name: COLLECTOR_ZIPKIN_HOST_PORT
             value: {{ .Values.collector.service.zipkin.port | quote }}
           {{- end }}
           {{- if .Values.ingester.enabled }}
