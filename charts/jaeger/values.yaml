@@ -651,3 +651,6 @@ hotrod:
   tracing:
     host: null
     port: 6831
+
+# Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
+extraObjects: []
