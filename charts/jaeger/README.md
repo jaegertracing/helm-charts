@@ -263,3 +263,26 @@ helm install jaeger jaegertracing/jaeger \
   --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
   --set storage.kafka.topic=<TOPIC>
 ```
+
+## Installing extra kubernetes objects
+
+If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain 
+the yaml describing these objects. The values in the array are treated as a template to allow the use of variable 
+substitution and function calls as in the example below.
+
+Content of the `jaeger-values.yaml` file:
+
+```YAML
+extraObjects:
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: {{ .Release.Name }}-someRoleBinding
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: someRole
+    subjects:
+      - kind: ServiceAccount
+        name: "{{ include \"jaeger.esLookback.serviceAccountName\" . }}"
+```
