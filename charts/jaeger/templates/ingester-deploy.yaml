@@ -31,6 +31,7 @@ spec:
         {{- toYaml .Values.ingester.podLabels | nindent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ include "jaeger.ingester.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
       {{- with .Values.ingester.imagePullSecrets }}
