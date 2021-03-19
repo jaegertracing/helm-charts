@@ -75,7 +75,7 @@ spec:
           {{- toYaml .Values.storage.kafka.extraEnv | nindent 10 }}
         {{- end }}
           - name: KAFKA_PRODUCER_BROKERS
-            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
+            value: {{ tpl (include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers) . }}
           - name: KAFKA_PRODUCER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
           - name: KAFKA_PRODUCER_AUTHENTICATION
