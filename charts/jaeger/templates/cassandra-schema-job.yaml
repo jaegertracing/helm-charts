@@ -34,7 +34,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
-        image: {{ .Values.schema.image }}:{{ .Values.tag }}
+        image: {{ .Values.schema.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         securityContext:
           {{- toYaml .Values.schema.securityContext | nindent 10 }}

@@ -43,7 +43,7 @@ spec:
       - name: {{ template "jaeger.query.name" . }}
         securityContext:
           {{- toYaml .Values.query.securityContext | nindent 10 }}
-        image: {{ .Values.query.image }}:{{ .Values.tag }}
+        image: {{ .Values.query.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         args:
           {{- range $key, $value := .Values.query.cmdlineParams }}
@@ -123,7 +123,7 @@ spec:
       - name: {{ template "jaeger.agent.name" . }}-sidecar
         securityContext:
           {{- toYaml .Values.query.securityContext | nindent 10 }}
-        image: {{ .Values.agent.image }}:{{ .Values.tag }}
+        image: {{ .Values.agent.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:
           {{- range $key, $value := .Values.agent.cmdlineParams }}
