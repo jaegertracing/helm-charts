@@ -29,7 +29,7 @@ spec:
         - name: {{ include "jaeger.fullname" . }}-hotrod
           securityContext:
             {{- toYaml .Values.hotrod.securityContext | nindent 12 }}
-          image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}
+          image: {{ .Values.hotrod.image.repository }}:{{- include "jaeger.image.tag" . }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
             - name: JAEGER_AGENT_HOST

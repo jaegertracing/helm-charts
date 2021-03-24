@@ -32,6 +32,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create image tag value which defaults to .Chart.AppVersion.
+*/}}
+{{- define "jaeger.image.tag" -}}
+{{- .Values.tag | default .Chart.AppVersion }}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "jaeger.labels" -}}

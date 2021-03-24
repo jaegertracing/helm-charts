@@ -48,7 +48,7 @@ spec:
       - name: {{ include "jaeger.fullname" . }}-ingester
         securityContext:
           {{- toYaml .Values.ingester.securityContext | nindent 10 }}
-        image: {{ .Values.ingester.image }}:{{ .Values.tag }}
+        image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
           {{- range $key, $value := .Values.ingester.cmdlineParams }}

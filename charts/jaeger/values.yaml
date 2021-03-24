@@ -7,7 +7,8 @@ provisionDataStore:
   elasticsearch: false
   kafka: false
 
-tag: 1.22.0
+# Overrides the image tag where default is the chart appVersion.
+tag: ""
 
 nameOverride: ""
 fullnameOverride: ""
