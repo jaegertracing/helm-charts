@@ -53,12 +53,16 @@ spec:
             {{- if .Values.spark.extraEnv }}
               {{- toYaml .Values.spark.extraEnv | nindent 14 }}
             {{- end }}
+            {{- if eq .Values.storage.type "cassandra" }}
               - name: CASSANDRA_CONTACT_POINTS
                 value: {{ include "cassandra.contact_points" . }}
+            {{- end }}
+            {{- if eq .Values.storage.type "elasticsearch" }}
               - name: ES_NODES
                 value: {{ include "elasticsearch.client.url" . }}
               - name: ES_NODES_WAN_ONLY
                 value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
+            {{- end }}
             resources:
               {{- toYaml .Values.spark.resources | nindent 14 }}
             volumeMounts:
