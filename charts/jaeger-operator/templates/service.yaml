@@ -14,4 +14,7 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  type: ClusterIP
+  type: {{ .Values.service.type }}
+    {{- if and (eq .Values.service.type "NodePort") (.Values.service.nodePort) -}}
+    nodePort: {{ .Values.service.nodePort }}
+  {{- end -}}
