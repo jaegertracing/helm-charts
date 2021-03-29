@@ -1,6 +1,7 @@
 # Default values for jaeger-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
 image:
   repository: jaegertracing/jaeger-operator
   tag: 1.21.2
@@ -26,7 +27,7 @@ rbac:
 service:
   type: ClusterIP
   # Specify a specific node port when type is NodePort
-    # nodePort: 32500
+  # nodePort: 32500
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
