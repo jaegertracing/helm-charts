@@ -6,4 +6,5 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: spark
+automountServiceAccountToken: {{ .Values.spark.serviceAccount.automountServiceAccountToken }}
 {{- end -}}
