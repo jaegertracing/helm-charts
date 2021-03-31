@@ -15,7 +15,7 @@ spec:
   - name: query
     port: {{ .Values.query.service.port }}
     protocol: TCP
-    targetPort: query
+    targetPort: {{ ternary "oauth-proxy" "query" .Values.query.oAuthSidecar.enabled }}
 {{- if and (eq .Values.query.service.type "NodePort") (.Values.query.service.nodePort) }}
     nodePort: {{ .Values.query.service.nodePort }}
 {{- end }}

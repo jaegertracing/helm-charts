@@ -119,6 +119,39 @@ spec:
           httpGet:
             path: /
             port: admin
+{{- if .Values.query.oAuthSidecar.enabled }}
+      - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar
+        image: {{ .Values.query.oAuthSidecar.image }}
+        imagePullPolicy: {{ .Values.query.oAuthSidecar.pullPolicy }}
+        args:
+        {{- range .Values.query.oAuthSidecar.args }}
+          - {{ . }}
+        {{- end }}
+        volumeMounts:
+        {{- range .Values.query.oAuthSidecar.extraConfigmapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+        {{- range .Values.query.oAuthSidecar.extraSecretMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+        {{- end }}
+        ports:
+          - containerPort: {{ .Values.query.oAuthSidecar.containerPort }}
+            name: oauth-proxy
+        {{- if .Values.query.oAuthSidecar.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.query.oAuthSidecar.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.query.oAuthSidecar.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.query.oAuthSidecar.readinessProbe | nindent 10 }}
+        {{- end }}
+{{- end }}
 {{- if .Values.query.agentSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-sidecar
         securityContext:
@@ -182,6 +215,18 @@ spec:
           configMap:
             name: {{ include "jaeger.fullname" . }}-ui-configuration
       {{- end }}
+{{- if .Values.query.oAuthSidecar.enabled }}
+      {{- range .Values.query.oAuthSidecar.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.query.oAuthSidecar.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
+{{- end }}
 {{- if .Values.query.agentSidecar.enabled }}
       {{- range .Values.agent.extraSecretMounts }}
         - name: {{ .name }}
