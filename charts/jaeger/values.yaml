@@ -367,6 +367,14 @@ collector:
 
 query:
   enabled: true
+  oAuthSidecar:
+    enabled: false
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+    pullPolicy: IfNotPresent
+    containerPort: 4180
+    args: []
+    extraConfigmapMounts: []
+    extraSecretMounts: []
   podSecurityContext: {}
   securityContext: {}
   agentSidecar:
