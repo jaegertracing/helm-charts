@@ -173,7 +173,7 @@ ingester:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
@@ -228,7 +228,7 @@ agent:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
     annotations: {}
   nodeSelector: {}
@@ -315,7 +315,7 @@ collector:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
     annotations: {}
   nodeSelector: {}
@@ -429,7 +429,7 @@ query:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
     annotations: {}
   nodeSelector: {}
@@ -485,7 +485,7 @@ spark:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
@@ -526,7 +526,7 @@ esIndexCleaner:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
@@ -566,7 +566,7 @@ esRollover:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
@@ -616,7 +616,7 @@ esLookback:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
@@ -672,7 +672,7 @@ hotrod:
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
     name:
   nodeSelector: {}
   tolerations: []
