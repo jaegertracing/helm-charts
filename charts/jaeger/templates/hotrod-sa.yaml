@@ -6,4 +6,5 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: hotrod
+automountServiceAccountToken: {{ .Values.hotrod.serviceAccount.automountServiceAccountToken }}
 {{- end -}}

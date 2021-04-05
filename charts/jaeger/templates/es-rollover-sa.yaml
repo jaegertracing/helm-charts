@@ -11,4 +11,5 @@ metadata:
     # Must be created before the rollover init hook
     "helm.sh/hook-weight": "-10"
     "helm.sh/hook-delete-policy": before-hook-creation
+automountServiceAccountToken: {{ .Values.esRollover.serviceAccount.automountServiceAccountToken }}
 {{- end -}}
