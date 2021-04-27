@@ -215,6 +215,11 @@ spec:
           configMap:
             name: {{ include "jaeger.fullname" . }}-ui-configuration
       {{- end }}
+      {{- if .Values.storage.cassandra.tls.enabled }}
+        - name: {{ .Values.storage.cassandra.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.cassandra.tls.secretName }}
+      {{- end }}
 {{- if .Values.query.oAuthSidecar.enabled }}
       {{- range .Values.query.oAuthSidecar.extraConfigmapMounts }}
         - name: {{ .name }}
