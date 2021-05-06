@@ -22,6 +22,10 @@ spec:
       {{- end}}
       template:
         metadata:
+          {{- if .Values.spark.podAnnotations }}
+          annotations:
+            {{- toYaml .Values.spark.podAnnotations | nindent 12 }}
+          {{- end }}
           labels:
             {{- include "jaeger.selectorLabels" . | nindent 12 }}
             app.kubernetes.io/component: spark
