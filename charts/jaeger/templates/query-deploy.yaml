@@ -18,9 +18,14 @@ spec:
       app.kubernetes.io/component: query
   template:
     metadata:
-{{- if .Values.query.podAnnotations }}
+{{- if or .Values.query.config .Values.query.podAnnotations }}
       annotations:
+      {{- if .Values.query.config }}
+        checksum/ui-config: {{ include (print $.Template.BasePath "/query-configmap.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if .Values.query.podAnnotations }}
         {{- toYaml .Values.query.podAnnotations | nindent 8 }}
+      {{- end }}
 {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
