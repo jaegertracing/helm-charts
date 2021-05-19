@@ -202,6 +202,9 @@ spec:
             path: /
             port: admin
 {{- end }}
+      {{- if .Values.query.sidecars }}
+        {{- tpl (toYaml .Values.query.sidecars) . | nindent 8 }}
+      {{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
       volumes:
@@ -249,6 +252,9 @@ spec:
             name: {{ .configMap }}
       {{- end }}
 {{- end }}
+      {{- if .Values.query.extraVolumes }}
+        {{- tpl (toYaml .Values.query.extraVolumes) . | nindent 8 }}
+      {{- end }}
     {{- with .Values.query.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

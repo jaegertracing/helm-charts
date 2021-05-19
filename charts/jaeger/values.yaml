@@ -401,6 +401,8 @@ query:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     port: 80
+    # Specify a custom target port (e.g. port of auth proxy)
+    # targetPort: 8080
     # Specify a specific node port when type is NodePort
     # nodePort: 32500
   ingress:
@@ -445,6 +447,13 @@ query:
   #   subPath: ""
   #   configMap: jaeger-config
   #   readOnly: true
+  extraVolumes: []
+  sidecars: []
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
   priorityClassName: ""
   serviceMonitor:
     enabled: false
