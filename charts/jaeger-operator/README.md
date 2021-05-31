@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
+| `logLevel`              | Log-level for the operator itself. Possible values: trace, debug, info, warning, error, fatal, panic        | ``                              |
 | `crd.install`           | CustomResourceDefinition will be installed                                                                  | `true`                          |
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |

@@ -56,6 +56,10 @@ spec:
                   fieldPath: metadata.namespace
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
+            {{- if .Values.logLevel }}
+            - name: LOG-LEVEL
+              value: {{ .Values.logLevel }}
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
