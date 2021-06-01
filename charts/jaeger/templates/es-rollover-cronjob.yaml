@@ -18,6 +18,9 @@ spec:
   suspend: false
   jobTemplate:
     spec:
+      {{- if .Values.esRollover.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esRollover.activeDeadlineSeconds }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esRollover.podAnnotations }}

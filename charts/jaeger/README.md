@@ -264,6 +264,48 @@ helm install jaeger jaegertracing/jaeger \
   --set storage.kafka.topic=<TOPIC>
 ```
 
+## oAuth2 Sidecar
+If extra protection of the Jaeger UI is needed, then the oAuth2 sidecar can be enabled in the Jaeger Query. The oAuth2
+sidecar acts as a security proxy in front of the Jaeger Query service and enforces user authentication before reaching
+the Jaeger UI. This method can work with any valid provider including Keycloak, Azure, Google, GitHub, and more.
+
+Content of the `jaeger-values.yaml` file:
+
+```YAML
+query:
+  enabled: true
+  oAuthSidecar:
+    enabled: true
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+    pullPolicy: IfNotPresent
+    containerPort: 4180
+    args:
+      - --config
+      - /etc/oauth2-proxy/oauth2-proxy.cfg
+      - --client-secret
+      - "$(client-secret)"
+    extraEnv:
+      - name: client-secret
+        valueFrom:
+          secretKeyRef:
+            name: client-secret
+            key: client-secret-key
+    extraConfigmapMounts: []
+    extraSecretMounts: []
+    config: |-
+      provider = "oidc"
+      https_address = ":4180"
+      upstreams = ["http://localhost:16686"]
+      redirect_url = "https://jaeger-svc-domain/oauth2/callback"
+      client_id = "jaeger-query"
+      oidc_issuer_url = "https://keycloak-svc-domain/auth/realms/Default"
+      cookie_secure = "true"
+      email_domains = "*"
+      oidc_groups_claim = "groups"
+      user_id_claim = "preferred_username"
+      skip_provider_button = "true"
+```
+
 ## Installing extra kubernetes objects
 
 If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain 

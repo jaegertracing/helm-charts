@@ -5,6 +5,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
   ports:
   - name: metrics

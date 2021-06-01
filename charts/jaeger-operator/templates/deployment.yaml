@@ -5,6 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
+{{- with .Values.extraLabels }}
+{{ . | toYaml | indent 4 }}
+{{- end }}
 spec:
   replicas: 1
   selector:
@@ -15,6 +18,9 @@ spec:
       name: {{ include "jaeger-operator.fullname" . }}
       labels:
 {{ include "jaeger-operator.labels" . | indent 8 }}
+{{- with .Values.extraLabels }}
+{{ . | toYaml | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
@@ -22,6 +28,9 @@ spec:
       {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       {{- if and .Values.image.imagePullSecrets (not .Values.serviceAccount.create ) }}
       imagePullSecrets:
@@ -56,6 +65,9 @@ spec:
                   fieldPath: metadata.namespace
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
+            {{- if .Values.extraEnv }}
+              {{- toYaml .Values.extraEnv | nindent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

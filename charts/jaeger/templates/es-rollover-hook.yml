@@ -13,6 +13,9 @@ metadata:
       {{- toYaml .Values.esRollover.initHook.annotations | nindent 4 }}
     {{- end }}
 spec:
+  {{- if .Values.esRollover.initHook.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.esRollover.initHook.activeDeadlineSeconds }}
+  {{- end }}
   {{- with .Values.esRollover.initHook.ttlSecondsAfterFinished }}
   ttlSecondsAfterFinished: {{ . }}
   {{- end }}

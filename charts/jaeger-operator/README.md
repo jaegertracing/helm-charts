@@ -14,7 +14,7 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 
 ## Prerequisites
 
-- Kubernetes 1.16+
+- Kubernetes 1.19+
 
 ## Installing the Chart
 
@@ -50,8 +50,9 @@ The following table lists the configurable parameters of the jaeger-operator cha
 
 | Parameter               | Description                                                                                                 | Default                         |
 | :---------------------- | :---------------------------------------------------------------------------------------------------------- | :------------------------------ |
+| `extraLabels`           | Additional labels to jaeger-operator deployment  | `{}`
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
-| `image.tag`             | Controller container image tag                                                                              | `1.22.1`                        |
+| `image.tag`             | Controller container image tag                                                                              | `1.24.0`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
@@ -61,11 +62,13 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
 | `rbac.clusterRole`      | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
 | `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
+| `extraEnv`              | Additional environment variables passed to the operator. For example:   name: LOG-LEVEL   value: debug      | `[]`                            |
 | `resources`             | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
 | `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
 | `securityContext`       | Security context for pod                                                                                    | `{}`                            |
+| `priorityClassName`     | Priority class name for the pod                                                                             | `None`                          |
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 

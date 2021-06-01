@@ -4,7 +4,7 @@
 
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.22.1
+  tag: 1.27.0
   pullPolicy: IfNotPresent
   imagePullSecrets: []
 
@@ -28,6 +28,8 @@ service:
   type: ClusterIP
   # Specify a specific node port when type is NodePort
   # nodePort: 32500
+  # Annotations for service
+  annotations: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -35,6 +37,18 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  # Annotations for serviceAccount
+  annotations: {}
+
+# Specifies extra environment variables passed to the operator:
+extraEnv: []
+  # Specifies log-level for the operator:
+  # - name: LOG-LEVEL
+  #   value: debug
+
+extraLabels: {}
+  # Specifies extra labels for the operator deployment:
+  # foo: bar
 
 resources: {}
   # limits:
@@ -51,3 +65,5 @@ tolerations: []
 affinity: {}
 
 securityContext: {}
+
+priorityClassName:
