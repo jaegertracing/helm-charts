@@ -56,6 +56,9 @@ spec:
                   fieldPath: metadata.namespace
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
+            {{- if .Values.extraEnv }}
+              {{- toYaml .Values.extraEnv | nindent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
