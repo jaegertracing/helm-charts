@@ -37,7 +37,7 @@ serviceAccount:
   name:
 
 # Specifies extra environment variables passed to the operator:
-extraEnv:
+extraEnv: []
   # Specifies log-level for the operator:
   # - name: LOG-LEVEL
   #   value: debug
