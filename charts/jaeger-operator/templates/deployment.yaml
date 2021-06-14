@@ -23,6 +23,9 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       {{- if and .Values.image.imagePullSecrets (not .Values.serviceAccount.create ) }}
       imagePullSecrets:
       {{- range .Values.image.imagePullSecrets }}
