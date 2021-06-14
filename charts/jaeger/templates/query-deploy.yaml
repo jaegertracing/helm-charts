@@ -132,6 +132,10 @@ spec:
         {{- range .Values.query.oAuthSidecar.args }}
           - {{ . }}
         {{- end }}
+        {{- if .Values.query.oAuthSidecar.extraEnv }}
+        env:
+          {{- toYaml .Values.query.oAuthSidecar.extraEnv | nindent 10 }}
+        {{- end }}
         volumeMounts:
         {{- range .Values.query.oAuthSidecar.extraConfigmapMounts }}
           - name: {{ .name }}
