@@ -2761,6 +2761,24 @@ entries:
   jaeger-operator:
   - apiVersion: v1
     appVersion: 1.22.1
+    created: "2021-06-17T22:30:27.939842623Z"
+    description: jaeger-operator Helm chart for Kubernetes
+    digest: fcd498a2d727f999a00621b78d17ec47773e44fecafa36f6fcfbd4e1a26cb793
+    home: https://www.jaegertracing.io/
+    icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
+    maintainers:
+    - email: ctadeu@gmail.com
+      name: cpanato
+    - email: batazor111@gmail.com
+      name: batazor
+    name: jaeger-operator
+    sources:
+    - https://github.com/jaegertracing/jaeger-operator
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-operator-2.21.4/jaeger-operator-2.21.4.tgz
+    version: 2.21.4
+  - apiVersion: v1
+    appVersion: 1.22.1
     created: "2021-06-14T22:11:51.554257694Z"
     description: jaeger-operator Helm chart for Kubernetes
     digest: 9fab1bddfb1e6af498c3eeac7381c446e508855cbb782f180ae9c3113f9550d0
