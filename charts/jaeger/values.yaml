@@ -381,6 +381,7 @@ query:
     pullPolicy: IfNotPresent
     containerPort: 4180
     args: []
+    extraEnv: []
     extraConfigmapMounts: []
     extraSecretMounts: []
   podSecurityContext: {}
