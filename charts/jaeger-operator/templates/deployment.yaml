@@ -9,7 +9,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-{{ include "jaeger-operator.labels" . | indent 6 }}
+    {{- if .Release.IsUpgrade }}
+      app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
+    {{- else }}
+      {{ include "jaeger-operator.labels" . | nindent 8 }}
+    {{- end }}
   template:
     metadata:
       name: {{ include "jaeger-operator.fullname" . }}
