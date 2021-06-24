@@ -149,6 +149,10 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
+        {{- if .Values.query.oAuthSidecar.config}}
+          - name: jaeger-oauth-configuration
+            mountPath: /etc/oauth2-proxy
+        {{- end }}
         ports:
           - containerPort: {{ .Values.query.oAuthSidecar.containerPort }}
             name: oauth-proxy
@@ -242,6 +246,11 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- if .Values.query.oAuthSidecar.config }}
+        - name: jaeger-oauth-configuration
+          configMap:
+            name: {{ include "jaeger.fullname" . }}-oauth-configuration
       {{- end }}
 {{- end }}
 {{- if .Values.query.agentSidecar.enabled }}

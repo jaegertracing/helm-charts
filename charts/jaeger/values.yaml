@@ -384,6 +384,18 @@ query:
     extraEnv: []
     extraConfigmapMounts: []
     extraSecretMounts: []
+  # config: |-
+  #   provider = "oidc"
+  #   https_address = ":4180"
+  #   upstreams = ["http://localhost:16686"]
+  #   redirect_url = "https://jaeger-svc-domain/oauth2/callback"
+  #   client_id = "jaeger-query"
+  #   oidc_issuer_url = "https://keycloak-svc-domain/auth/realms/Default"
+  #   cookie_secure = "true"
+  #   email_domains = "*"
+  #   oidc_groups_claim = "groups"
+  #   user_id_claim = "preferred_username"
+  #   skip_provider_button = "true"
   podSecurityContext: {}
   securityContext: {}
   agentSidecar:
