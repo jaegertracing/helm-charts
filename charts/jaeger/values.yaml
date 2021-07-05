@@ -296,15 +296,16 @@ collector:
     annotations: {}
     # Used to create an Ingress record.
     # hosts:
-    #   - chart-example.local
+    #   - host: "jaeger-collector.example.org"
+    #     servicePort: grpc
     # annotations:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     # tls:
       # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
+      # - secretName: "example-org-tls"
       #   hosts:
-      #     - chart-example.local
+      #     - "jaeger-collector.example.org"
   resources: {}
     # limits:
     #   cpu: 1
