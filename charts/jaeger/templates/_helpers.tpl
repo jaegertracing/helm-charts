@@ -158,6 +158,28 @@ Create the name of the collector service account to use
 {{- end -}}
 
 {{/*
+Create the collector ingress host
+*/}}
+{{- define "jaeger.collector.ingressHost" -}}
+{{- if (kindIs "string" .) }}
+  {{- . }}
+{{- else }}
+  {{- .host }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Create the collector ingress servicePort
+*/}}
+{{- define "jaeger.collector.ingressServicePort" -}}
+{{- if (kindIs "string" .context) }}
+  {{- .defaultServicePort }}
+{{- else }}
+  {{- .context.servicePort }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Create the name of the ingester service account to use
 */}}
 {{- define "jaeger.ingester.serviceAccountName" -}}
@@ -397,3 +419,4 @@ Cassandra or Elasticsearch related command line options depending on which is us
 {{- include "elasticsearch.cmdArgs" . -}}
 {{- end -}}
 {{- end -}}
+
