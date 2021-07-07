@@ -14,14 +14,14 @@ spec:
   minReplicas: {{ .Values.ingester.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.ingester.autoscaling.maxReplicas }}
   metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: {{ .Values.ingester.autoscaling.targetCPUUtilizationPercentage | default 80 }}
   {{- if .Values.ingester.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         targetAverageUtilization: {{ .Values.ingester.autoscaling.targetMemoryUtilizationPercentage }}
   {{- end }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.ingester.autoscaling.targetCPUUtilizationPercentage | default 80 }}
 {{- end }}
