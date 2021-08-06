@@ -1,8 +1,13 @@
+{{- $useNetworkingV1 := .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
 {{- if .Values.hotrod.enabled -}}
 {{- if .Values.hotrod.ingress.enabled -}}
 {{- $serviceName := include "jaeger.fullname" . -}}
 {{- $servicePort := .Values.hotrod.service.port -}}
+{{- if $useNetworkingV1 }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ include "jaeger.fullname" . }}-hotrod
@@ -20,9 +25,18 @@ spec:
       http:
         paths:
           - path: /
+            {{- if $useNetworkingV1 }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+               name: {{ $serviceName }}-hotrod
+               port:
+                 number: {{ $servicePort }}
+            {{- else }}
             backend:
               serviceName: {{ $serviceName }}-hotrod
               servicePort: {{ $servicePort }}
+            {{- end }}
     {{- end -}}
   {{- if .Values.hotrod.ingress.tls }}
   tls:
