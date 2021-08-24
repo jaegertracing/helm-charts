@@ -1,6 +1,6 @@
 {{- if .Values.collector.ingress.enabled -}}
-  {{- $servicePort := .Values.collector.service.http.port -}}
-  {{- $basePath := .Values.collector.basePath -}}
+{{- $servicePort := .Values.collector.service.http.port -}}
+{{- $basePath := .Values.collector.basePath -}}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
