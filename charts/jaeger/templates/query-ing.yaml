@@ -1,12 +1,7 @@
-{{- $useNetworkingV1 := .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
 {{- if .Values.query.ingress.enabled -}}
-{{- $servicePort := .Values.query.service.port -}}
-{{- $basePath := .Values.query.basePath -}}
-{{- if $useNetworkingV1 }}
-apiVersion: networking.k8s.io/v1
-{{- else }}
-apiVersion: networking.k8s.io/v1beta1
-{{- end }}
+  {{- $servicePort := .Values.query.service.port -}}
+  {{- $basePath := .Values.query.basePath -}}
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
@@ -15,7 +10,7 @@ metadata:
     app.kubernetes.io/component: query
   {{- if .Values.query.ingress.annotations }}
   annotations:
-    {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
+  {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
   rules:
@@ -24,36 +19,20 @@ spec:
       http:
         paths:
           - path: {{ $basePath }}
-            {{- if $useNetworkingV1 }}
+            {{- if (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
-            backend:
-              service:
-               name: {{ template "jaeger.query.name" $ }}
-               port:
-                 number: {{ $servicePort }}
-            {{- else }}
-            backend:
-              serviceName: {{ template "jaeger.query.name" $ }}
-              servicePort: {{ $servicePort }}
             {{- end }}
-    {{- end -}}
-    {{- if .Values.query.ingress.health.exposed }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.query.name" $) "servicePort" $servicePort "context" $) | nindent 14 }}
+          {{- end -}}
+          {{- if .Values.query.ingress.health.exposed }}
           - path: /health
-            {{- if $useNetworkingV1 }}
+            {{- if (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
-            backend:
-              service:
-               name: {{ template "jaeger.query.name" $ }}
-               port:
-                 number: 16687
-            {{- else }}
-            backend:
-              serviceName: {{ template "jaeger.query.name" $ }}
-              servicePort: 16687
             {{- end }}
-    {{- end -}}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.query.name" $) "servicePort" 16687 "context" $) | nindent 14 }}
+  {{- end -}}
   {{- if .Values.query.ingress.tls }}
   tls:
-    {{- toYaml .Values.query.ingress.tls | nindent 4 }}
+  {{- toYaml .Values.query.ingress.tls | nindent 4 }}
   {{- end -}}
-{{- end -}}
+  {{- end -}}
