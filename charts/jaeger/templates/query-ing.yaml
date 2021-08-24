@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/component: query
   {{- if .Values.query.ingress.annotations }}
   annotations:
-  {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
+    {{- end }}
 spec:
   rules:
     {{- range $host := .Values.query.ingress.hosts }}

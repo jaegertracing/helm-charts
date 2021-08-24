@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/component: collector
   {{- if .Values.collector.ingress.annotations }}
   annotations:
-  {{- toYaml .Values.collector.ingress.annotations | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.collector.ingress.annotations | nindent 4 }}
+    {{- end }}
 spec:
   rules:
     {{- range $host := .Values.collector.ingress.hosts }}
