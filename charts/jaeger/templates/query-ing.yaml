@@ -2,7 +2,7 @@
 {{- if .Values.query.ingress.enabled -}}
 {{- $servicePort := .Values.query.service.port -}}
 {{- $basePath := .Values.query.basePath -}}
-{{- if $useNetworkingV1 }}
+{{- if semverCompare ">=1.19" .Capabilities.KubeVersion.Version -}}
 apiVersion: networking.k8s.io/v1
 {{- else }}
 apiVersion: networking.k8s.io/v1beta1
