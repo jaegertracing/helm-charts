@@ -36,6 +36,11 @@ spec:
         - name: {{ include "jaeger-operator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
           ports:
           - containerPort: 8383
             name: metrics
