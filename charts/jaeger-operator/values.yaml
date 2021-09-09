@@ -42,6 +42,10 @@ extraEnv: []
   # - name: LOG-LEVEL
   #   value: debug
 
+extraLabels: {}
+  # Specifies extra labels for the operator deployment:
+  # foo: bar
+
 resources: {}
   # limits:
   #  cpu: 100m

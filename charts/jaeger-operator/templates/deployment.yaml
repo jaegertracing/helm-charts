@@ -5,6 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
+{{- with .Values.extraLabels }}
+{{ . | toYaml | indent 4 }}
+{{- end }}
 spec:
   replicas: 1
   selector:
@@ -15,6 +18,9 @@ spec:
       name: {{ include "jaeger-operator.fullname" . }}
       labels:
 {{ include "jaeger-operator.labels" . | indent 8 }}
+{{- with .Values.extraLabels }}
+{{ . | toYaml | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
