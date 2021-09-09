@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 
 | Parameter               | Description                                                                                                 | Default                         |
 | :---------------------- | :---------------------------------------------------------------------------------------------------------- | :------------------------------ |
+| `extraLabels`           | Additional labels to jaeger-operator deployment  | `{}`
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
 | `image.tag`             | Controller container image tag                                                                              | `1.24.0`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
