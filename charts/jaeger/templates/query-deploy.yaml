@@ -188,6 +188,8 @@ spec:
         - name: admin
           containerPort: 14271
           protocol: TCP
+        resources:
+          {{- toYaml .Values.query.agentSidecar.resources | nindent 10 }}
         volumeMounts:
         {{- range .Values.agent.extraConfigmapMounts }}
           - name: {{ .name }}
