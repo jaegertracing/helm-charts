@@ -400,6 +400,13 @@ query:
   securityContext: {}
   agentSidecar:
     enabled: true
+#    resources:
+#      limits:
+#        cpu: 500m
+#        memory: 512Mi
+#      requests:
+#        cpu: 256m
+#        memory: 128Mi
   annotations: {}
   image: jaegertracing/jaeger-query
   imagePullSecrets: []
