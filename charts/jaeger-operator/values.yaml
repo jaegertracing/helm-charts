@@ -37,7 +37,7 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-  # Annotations for serviceAccounts
+  # Annotations for serviceAccount
   annotations: {}
 
 # Specifies extra environment variables passed to the operator:
