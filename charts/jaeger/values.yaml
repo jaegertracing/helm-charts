@@ -253,6 +253,7 @@ agent:
   useHostNetwork: false
   dnsPolicy: ClusterFirst
   priorityClassName: ""
+  initContainers: []
 
   serviceMonitor:
     enabled: false
