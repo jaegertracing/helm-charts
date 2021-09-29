@@ -32,3 +32,16 @@ spec:
           description: Jaeger Version
           name: Version
           type: string
+        - description: Jaeger deployment strategy
+          jsonPath: .spec.strategy
+          name: Strategy
+          type: string
+        - description: Jaeger storage type
+          jsonPath: .spec.storage.type
+          name: Storage
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      subresources:
+        status: {}
