@@ -27,5 +27,6 @@ spec:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query
   type: {{ .Values.query.service.type }}
+{{- template "loadBalancerIP" .Values.query }}
 {{- template "loadBalancerSourceRanges" .Values.query }}
 {{- end -}}
