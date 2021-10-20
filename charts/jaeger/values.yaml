@@ -278,6 +278,8 @@ collector:
     # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
+    # The IP to be used by the load balancer (if supported)
+    loadBalancerIP: ''
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
