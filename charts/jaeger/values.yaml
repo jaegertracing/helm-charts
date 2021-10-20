@@ -195,6 +195,7 @@ agent:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   cmdlineParams: {}
@@ -253,6 +254,7 @@ agent:
   useHostNetwork: false
   dnsPolicy: ClusterFirst
   priorityClassName: ""
+  initContainers: []
 
   serviceMonitor:
     enabled: false
@@ -264,6 +266,7 @@ collector:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
@@ -400,8 +403,16 @@ query:
   securityContext: {}
   agentSidecar:
     enabled: true
+#    resources:
+#      limits:
+#        cpu: 500m
+#        memory: 512Mi
+#      requests:
+#        cpu: 256m
+#        memory: 128Mi
   annotations: {}
   image: jaegertracing/jaeger-query
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
@@ -527,6 +538,7 @@ esIndexCleaner:
     runAsUser: 1000
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
+  # tag: 1.22
   imagePullSecrets: []
   tag: latest
   pullPolicy: Always
