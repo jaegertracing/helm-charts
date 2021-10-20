@@ -5,6 +5,7 @@ name: jaeger
 type: application
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.50.0
 =======
 version: 0.48.0
@@ -12,6 +13,9 @@ version: 0.48.0
 =======
 version: 0.49.0
 >>>>>>> adae9ad (chore(jaeger): bump to chart version)
+=======
+version: 0.48.0
+>>>>>>> c63f2c7 (add individual tags)
 keywords:
   - jaeger
   - opentracing
