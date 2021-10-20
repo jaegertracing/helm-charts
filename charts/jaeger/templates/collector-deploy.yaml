@@ -46,7 +46,7 @@ spec:
       - name: {{ template "jaeger.collector.name" . }}
         securityContext:
           {{- toYaml .Values.collector.securityContext | nindent 10 }}
-        image: {{ .Values.collector.image }}:{{- include "jaeger.image.tag" . }}
+        image: {{ .Values.collector.image }}:{{- .Values.collector.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         args:
           {{- range $key, $value := .Values.collector.cmdlineParams -}}
