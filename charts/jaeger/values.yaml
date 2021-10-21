@@ -195,6 +195,7 @@ agent:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   cmdlineParams: {}
@@ -265,6 +266,7 @@ collector:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
@@ -412,6 +414,7 @@ query:
 #        memory: 128Mi
   annotations: {}
   image: jaegertracing/jaeger-query
+  # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
@@ -537,6 +540,7 @@ esIndexCleaner:
     runAsUser: 1000
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
+  # tag: 1.22
   imagePullSecrets: []
   tag: latest
   pullPolicy: Always
