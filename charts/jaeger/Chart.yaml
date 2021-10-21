@@ -4,10 +4,14 @@ description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.50.0
 =======
 version: 0.48.0
 >>>>>>> 6281e66 (feat(jaeger): add loadBalancerIP optional parameter for the jaeger collector)
+=======
+version: 0.49.0
+>>>>>>> adae9ad (chore(jaeger): bump to chart version)
 keywords:
   - jaeger
   - opentracing
