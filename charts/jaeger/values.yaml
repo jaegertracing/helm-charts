@@ -270,6 +270,7 @@ collector:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
+  extraEnv: []
   autoscaling:
     enabled: false
     minReplicas: 2
