@@ -18,6 +18,9 @@ spec:
   suspend: false
   jobTemplate:
     spec:
+      {{- if .Values.esLookback.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esLookback.activeDeadlineSeconds }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esLookback.podAnnotations }}

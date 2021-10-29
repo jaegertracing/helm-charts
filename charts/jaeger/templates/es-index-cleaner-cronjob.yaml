@@ -18,6 +18,9 @@ spec:
   suspend: false
   jobTemplate:
     spec:
+      {{- if .Values.esIndexCleaner.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esIndexCleaner.activeDeadlineSeconds }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esIndexCleaner.podAnnotations }}
@@ -42,7 +45,7 @@ spec:
           - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
             securityContext:
               {{- toYaml .Values.esIndexCleaner.securityContext | nindent 14 }}
-            image: "{{ .Values.esIndexCleaner.image }}:{{- include "jaeger.image.tag" . }}"
+            image: {{ .Values.esIndexCleaner.image }}:{{- .Values.esIndexCleaner.tag | default (include "jaeger.image.tag" .) }}
             imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}

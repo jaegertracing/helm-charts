@@ -1,6 +1,6 @@
 {{- if .Values.collector.ingress.enabled -}}
 {{- $basePath := .Values.collector.basePath -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
   name: {{ template "jaeger.collector.name" . }}
@@ -10,7 +10,7 @@ metadata:
   {{- if .Values.collector.ingress.annotations }}
   annotations:
     {{- toYaml .Values.collector.ingress.annotations | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   rules:
     {{- range .Values.collector.ingress.hosts }}
@@ -18,12 +18,13 @@ spec:
       http:
         paths:
           - path: {{ $basePath }}
-            backend:
-              serviceName: {{ template "jaeger.collector.name" $ }}
-              servicePort: {{ .servicePort }}
-    {{- end -}}
+            {{- if (include "common.ingress.supportsPathType" $) }}
+            pathType: ImplementationSpecific
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.collector.name" $) "servicePort" .servicePort "context" $) | nindent 14 }}
+  {{- end -}}
   {{- if .Values.collector.ingress.tls }}
   tls:
-    {{- toYaml .Values.collector.ingress.tls | nindent 4 }}
+  {{- toYaml .Values.collector.ingress.tls | nindent 4 }}
   {{- end -}}
-{{- end -}}
+  {{- end -}}
