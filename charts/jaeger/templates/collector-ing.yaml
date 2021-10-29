@@ -1,5 +1,5 @@
 {{- if .Values.collector.ingress.enabled -}}
-{{- $servicePort := .Values.collector.service.http.port -}}
+{{- $defaultServicePort := .Values.collector.service.http.port -}}
 {{- $basePath := .Values.collector.basePath -}}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
@@ -14,14 +14,16 @@ metadata:
     {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.collector.ingress.hosts }}
-    - host: {{ $host }}
+    {{- range .Values.collector.ingress.hosts }}
+    - host: {{ include "jaeger.collector.ingressHost" . }}
       http:
         paths:
           - path: {{ $basePath }}
             {{- if (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
+            {{- $servicePortString := (include "jaeger.collector.ingressServicePort" (dict "defaultServicePort" $defaultServicePort "context" .)) }}
+            {{- $servicePort := default $servicePortString ($servicePortString | float64) }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.collector.name" $) "servicePort" $servicePort "context" $) | nindent 14 }}
   {{- end -}}
   {{- if .Values.collector.ingress.tls }}
