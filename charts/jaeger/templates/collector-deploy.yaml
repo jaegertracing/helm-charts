@@ -60,7 +60,7 @@ spec:
           {{- include "storage.cmdArgs" . | nindent 10 }}
           {{- end }}
         env:
-        {- if .Values.collector.extraEnv }}
+        {{- if .Values.collector.extraEnv }}
           {{- toYaml .Values.collector.extraEnv | nindent 10 }}
         {{- end }}
           {{- if .Values.collector.service.zipkin }}
