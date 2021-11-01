@@ -230,6 +230,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a fully qualified collector host.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "jaeger.collector.host" -}}
+{{- printf "%s.%s" (include "jaeger.fullname" .) .Release.Namespace  | trunc 63 -}}
+{{- end -}}
+
+{{/*
 Create a fully qualified ingester name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

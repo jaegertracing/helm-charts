@@ -70,7 +70,7 @@ spec:
         {{- end }}
         {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
           - name: REPORTER_GRPC_HOST_PORT
-            value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
+            value: {{ include "jaeger.collector.host" . }}:{{ .Values.collector.service.grpc.port }}
         {{- end }}
         ports:
         - name: zipkin-compact
