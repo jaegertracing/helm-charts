@@ -19,14 +19,14 @@ spec:
       http:
         paths:
           - path: {{ $basePath }}
-            {{- if (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.query.name" $) "servicePort" $servicePort "context" $) | nindent 14 }}
           {{- end -}}
           {{- if .Values.query.ingress.health.exposed }}
           - path: /health
-            {{- if (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.query.name" $) "servicePort" 16687 "context" $) | nindent 14 }}
