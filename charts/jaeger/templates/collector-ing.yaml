@@ -19,7 +19,7 @@ spec:
       http:
         paths:
           - path: {{ $basePath }}
-            {{- if (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
             {{- $servicePortString := (include "jaeger.collector.ingressServicePort" (dict "defaultServicePort" $defaultServicePort "context" .)) }}
