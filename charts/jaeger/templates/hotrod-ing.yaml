@@ -1,5 +1,6 @@
 {{- if .Values.hotrod.enabled -}}
   {{- if .Values.hotrod.ingress.enabled -}}
+  {{- $ingressSupportsIngressClassName := eq (include "common.ingress.supportsIngressClassname" .) "true" }}
   {{- $serviceName := include "jaeger.fullname" . -}}
   {{- $servicePort := .Values.hotrod.service.port -}}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
@@ -14,6 +15,9 @@ metadata:
     {{- toYaml .Values.hotrod.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
+  {{- if and $ingressSupportsIngressClassName .Values.hotrod.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.hotrod.ingress.ingressClassName }}
+  {{- end -}}
   rules:
     {{- range $host := .Values.hotrod.ingress.hosts }}
     - host: {{ $host }}

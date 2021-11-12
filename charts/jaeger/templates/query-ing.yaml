@@ -1,4 +1,5 @@
 {{- if .Values.query.ingress.enabled -}}
+{{- $ingressSupportsIngressClassName := eq (include "common.ingress.supportsIngressClassname" .) "true" }}
   {{- $servicePort := .Values.query.service.port -}}
   {{- $basePath := .Values.query.basePath -}}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
@@ -13,6 +14,9 @@ metadata:
     {{- toYaml .Values.query.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
+  {{- if and $ingressSupportsIngressClassName .Values.query.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.query.ingress.ingressClassName }}
+  {{- end -}}
   rules:
     {{- range $host := .Values.query.ingress.hosts }}
     - host: {{ $host }}
