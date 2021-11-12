@@ -20,7 +20,7 @@ spec:
       http:
         paths:
           - path: /
-            {{- if (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (printf "%s-hotrod" $serviceName) "servicePort" $servicePort "context" $) | nindent 14 }}
