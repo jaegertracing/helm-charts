@@ -16,7 +16,7 @@ metadata:
 spec:
   {{- if and $ingressSupportsIngressClassName .Values.collector.ingress.ingressClassName }}
   ingressClassName: {{ .Values.collector.ingress.ingressClassName }}
-  {{- end -}}
+  {{- end }}
   rules:
     {{- range .Values.collector.ingress.hosts }}
     - host: {{ include "jaeger.collector.ingressHost" . }}
