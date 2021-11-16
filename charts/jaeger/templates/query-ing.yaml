@@ -16,7 +16,7 @@ metadata:
 spec:
   {{- if and $ingressSupportsIngressClassName .Values.query.ingress.ingressClassName }}
   ingressClassName: {{ .Values.query.ingress.ingressClassName }}
-  {{- end -}}
+  {{- end }}
   rules:
     {{- range $host := .Values.query.ingress.hosts }}
     - host: {{ $host }}
