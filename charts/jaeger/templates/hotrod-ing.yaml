@@ -17,7 +17,7 @@ metadata:
 spec:
   {{- if and $ingressSupportsIngressClassName .Values.hotrod.ingress.ingressClassName }}
   ingressClassName: {{ .Values.hotrod.ingress.ingressClassName }}
-  {{- end -}}
+  {{- end }}
   rules:
     {{- range $host := .Values.hotrod.ingress.hosts }}
     - host: {{ $host }}
