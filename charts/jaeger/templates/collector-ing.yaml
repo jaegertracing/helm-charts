@@ -1,4 +1,5 @@
 {{- if .Values.collector.ingress.enabled -}}
+{{- $ingressSupportsIngressClassName := eq (include "common.ingress.supportsIngressClassname" .) "true" }}
 {{- $defaultServicePort := .Values.collector.service.http.port -}}
 {{- $basePath := .Values.collector.basePath -}}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
@@ -13,13 +14,16 @@ metadata:
     {{- toYaml .Values.collector.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
+  {{- if and $ingressSupportsIngressClassName .Values.collector.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.collector.ingress.ingressClassName }}
+  {{- end }}
   rules:
     {{- range .Values.collector.ingress.hosts }}
     - host: {{ include "jaeger.collector.ingressHost" . }}
       http:
         paths:
           - path: {{ $basePath }}
-            {{- if (include "common.ingress.supportsPathType" $) }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
             pathType: ImplementationSpecific
             {{- end }}
             {{- $servicePortString := (include "jaeger.collector.ingressServicePort" (dict "defaultServicePort" $defaultServicePort "context" .)) }}
