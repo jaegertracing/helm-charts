@@ -38,12 +38,18 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.ingester.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.ingester.nodeSelector | nindent 8 }}
-{{- if .Values.ingester.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ingester.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ingester.tolerations }}
       tolerations:
-        {{- toYaml .Values.ingester.tolerations | nindent 8 }}
-{{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
         securityContext:
