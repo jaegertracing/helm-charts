@@ -18,8 +18,6 @@ spec:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: ingester
-  strategy:
-    type: Recreate
   template:
     metadata:
       annotations:
@@ -33,23 +31,30 @@ spec:
         {{- toYaml .Values.ingester.podLabels | nindent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ include "jaeger.ingester.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
       {{- with .Values.ingester.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.ingester.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.ingester.nodeSelector | nindent 8 }}
-{{- if .Values.ingester.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ingester.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ingester.tolerations }}
       tolerations:
-        {{- toYaml .Values.ingester.tolerations | nindent 8 }}
-{{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
         securityContext:
           {{- toYaml .Values.ingester.securityContext | nindent 10 }}
-        image: {{ .Values.ingester.image }}:{{ .Values.tag }}
+        image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
           {{- range $key, $value := .Values.ingester.cmdlineParams }}
@@ -68,7 +73,7 @@ spec:
             value: {{ .Values.storage.type }}
           {{- include "storage.env" . | nindent 10 }}
           - name: KAFKA_CONSUMER_BROKERS
-            value: {{ include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers }}
+            value: {{ tpl (include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers) . }}
           - name: KAFKA_CONSUMER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
           - name: KAFKA_CONSUMER_AUTHENTICATION
@@ -126,5 +131,10 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- if .Values.storage.cassandra.tls.enabled }}
+        - name: {{ .Values.storage.cassandra.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.cassandra.tls.secretName }}
       {{- end }}
 {{- end -}}

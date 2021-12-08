@@ -11,13 +11,16 @@ metadata:
     {{- toYaml .Values.esIndexCleaner.annotations | nindent 4 }}
 {{- end }}
 spec:
-  concurrencyPolicy: "Forbid"
+  concurrencyPolicy: {{ .Values.esIndexCleaner.concurrencyPolicy }}
   schedule: {{ .Values.esIndexCleaner.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.esIndexCleaner.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.esIndexCleaner.failedJobsHistoryLimit }}
   suspend: false
   jobTemplate:
     spec:
+      {{- if .Values.esIndexCleaner.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esIndexCleaner.activeDeadlineSeconds }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esIndexCleaner.podAnnotations }}
@@ -42,7 +45,7 @@ spec:
           - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
             securityContext:
               {{- toYaml .Values.esIndexCleaner.securityContext | nindent 14 }}
-            image: "{{ .Values.esIndexCleaner.image }}:{{ .Values.esIndexCleaner.tag }}"
+            image: {{ .Values.esIndexCleaner.image }}:{{- .Values.esIndexCleaner.tag | default (include "jaeger.image.tag" .) }}
             imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}
@@ -79,5 +82,16 @@ spec:
         {{- with .Values.esIndexCleaner.tolerations }}
           tolerations:
             {{- toYaml . | nindent 12 }}
+        {{- end }}
+          volumes:
+          {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esIndexCleaner.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
         {{- end }}
 {{- end -}}

@@ -1,0 +1,4 @@
+# https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+/charts/jaeger/ @dvonthenen @mikelorant @naseemkullah @pavelnikolov
+/charts/jaeger-operator/ @batazor @cpanato

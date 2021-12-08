@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   release:
@@ -11,30 +11,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Fetch history
-        run: git fetch --prune --unshallow
+        with:
+          fetch-depth: 0
 
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      # See https://github.com/helm/chart-releaser-action/issues/6
       - name: Install Helm
-        run: |
-          curl -sSLo get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get
-          chmod 700 get_helm.sh
-          ./get_helm.sh
-          helm init --client-only
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.1
 
       - name: Add dependency chart repos
         run: |
-          helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-          helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+          helm repo add incubator https://charts.helm.sh/incubator
           helm repo add elastic https://helm.elastic.co
+          helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.0.0-rc.2
+        uses: helm/chart-releaser-action@v1.1.0
         env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -14,10 +14,18 @@ spec:
   schedule: {{ .Values.spark.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.spark.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.spark.failedJobsHistoryLimit }}
+  concurrencyPolicy: {{ .Values.spark.concurrencyPolicy }}
   jobTemplate:
     spec:
+      {{- if .Values.spark.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.spark.activeDeadlineSeconds }}
+      {{- end}}
       template:
         metadata:
+          {{- if .Values.spark.podAnnotations }}
+          annotations:
+            {{- toYaml .Values.spark.podAnnotations | nindent 12 }}
+          {{- end }}
           labels:
             {{- include "jaeger.selectorLabels" . | nindent 12 }}
             app.kubernetes.io/component: spark
@@ -49,12 +57,16 @@ spec:
             {{- if .Values.spark.extraEnv }}
               {{- toYaml .Values.spark.extraEnv | nindent 14 }}
             {{- end }}
+            {{- if eq .Values.storage.type "cassandra" }}
               - name: CASSANDRA_CONTACT_POINTS
                 value: {{ include "cassandra.contact_points" . }}
+            {{- end }}
+            {{- if eq .Values.storage.type "elasticsearch" }}
               - name: ES_NODES
                 value: {{ include "elasticsearch.client.url" . }}
               - name: ES_NODES_WAN_ONLY
                 value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
+            {{- end }}
             resources:
               {{- toYaml .Values.spark.resources | nindent 14 }}
             volumeMounts:

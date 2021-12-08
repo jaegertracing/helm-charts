@@ -1,9 +1,10 @@
 # Default values for jaeger-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.18.0
+  tag: 1.28.0
   pullPolicy: IfNotPresent
   imagePullSecrets: []
 
@@ -13,6 +14,8 @@ crd:
 jaeger:
   # Specifies whether Jaeger instance should be created
   create: false
+  # namespace where Jaeger resource should be created default to .Release.Namespace
+  namespace:
   spec: {}
 
 rbac:
@@ -23,12 +26,31 @@ rbac:
   # Specifies arbitrary namespaces to be watched
   watchNamespaces: []
 
+service:
+  type: ClusterIP
+  # Specify a specific node port when type is NodePort
+  # nodePort: 32500
+  # Annotations for service
+  annotations: {}
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  # Annotations for serviceAccount
+  annotations: {}
+
+# Specifies extra environment variables passed to the operator:
+extraEnv: []
+  # Specifies log-level for the operator:
+  # - name: LOG-LEVEL
+  #   value: debug
+
+extraLabels: {}
+  # Specifies extra labels for the operator deployment:
+  # foo: bar
 
 resources: {}
   # limits:
@@ -45,3 +67,5 @@ tolerations: []
 affinity: {}
 
 securityContext: {}
+
+priorityClassName:

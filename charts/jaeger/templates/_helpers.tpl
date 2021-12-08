@@ -32,6 +32,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create image tag value which defaults to .Chart.AppVersion.
+*/}}
+{{- define "jaeger.image.tag" -}}
+{{- .Values.tag | default .Chart.AppVersion }}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "jaeger.labels" -}}
@@ -85,6 +92,28 @@ Create the name of the esIndexCleaner service account to use
 {{- end -}}
 
 {{/*
+Create the name of the esRollover service account to use
+*/}}
+{{- define "jaeger.esRollover.serviceAccountName" -}}
+{{- if .Values.esRollover.serviceAccount.create -}}
+  {{ default (printf "%s-es-rollover" (include "jaeger.fullname" .)) .Values.esRollover.serviceAccount.name }}
+{{- else -}}
+  {{ default "default" .Values.esRollover.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the esLookback service account to use
+*/}}
+{{- define "jaeger.esLookback.serviceAccountName" -}}
+{{- if .Values.esLookback.serviceAccount.create -}}
+  {{ default (printf "%s-es-lookback" (include "jaeger.fullname" .)) .Values.esLookback.serviceAccount.name }}
+{{- else -}}
+  {{ default "default" .Values.esLookback.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the hotrod service account to use
 */}}
 {{- define "jaeger.hotrod.serviceAccountName" -}}
@@ -126,6 +155,28 @@ Create the name of the collector service account to use
 {{- else -}}
   {{ default "default" .Values.collector.serviceAccount.name }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Create the collector ingress host
+*/}}
+{{- define "jaeger.collector.ingressHost" -}}
+{{- if (kindIs "string" .) }}
+  {{- . }}
+{{- else }}
+  {{- .host }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Create the collector ingress servicePort
+*/}}
+{{- define "jaeger.collector.ingressServicePort" -}}
+{{- if (kindIs "string" .context) }}
+  {{- .defaultServicePort }}
+{{- else }}
+  {{- .context.servicePort }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -337,7 +388,7 @@ Cassandra related command line options
 */}}
 {{- define "cassandra.cmdArgs" -}}
 {{- range $key, $value := .Values.storage.cassandra.cmdlineParams -}}
-{{- if $value -}}
+{{- if $value }}
 - --{{ $key }}={{ $value }}
 {{- else }}
 - --{{ $key }}
@@ -350,7 +401,7 @@ Elasticsearch related command line options
 */}}
 {{- define "elasticsearch.cmdArgs" -}}
 {{- range $key, $value := .Values.storage.elasticsearch.cmdlineParams -}}
-{{- if $value -}}
+{{- if $value }}
 - --{{ $key }}={{ $value }}
 {{- else }}
 - --{{ $key }}
