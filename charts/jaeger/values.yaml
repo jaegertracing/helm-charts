@@ -551,9 +551,7 @@ esIndexCleaner:
     runAsUser: 1000
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
-  # tag: 1.22
   imagePullSecrets: []
-  tag: latest
   pullPolicy: Always
   cmdlineParams: {}
   extraEnv: []
