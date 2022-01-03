@@ -51,7 +51,7 @@ helm show values elastic/elasticsearch
 ```
 
 ```console
-helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+helm repo add incubator https://charts.helm.sh/incubator
 helm show values incubator/cassandra
 ```
 
