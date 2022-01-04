@@ -13,6 +13,20 @@ tag: ""
 nameOverride: ""
 fullnameOverride: ""
 
+allInOne:
+  enabled: false
+  image: jaegertracing/all-in-one
+  tag: 1.29.0
+  pullPolicy: IfNotPresent
+  # samplingConfig: |-
+  #   {
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
+
+
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
