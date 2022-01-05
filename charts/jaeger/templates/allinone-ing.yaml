@@ -1,0 +1,15 @@
+{{- if .Values.allInOne.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "jaeger.query.name" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: all-in-one
+spec:
+  defaultBackend:
+    service:
+      name: {{ template "jaeger.query.name" . }}
+      port:
+        number: 16686
+{{- end -}}
