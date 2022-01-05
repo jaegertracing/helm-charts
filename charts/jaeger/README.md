@@ -70,6 +70,9 @@ team [recommends Elasticsearch backend over Cassandra](https://www.jaegertracing
 as such the default backend may change in the future and **it is highly
 recommended to explicitly configure storage**.
 
+If you are just starting out with a testing/demo setup, you can also use in-memory storage for a
+fast and easy setup experience using the [Jaeger All in One executable](https://www.jaegertracing.io/docs/1.29/getting-started/#all-in-one).
+
 ### Elasticsearch configuration
 
 #### Elasticsearch Rollover
@@ -262,6 +265,34 @@ helm install jaeger jaegertracing/jaeger \
   --set ingester.enabled=true \
   --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
   --set storage.kafka.topic=<TOPIC>
+```
+
+### All in One In-Memory Configuration
+
+#### Installing the Chart using the All in One executable and in-memory storage
+
+To install the chart with the release name `jaeger` using in-memory storage and the All in One
+executable, configure the chart as follows:
+
+Content of the `values.yaml` file:
+
+```yaml
+provisionDataStore:
+  cassandra: false
+allInOne:
+  enabled: true
+storage:
+  type: none
+agent:
+  enabled: false
+collector:
+  enabled: false
+query:
+  enabled: false
+```
+
+```bash
+helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
 
 ## oAuth2 Sidecar
