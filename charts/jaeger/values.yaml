@@ -25,7 +25,8 @@ allInOne:
   #       "param": 1
   #     }
   #   }
-
+  ingress:
+    enabled: true
 
 storage:
   # allowed values (cassandra, elasticsearch)
