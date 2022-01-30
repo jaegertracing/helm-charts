@@ -3,7 +3,7 @@ appVersion: 1.28.0
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
-version: 0.52.0
+version: 0.53.0
 keywords:
   - jaeger
   - opentracing
@@ -34,7 +34,7 @@ dependencies:
     repository: https://helm.elastic.co
     condition: provisionDataStore.elasticsearch
   - name: kafka
-    version: ^12.16.0
+    version: ^14.9.1
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common
