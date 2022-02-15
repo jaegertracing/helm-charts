@@ -89,6 +89,8 @@ storage:
     topic: jaeger_v1_test
     authentication: none
     extraEnv: []
+  grpcPlugin:
+    extraEnv: []
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -284,6 +286,7 @@ collector:
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
+  extraEnv: []
   cmdlineParams: {}
   replicaCount: 1
   autoscaling:

@@ -373,13 +373,24 @@ Elasticsearch related environment variables
 {{- end -}}
 
 {{/*
-Cassandra or Elasticsearch related environment variables depending on which is used
+grpcPlugin related environment variables
+*/}}
+{{- define "grpcPlugin.env" -}}
+{{- if .Values.storage.grpcPlugin.extraEnv }}
+{{- toYaml .Values.storage.grpcPlugin.extraEnv }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Cassandra, Elasticsearch, or grpc-plugin related environment variables depending on which is used
 */}}
 {{- define "storage.env" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
 {{ include "cassandra.env" . }}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{ include "elasticsearch.env" . }}
+{{- else if eq .Values.storage.type "grpc-plugin" -}}
+{{ include "grpcPlugin.env" . }}
 {{- end -}}
 {{- end -}}
 
