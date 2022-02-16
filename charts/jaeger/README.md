@@ -258,13 +258,33 @@ helm install jaeger jaegertracing/jaeger \
 
 #### Installing the Chart with Ingester using an existing Kafka Cluster
 
-You can use an exisiting Kafka cluster with jaeger too
+You can use an existing Kafka cluster with jaeger too
 
 ```console
 helm install jaeger jaegertracing/jaeger \
   --set ingester.enabled=true \
   --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
   --set storage.kafka.topic=<TOPIC>
+```
+
+### Other Storage Configuration
+
+If you are using grpc-plugin based storage, you can set environment
+variables that are needed by the plugin.
+
+As as example if using the [jaeger-mongodb](https://github.com/mongodb-labs/jaeger-mongodb)
+plugin you can set the `MONGO_URL` as follows...
+
+```YAML
+storage:
+  type: grpc-plugin
+  grpcPlugin:
+    extraEnv:
+      - name: MONGO_URL
+        valueFrom:
+          secretKeyRef:
+            key: MONGO_URL
+            name: jaeger-secrets
 ```
 
 ### All in One In-Memory Configuration
@@ -339,8 +359,8 @@ query:
 
 ## Installing extra kubernetes objects
 
-If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain 
-the yaml describing these objects. The values in the array are treated as a template to allow the use of variable 
+If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain
+the yaml describing these objects. The values in the array are treated as a template to allow the use of variable
 substitution and function calls as in the example below.
 
 Content of the `jaeger-values.yaml` file:
