@@ -23,7 +23,7 @@ maintainers:
   - name: naseemkullah
     email: naseem@transit.app
   - name: pavelnikolov
-    email: pavel.nikolov@fairfaxmedia.com.au
+    email: me@pavelnikolov.net
 dependencies:
   - name: cassandra
     version: 0.15.3
