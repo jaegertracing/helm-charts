@@ -73,6 +73,11 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
+      {{- with .Values.allInOne.resources }}
+          resources:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+
         {{- if .Values.allInOne.samplingConfig}}
           volumeMounts:
             - name: strategies
