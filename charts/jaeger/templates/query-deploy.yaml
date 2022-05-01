@@ -80,6 +80,9 @@ spec:
         - name: query
           containerPort: 16686
           protocol: TCP
+        - name: grpc
+          containerPort: 16685
+          protocol: TCP
         - name: admin
           containerPort: 16687
           protocol: TCP
