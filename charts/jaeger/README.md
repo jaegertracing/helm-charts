@@ -311,6 +311,19 @@ query:
   enabled: false
 ```
 
+It's possible to specify resources for the all in one deployment:
+
+```yaml
+allInOne:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+```
+
 ```bash
 helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
