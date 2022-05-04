@@ -311,10 +311,13 @@ query:
   enabled: false
 ```
 
-It's possible to specify resources for the all in one deployment:
+It's possible to specify resources and extra environment variables for the all in one deployment:
 
 ```yaml
 allInOne:
+  extraEnv:
+    - name: QUERY_BASE_PATH
+      value: /jaeger
   resources:
     limits:
       cpu: 500m

@@ -27,6 +27,9 @@ spec:
     spec:
       containers:
         - env:
+          {{- if .Values.allInOne.extraEnv }}
+            {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
+          {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: memory
             - name: COLLECTOR_ZIPKIN_HOST_PORT
