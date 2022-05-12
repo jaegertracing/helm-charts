@@ -26,6 +26,14 @@ spec:
       {{- if .Values.collector.serviceMonitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.collector.serviceMonitor.scrapeTimeout }}
       {{- end }}
+      {{- if .Values.collector.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml .Values.collector.serviceMonitor.relabelings | nindent 8 }}
+      {{- end }}
+      {{- if .Values.collector.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml .Values.collector.serviceMonitor.metricRelabelings | nindent 8 }}
+      {{- end }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

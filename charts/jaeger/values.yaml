@@ -213,6 +213,11 @@ ingester:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 agent:
   podSecurityContext: {}
@@ -284,6 +289,11 @@ agent:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 collector:
   podSecurityContext: {}
@@ -411,6 +421,11 @@ collector:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 query:
   enabled: true
@@ -521,6 +536,11 @@ query:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
   # config: |-
   #   {
   #     "dependencies": {
