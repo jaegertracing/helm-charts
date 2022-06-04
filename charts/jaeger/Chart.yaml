@@ -38,5 +38,5 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common
-    repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    version: 1.8.0
+    repository: https://charts.bitnami.com/bitnami
+    version: 1.16.0
