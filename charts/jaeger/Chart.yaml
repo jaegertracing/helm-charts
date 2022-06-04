@@ -3,7 +3,7 @@ appVersion: 1.30.0
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
-version: 0.56.5
+version: 0.56.6
 keywords:
   - jaeger
   - opentracing
@@ -38,5 +38,5 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common
-    repository: https://charts.bitnami.com/bitnami
+    repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     version: 1.8.0
