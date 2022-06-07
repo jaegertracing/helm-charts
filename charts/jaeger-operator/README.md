@@ -15,6 +15,9 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 ## Prerequisites
 
 - Kubernetes 1.19+
+- cert-manager 1.6.1+ instaled 
+
+> **Caution**: Versions `2.28.0` and `2.29.0` are corrupted. Please do not use them, see [link](https://github.com/jaegertracing/helm-charts/issues/351)
 
 ## Installing the Chart
 
@@ -24,10 +27,10 @@ Add the Jaeger Tracing Helm repository:
 $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 ```
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `my-release` in `observability` namespace: 
 
 ```console
-$ helm install --name my-release jaegertracing/jaeger-operator
+$ helm install my-release jaegertracing/jaeger-operator -n observability
 ```
 
 The command deploys jaeger-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

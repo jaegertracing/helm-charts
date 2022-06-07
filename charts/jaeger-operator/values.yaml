@@ -11,6 +11,25 @@ image:
 crd:
   install: true
 
+certs:
+  issuer:
+    create: true
+    name: ""
+  certificate:
+    create: true
+    namespace: ""
+    secretName: ""
+
+webhooks:
+  mutatingWebhook:
+    create: true
+  validatingWebhook:
+    create: true
+  service:
+    annotations: {}
+    create: true
+    name: ""
+
 jaeger:
   # Specifies whether Jaeger instance should be created
   create: false

@@ -22,3 +22,25 @@ spec:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.service.type }}
+
+---
+{{- if .Values.webhooks.service.create }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ include "jaeger-operator.labels" . | indent 4 }}
+  name: {{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}
+  namespace: {{ .Release.Namespace }}
+{{- if .Values.webhooks.service.annotations }}
+  annotations:
+{{ toYaml .Values.webhooks.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 9443
+  selector:
+{{ include "jaeger-operator.labels" . | indent 4 }}
+{{- end }}
