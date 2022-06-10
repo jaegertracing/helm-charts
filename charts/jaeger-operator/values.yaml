@@ -8,9 +8,6 @@ image:
   pullPolicy: IfNotPresent
   imagePullSecrets: []
 
-crd:
-  install: true
-
 certs:
   issuer:
     create: true
