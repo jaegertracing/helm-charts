@@ -15,7 +15,8 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 ## Prerequisites
 
 - Kubernetes 1.19+
-- cert-manager 1.6.1+ instaled 
+- Helm 3
+- cert-manager 1.6.1+ installed, or certificate for webhook service in a secret
 
 ## Check compability matrix
 See the compatibility matrix [here](./COMPATIBILITY.md).
@@ -60,7 +61,6 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
-| `crd.install`           | CustomResourceDefinition will be installed                                                                  | `true`                          |
 | `rbac.create`           | All required roles and rolebindings will be created                                                         | `true`                          |
 | `serviceAccount.create` | Service account to use                                                                                      | `true`                          |
 | `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
@@ -81,6 +81,13 @@ You can also specify any non-array parameter using the `--set key=value[,key=val
 ```console
 $ helm install jaegertracing/jaeger-operator --name my-release \
     --set rbac.create=false
+```
+
+To install the chart without creating the CRDs (any files under `chart/crds`) make use of the `--skip-crds` flag. For example,
+
+```console
+$ helm install jaegertracing/jaeger-operator --name my-release \
+    --skip-crds
 ```
 
 ## After the Helm Installation
