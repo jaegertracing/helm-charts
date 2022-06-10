@@ -17,7 +17,8 @@ This chart bootstraps a jaeger-operator deployment on a [Kubernetes](http://kube
 - Kubernetes 1.19+
 - cert-manager 1.6.1+ instaled 
 
-> **Caution**: Versions `2.28.0` and `2.29.0` are corrupted. Please do not use them, see [link](https://github.com/jaegertracing/helm-charts/issues/351)
+## Check compability matrix
+See the compatibility matrix [here](./COMPATIBILITY.md).
 
 ## Installing the Chart
 
