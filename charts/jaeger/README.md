@@ -336,6 +336,8 @@ If extra protection of the Jaeger UI is needed, then the oAuth2 sidecar can be e
 sidecar acts as a security proxy in front of the Jaeger Query service and enforces user authentication before reaching
 the Jaeger UI. This method can work with any valid provider including Keycloak, Azure, Google, GitHub, and more.
 
+Offical docs [here](https://oauth2-proxy.github.io/oauth2-proxy/docs/behaviour)
+
 Content of the `jaeger-values.yaml` file:
 
 ```YAML
@@ -343,7 +345,7 @@ query:
   enabled: true
   oAuthSidecar:
     enabled: true
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
     pullPolicy: IfNotPresent
     containerPort: 4180
     args:
@@ -367,6 +369,7 @@ query:
       client_id = "jaeger-query"
       oidc_issuer_url = "https://keycloak-svc-domain/auth/realms/Default"
       cookie_secure = "true"
+      cookie_secret = ""
       email_domains = "*"
       oidc_groups_claim = "groups"
       user_id_claim = "preferred_username"
