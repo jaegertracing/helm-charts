@@ -8,6 +8,9 @@ metadata:
   name: {{ template "jaeger.collector.name" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
+    {{- if .Values.collector.ingress.labels }}
+    {{- toYaml .Values.collector.ingress.labels | nindent 4 }}
+    {{- end }}
     app.kubernetes.io/component: collector
   {{- if .Values.collector.ingress.annotations }}
   annotations:
