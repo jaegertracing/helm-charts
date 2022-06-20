@@ -48,10 +48,12 @@ spec:
           - containerPort: 9443
             name: webhook-server
             protocol: TCP  
+          {{- if .Values.certs.certificate.create }}
           volumeMounts:
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
+          {{- end }}
           args: ["start"]
           env:
             - name: WATCH_NAMESPACE
@@ -77,11 +79,13 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.certs.certificate.create }}
       volumes:
       - name: cert
         secret:
           defaultMode: 420
           secretName: {{ default "jaeger-operator-service-cert" .Values.certs.certificate.secretName }}
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
