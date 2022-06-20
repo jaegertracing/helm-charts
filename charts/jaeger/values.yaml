@@ -351,7 +351,7 @@ collector:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     # labels:
-      # app: jaeger-collector  
+      # app: jaeger-collector
     # tls:
       # Secrets must be manually created in the namespace.
       # - secretName: chart-example-tls
@@ -497,7 +497,7 @@ query:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     # labels:
-      # app: jaeger-query  
+      # app: jaeger-query
     # tls:
       # Secrets must be manually created in the namespace.
       # - secretName: chart-example-tls
