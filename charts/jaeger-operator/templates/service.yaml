@@ -22,7 +22,6 @@ spec:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.service.type }}
-
 ---
 {{- if .Values.webhooks.service.create }}
 apiVersion: v1
