@@ -67,6 +67,18 @@ spec:
           - name: COLLECTOR_ZIPKIN_HOST_PORT
             value: {{ .Values.collector.service.zipkin.port | quote }}
           {{- end }}
+          {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
+          - name: COLLECTOR_OTLP_ENABLED
+            value: "true"
+          {{- end }}
+          {{- if ne (default 4317 .Values.collector.service.otlp.grpc.port | toString ) "4317" }}
+          - name: COLLECTOR_OTLP_GRPC_HOST_PORT
+            value: {{ .Values.collector.service.otlp.grpc.port | quote }}
+          {{- end }}
+          {{- if ne (default 4318 .Values.collector.service.otlp.http.port | toString) "4318" }}
+          - name: COLLECTOR_OTLP_HTTP_HOST_PORT
+            value: {{ .Values.collector.service.otlp.http.port | quote }}
+          {{- end }}
           {{- if .Values.ingester.enabled }}
           - name: SPAN_STORAGE_TYPE
             value: kafka
@@ -105,6 +117,14 @@ spec:
         {{- if .Values.collector.service.zipkin }}
         - containerPort: {{ .Values.collector.service.zipkin.port }}
           name: zipkin
+          protocol: TCP
+        {{- end }}
+        {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
+        - containerPort: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
+          name: otlp-grpc
+          protocol: TCP
+        - containerPort: {{ default 4318 .Values.collector.service.otlp.http.port }}
+          name: otlp-http
           protocol: TCP
         {{- end }}
         readinessProbe:
