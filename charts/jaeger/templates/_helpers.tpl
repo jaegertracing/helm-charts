@@ -350,9 +350,9 @@ Elasticsearch related environment variables
 {{- define "elasticsearch.env" -}}
 - name: ES_SERVER_URLS
   value: {{ include "elasticsearch.client.url" . }}
+{{- if .Values.storage.elasticsearch.usePassword }}
 - name: ES_USERNAME
   value: {{ .Values.storage.elasticsearch.user }}
-{{- if .Values.storage.elasticsearch.usePassword }}
 - name: ES_PASSWORD
   valueFrom:
     secretKeyRef:
