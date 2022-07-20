@@ -332,6 +332,13 @@ collector:
     zipkin: {}
       # port: 9411
       # nodePort:
+    otlp:
+      grpc: {}
+        # port: 4317
+        # nodePort:
+      http: {}
+        # port: 4318
+        # nodePort:
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
