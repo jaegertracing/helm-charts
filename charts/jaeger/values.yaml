@@ -250,6 +250,8 @@ ingester:
   podLabels: {}
   extraSecretMounts: []
   extraConfigmapMounts: []
+  extraEnv: []
+  envFrom: []
 
   serviceMonitor:
     enabled: false
@@ -322,6 +324,7 @@ agent:
   #   subPath: ""
   #   configMap: jaeger-config
   #   readOnly: true
+  envFrom: []
   useHostNetwork: false
   dnsPolicy: ClusterFirst
   priorityClassName: ""
@@ -347,6 +350,7 @@ collector:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   extraEnv: []
+  envFrom: []
   cmdlineParams: {}
   basePath: /
   replicaCount: 1
@@ -539,6 +543,7 @@ query:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   extraEnv: []
+  envFrom: []
   replicaCount: 1
   service:
     annotations: {}

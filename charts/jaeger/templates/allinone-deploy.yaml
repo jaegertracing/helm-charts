@@ -45,6 +45,9 @@ spec:
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
             {{- end }}
+        {{- with .Values.allInOne.envFrom }}
+          envFrom: {{- toYaml . | nindent 12 }}
+        {{- end }}
           image: {{ .Values.allInOne.image }}:{{- .Values.allInOne.tag | default (include "jaeger.image.tag" .) }}
           imagePullPolicy: {{ .Values.allInOne.pullPolicy }}
           name: jaeger
