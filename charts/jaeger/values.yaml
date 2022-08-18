@@ -26,6 +26,16 @@ allInOne:
   #       "param": 1
   #     }
   #   }
+  service:
+    otlp:
+      grpc:
+        {}
+        # port: 4317
+        # nodePort:
+      http:
+        {}
+        # port: 4318
+        # nodePort:
   ingress:
     enabled: true
   # resources:
@@ -52,7 +62,8 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     ## Cassandra related env vars to be configured on the concerned components
-    extraEnv: []
+    extraEnv:
+      []
       # - name: CASSANDRA_SERVERS
       #   value: cassandra
       # - name: CASSANDRA_PORT
@@ -62,7 +73,8 @@ storage:
       # - name: CASSANDRA_TLS_ENABLED
       #   value: "false"
     ## Cassandra related cmd line opts to be configured on the concerned components
-    cmdlineParams: {}
+    cmdlineParams:
+      {}
       # cassandra.servers: cassandra
       # cassandra.port: 9042
       # cassandra.keyspace: jaeger_v1_test
@@ -81,14 +93,15 @@ storage:
     nodesWanOnly: false
     extraEnv: []
     ## ES related env vars to be configured on the concerned components
-      # - name: ES_SERVER_URLS
-      #   value: http://elasticsearch-master:9200
-      # - name: ES_USERNAME
-      #   value: elastic
-      # - name: ES_INDEX_PREFIX
-      #   value: test
+    # - name: ES_SERVER_URLS
+    #   value: http://elasticsearch-master:9200
+    # - name: ES_USERNAME
+    #   value: elastic
+    # - name: ES_INDEX_PREFIX
+    #   value: test
     ## ES related cmd line opts to be configured on the concerned components
-    cmdlineParams: {}
+    cmdlineParams:
+      {}
       # es.server-urls: http://elasticsearch-master:9200
       # es.username: elastic
       # es.index-prefix: test
@@ -136,7 +149,8 @@ schema:
   image: jaegertracing/jaeger-cassandra-schema
   imagePullSecrets: []
   pullPolicy: IfNotPresent
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -154,7 +168,8 @@ schema:
   podSecurityContext: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
-  extraEnv: []
+  extraEnv:
+    []
     # - name: MODE
     #   value: prod
     # - name: TRACE_TTL
@@ -188,7 +203,8 @@ ingester:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 1
     #   memory: 1Gi
@@ -232,7 +248,8 @@ agent:
   extraEnv: []
   daemonset:
     useHostPort: false
-    updateStrategy: {}
+    updateStrategy:
+      {}
       # type: RollingUpdate
       # rollingUpdate:
       #   maxUnavailable: 1
@@ -249,7 +266,8 @@ agent:
     binaryPort: 6832
     # samplingPort: (HTTP) serve configs, sampling strategies
     samplingPort: 5778
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -317,7 +335,7 @@ collector:
   service:
     annotations: {}
     # The IP to be used by the load balancer (if supported)
-    loadBalancerIP: ''
+    loadBalancerIP: ""
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
@@ -329,14 +347,17 @@ collector:
       port: 14268
       # nodePort:
     # can accept Zipkin spans in JSON or Thrift
-    zipkin: {}
+    zipkin:
+      {}
       # port: 9411
       # nodePort:
     otlp:
-      grpc: {}
+      grpc:
+        {}
         # port: 4317
         # nodePort:
-      http: {}
+      http:
+        {}
         # port: 4318
         # nodePort:
   ingress:
@@ -355,16 +376,17 @@ collector:
     #   - host: chart-example.local
     #     servicePort: grpc
     # annotations:
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
     # labels:
-      # app: jaeger-collector
+    # app: jaeger-collector
     # tls:
-      # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
-      #   hosts:
-      #     - chart-example.local
-  resources: {}
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+  resources:
+    {}
     # limits:
     #   cpu: 1
     #   memory: 1Gi
@@ -464,13 +486,13 @@ query:
   securityContext: {}
   agentSidecar:
     enabled: true
-#    resources:
-#      limits:
-#        cpu: 500m
-#        memory: 512Mi
-#      requests:
-#        cpu: 256m
-#        memory: 128Mi
+  #    resources:
+  #      limits:
+  #        cpu: 500m
+  #        memory: 512Mi
+  #      requests:
+  #        cpu: 256m
+  #        memory: 128Mi
   annotations: {}
   image: jaegertracing/jaeger-query
   # tag: 1.22
@@ -501,18 +523,19 @@ query:
     # hosts:
     #   - chart-example.local
     # annotations:
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
     # labels:
-      # app: jaeger-query
+    # app: jaeger-query
     # tls:
-      # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
-      #   hosts:
-      #     - chart-example.local
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
     health:
       exposed: false
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -580,7 +603,8 @@ spark:
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -613,14 +637,16 @@ esIndexCleaner:
   imagePullSecrets: []
   pullPolicy: Always
   cmdlineParams: {}
-  extraEnv: []
+  extraEnv:
+    []
     # - name: ROLLOVER
     #   value: 'true'
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -661,7 +687,8 @@ esRollover:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -684,8 +711,8 @@ esRollover:
   podLabels: {}
   initHook:
     extraEnv: []
-      # - name: SHARDS
-      #   value: "3"
+    # - name: SHARDS
+    #   value: "3"
     annotations: {}
     podAnnotations: {}
     podLabels: {}
@@ -706,12 +733,13 @@ esLookback:
     - name: UNIT
       value: days
     - name: UNIT_COUNT
-      value: '7'
-  schedule: '5 0 * * *'
+      value: "7"
+  schedule: "5 0 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -758,7 +786,8 @@ hotrod:
     # Used to create Ingress record (should be used with service.type: ClusterIP).
     hosts:
       - chart-example.local
-    annotations: {}
+    annotations:
+      {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     tls:
@@ -766,7 +795,8 @@ hotrod:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
-  resources: {}
+  resources:
+    {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following

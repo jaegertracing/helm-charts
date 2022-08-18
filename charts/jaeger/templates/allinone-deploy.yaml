@@ -36,6 +36,18 @@ spec:
               value: :9411
             - name: JAEGER_DISABLED
               value: "false"
+          {{- if or .Values.allInOne.service.otlp.grpc .Values.allInOne.service.otlp.http }}
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+          {{- end }}
+          {{- if ne (default 4317 .Values.allInOne.service.otlp.grpc.port | toString ) "4317" }}
+            - name: COLLECTOR_OTLP_GRPC_HOST_PORT
+              value: {{ .Values.allInOne.service.otlp.grpc.port | quote }}
+          {{- end }}
+          {{- if ne (default 4318 .Values.allInOne.service.otlp.http.port | toString) "4318" }}
+            - name: COLLECTOR_OTLP_HTTP_HOST_PORT
+              value: {{ .Values.allInOne.service.otlp.http.port | quote }}
+          {{- end }}
             {{- if .Values.allInOne.samplingConfig }}
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
@@ -56,6 +68,14 @@ spec:
               protocol: TCP
             - containerPort: 9411
               protocol: TCP
+            {{- if or .Values.allInOne.service.otlp.grpc .Values.allInOne.service.otlp.http }}
+            - containerPort: {{ default 4317 .Values.allInOne.service.otlp.grpc.port }}
+              name: otlp-grpc
+              protocol: TCP
+            - containerPort: {{ default 4318 .Values.allInOne.service.otlp.http.port }}
+              name: otlp-http
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             failureThreshold: 5
             httpGet:
