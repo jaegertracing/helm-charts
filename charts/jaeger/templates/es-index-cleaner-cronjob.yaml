@@ -21,6 +21,9 @@ spec:
       {{- if .Values.esIndexCleaner.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esIndexCleaner.activeDeadlineSeconds }}
       {{- end }}
+      {{- if .Values.esIndexCleaner.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esIndexCleaner.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esIndexCleaner.podAnnotations }}

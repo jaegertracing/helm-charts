@@ -20,6 +20,9 @@ spec:
       {{- if .Values.spark.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.spark.activeDeadlineSeconds }}
       {{- end}}
+      {{- if .Values.spark.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.spark.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.spark.podAnnotations }}

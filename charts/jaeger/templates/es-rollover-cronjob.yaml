@@ -21,6 +21,9 @@ spec:
       {{- if .Values.esRollover.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esRollover.activeDeadlineSeconds }}
       {{- end }}
+      {{- if .Values.esRollover.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esRollover.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esRollover.podAnnotations }}
