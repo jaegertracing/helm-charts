@@ -601,6 +601,7 @@ spark:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 
 esIndexCleaner:
   enabled: false
@@ -642,6 +643,7 @@ esIndexCleaner:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 
 esRollover:
   enabled: false
@@ -682,6 +684,7 @@ esRollover:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
   initHook:
     extraEnv: []
       # - name: SHARDS
@@ -732,6 +735,7 @@ esLookback:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 # End: Default values for the various components of Jaeger
 
 hotrod:

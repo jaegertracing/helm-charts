@@ -21,6 +21,9 @@ spec:
       {{- if .Values.esLookback.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esLookback.activeDeadlineSeconds }}
       {{- end }}
+      {{- if .Values.esLookback.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esLookback.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.esLookback.podAnnotations }}
