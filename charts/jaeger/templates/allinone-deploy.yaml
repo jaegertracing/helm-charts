@@ -36,6 +36,8 @@ spec:
               value: :9411
             - name: JAEGER_DISABLED
               value: "false"
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
             {{- if .Values.allInOne.samplingConfig }}
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
@@ -55,6 +57,10 @@ spec:
             - containerPort: 16686
               protocol: TCP
             - containerPort: 9411
+              protocol: TCP
+            - containerPort: 4317
+              protocol: TCP
+            - containerPort: 4318
               protocol: TCP
           livenessProbe:
             failureThreshold: 5

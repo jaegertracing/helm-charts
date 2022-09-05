@@ -16,7 +16,6 @@ fullnameOverride: ""
 allInOne:
   enabled: false
   image: jaegertracing/all-in-one
-  tag: 1.29.0
   pullPolicy: IfNotPresent
   extraEnv: []
   # samplingConfig: |-
