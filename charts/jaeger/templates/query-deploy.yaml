@@ -216,7 +216,7 @@ spec:
             port: admin
 {{- end }}
       {{- if .Values.query.sidecars }}
-        {{- tpl (toYaml .Values.query.sidecars) . | nindent 8 }}
+        {{- tpl (toYaml .Values.query.sidecars) . | nindent 6 }}
       {{- end }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
