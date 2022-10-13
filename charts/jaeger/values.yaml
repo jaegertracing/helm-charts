@@ -35,6 +35,7 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
