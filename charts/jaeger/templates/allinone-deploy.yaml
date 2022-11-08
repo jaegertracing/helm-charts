@@ -59,6 +59,8 @@ spec:
               protocol: TCP
             - containerPort: 16686
               protocol: TCP
+            - containerPort: 16685
+              protocol: TCP
             - containerPort: 9411
               protocol: TCP
             - containerPort: 4317
