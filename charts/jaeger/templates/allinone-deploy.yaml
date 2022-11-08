@@ -21,6 +21,9 @@ spec:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: all-in-one
+{{- if .Values.allInOne.podLabels }}
+        {{- toYaml .Values.allInOne.podLabels | nindent 8 }}
+{{- end }}
       annotations:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
