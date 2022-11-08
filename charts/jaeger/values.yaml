@@ -321,6 +321,8 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
+    # Cluster IP address to assign to service. Set to None to make service headless
+    clusterIP: ""
     grpc:
       port: 14250
       # nodePort:
