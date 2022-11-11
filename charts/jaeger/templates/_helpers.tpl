@@ -430,3 +430,18 @@ Cassandra or Elasticsearch related command line options depending on which is us
 {{- include "elasticsearch.cmdArgs" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Add extra argument to the command line options
+Usage:
+    {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
+*/}}
+{{- define "extra.cmdArgs" -}}
+{{- range $key, $value := .cmdlineParams -}}
+{{- if $value }}
+- --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end }}
+{{- end -}}
+{{- end -}}
