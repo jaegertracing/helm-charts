@@ -48,6 +48,10 @@ spec:
           image: {{ .Values.allInOne.image }}:{{- .Values.allInOne.tag | default (include "jaeger.image.tag" .) }}
           imagePullPolicy: {{ .Values.allInOne.pullPolicy }}
           name: jaeger
+          args:
+            {{- range $arg := .Values.allInOne.args }}
+            - "{{ $arg }}"
+            {{- end }}
           ports:
             - containerPort: 5775
               protocol: UDP
