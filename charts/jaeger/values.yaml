@@ -18,6 +18,9 @@ allInOne:
   image: jaegertracing/all-in-one
   pullPolicy: IfNotPresent
   extraEnv: []
+  # command line arguments / CLI flags
+  # See https://www.jaegertracing.io/docs/cli/
+  args: []
   # samplingConfig: |-
   #   {
   #     "default_strategy": {
