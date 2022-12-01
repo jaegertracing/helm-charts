@@ -335,6 +335,11 @@ collector:
     maxReplicas: 10
     # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   service:
     annotations: {}
     # The IP to be used by the load balancer (if supported)
