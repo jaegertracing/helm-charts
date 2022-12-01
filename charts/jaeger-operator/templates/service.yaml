@@ -12,9 +12,9 @@ metadata:
 spec:
   ports:
   - name: metrics
-    port: 8383
+    port: {{ .Values.metricsPort }}
     protocol: TCP
-    targetPort: 8383
+    targetPort: {{ .Values.metricsPort }}
 {{- if and (eq .Values.service.type "NodePort") (.Values.service.nodePort) }}
     nodePort: {{ .Values.service.nodePort }}
 {{- end }}
@@ -39,7 +39,7 @@ spec:
   ports:
   - port: 443
     protocol: TCP
-    targetPort: 9443
+    targetPort: {{ .Values.webhooks.port }}
   selector:
 {{ include "jaeger-operator.labels" . | indent 4 }}
 {{- end }}
