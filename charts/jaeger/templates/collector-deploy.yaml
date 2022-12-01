@@ -14,6 +14,14 @@ spec:
 {{- if not .Values.collector.autoscaling.enabled }}
   replicas: {{ .Values.collector.replicaCount }}
 {{- end }}
+  strategy:
+    type: {{ .Values.collector.strategy.type }}
+    {{- if eq .Values.collector.strategy.type "RollingUpdate" }}
+    rollingUpdate:
+      maxSurge: {{ .Values.collector.strategy.type.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.collector.strategy.type.rollingUpdate.maxUnavailable }}
+    {{- end }}
+
   selector:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
