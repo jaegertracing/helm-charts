@@ -49,13 +49,7 @@ spec:
         image: {{ .Values.collector.image }}:{{- .Values.collector.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         args:
-          {{- range $key, $value := .Values.collector.cmdlineParams -}}
-          {{- if $value }}
-          - --{{ $key }}={{ $value }}
-          {{- else }}
-          - --{{ $key }}
-          {{- end }}
-          {{- end -}}
+          {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
           {{- if not .Values.ingester.enabled -}}
           {{- include "storage.cmdArgs" . | nindent 10 }}
           {{- end }}

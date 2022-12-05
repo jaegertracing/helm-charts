@@ -46,13 +46,7 @@ spec:
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
             imagePullPolicy: {{ .Values.spark.pullPolicy }}
             args:
-              {{- range $key, $value := .Values.spark.cmdlineParams }}
-              {{- if $value }}
-              - --{{ $key }}={{ $value }}
-              {{- else }}
-              - --{{ $key }}
-              {{- end }}
-              {{- end }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.spark.cmdlineParams ) | nindent 14  }}
             env:
               - name: STORAGE
                 value: {{ .Values.storage.type }}
