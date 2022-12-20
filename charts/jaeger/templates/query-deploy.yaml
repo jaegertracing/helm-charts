@@ -109,6 +109,12 @@ spec:
             subPath: "client-key.pem"
             readOnly: true
         {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+          - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+            mountPath: "/es-tls/ca-cert.pem"
+            subPath: "ca-cert.pem"
+            readOnly: true
+        {{- end }}
         {{- if .Values.query.config}}
           - name: ui-configuration
             mountPath: /etc/conf/
@@ -235,6 +241,11 @@ spec:
           secret:
             secretName: {{ .Values.storage.cassandra.tls.secretName }}
       {{- end }}
+      {{- if .Values.storage.elasticsearch.tls.enabled }}
+        - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
+       {{- end }}
 {{- if .Values.query.oAuthSidecar.enabled }}
       {{- range .Values.query.oAuthSidecar.extraConfigmapMounts }}
         - name: {{ .name }}

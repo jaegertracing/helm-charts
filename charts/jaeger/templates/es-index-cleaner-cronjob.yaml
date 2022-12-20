@@ -74,6 +74,12 @@ spec:
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
             {{- end }}
+            {{- if .Values.storage.elasticsearch.tls.enabled }}
+              - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+                mountPath: "/es-tls/ca-cert.pem"
+                subPath: "ca-cert.pem"
+                readOnly: true
+            {{- end }}
           restartPolicy: OnFailure
         {{- with .Values.esIndexCleaner.nodeSelector }}
           nodeSelector:
@@ -97,5 +103,10 @@ spec:
             - name: {{ .name }}
               secret:
                 secretName: {{ .secretName }}
+        {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+            - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+              secret:
+                secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
         {{- end }}
 {{- end -}}
