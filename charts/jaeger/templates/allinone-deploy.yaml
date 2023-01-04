@@ -50,7 +50,7 @@ spec:
           name: jaeger
           args:
             {{- range $arg := .Values.allInOne.args }}
-            - "{{ $arg }}"
+            - "{{ tpl $arg $ }}"
             {{- end }}
           ports:
             - containerPort: 5775
