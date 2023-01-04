@@ -22,6 +22,7 @@ webhooks:
     create: true
   validatingWebhook:
     create: true
+  port: 9443
   service:
     annotations: {}
     create: true
@@ -83,3 +84,8 @@ affinity: {}
 securityContext: {}
 
 priorityClassName:
+
+# Specifies weather host network should be used
+hostNetwork: false
+
+metricsPort: 8383

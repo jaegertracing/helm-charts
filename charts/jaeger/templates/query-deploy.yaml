@@ -51,13 +51,7 @@ spec:
         image: {{ .Values.query.image }}:{{- .Values.query.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         args:
-          {{- range $key, $value := .Values.query.cmdlineParams }}
-          {{- if $value }}
-          - --{{ $key }}={{ $value }}
-          {{- else }}
-          - --{{ $key }}
-          {{- end }}
-          {{- end }}
+          {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.query.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
         env:
         {{- if .Values.query.extraEnv }}

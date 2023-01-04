@@ -328,6 +328,7 @@ collector:
   dnsPolicy: ClusterFirst
   extraEnv: []
   cmdlineParams: {}
+  basePath: /
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -462,6 +463,7 @@ collector:
 
 query:
   enabled: true
+  basePath: /
   oAuthSidecar:
     enabled: false
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0

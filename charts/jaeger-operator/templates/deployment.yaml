@@ -38,14 +38,17 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      {{- end }}
       containers:
         - name: {{ include "jaeger-operator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 8383
+          - containerPort: {{ .Values.metricsPort }}
             name: metrics
-          - containerPort: 9443
+          - containerPort: {{ .Values.webhooks.port }}
             name: webhook-server
             protocol: TCP  
           volumeMounts:

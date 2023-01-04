@@ -53,6 +53,7 @@ spec:
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}
               - {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esIndexCleaner.cmdlineParams ) | nindent 14  }}
             env:
             {{- if .Values.esIndexCleaner.extraEnv }}
               {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}

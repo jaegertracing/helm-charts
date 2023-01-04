@@ -57,13 +57,7 @@ spec:
         image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
-          {{- range $key, $value := .Values.ingester.cmdlineParams }}
-          {{- if $value }}
-          - --{{ $key }}={{ $value }}
-          {{- else }}
-          - --{{ $key }}
-          {{- end }}
-          {{- end }}
+          {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.ingester.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
         env:
         {{- if .Values.ingester.extraEnv }}

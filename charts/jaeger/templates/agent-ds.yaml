@@ -57,13 +57,7 @@ spec:
         image: {{ .Values.agent.image }}:{{- .Values.agent.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:
-          {{- range $key, $value := .Values.agent.cmdlineParams }}
-          {{- if $value }}
-          - --{{ $key }}={{ $value }}
-          {{- else }}
-          - --{{ $key }}
-          {{- end }}
-          {{- end }}
+          {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.agent.cmdlineParams ) | nindent 10  }}
         env:
         {{- if .Values.agent.extraEnv }}
           {{- toYaml .Values.agent.extraEnv | nindent 10 }}
