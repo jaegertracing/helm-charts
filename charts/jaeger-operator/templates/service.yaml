@@ -5,6 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
+{{- with .Values.serviceExtraLabels }}
+{{ . | toYaml | indent 4 }}
+{{- end }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
