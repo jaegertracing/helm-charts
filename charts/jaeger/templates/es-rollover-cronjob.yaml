@@ -68,7 +68,6 @@ spec:
               - rollover
               - {{ include "elasticsearch.client.url" . }}
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 14  }}
-              {{- include "storage.cmdArgs" . | nindent 14 }}
             env:
               {{ include "elasticsearch.env" . | nindent 14 }}
               {{- if .Values.esRollover.extraEnv }}
