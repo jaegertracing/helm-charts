@@ -63,6 +63,10 @@ extraEnv: []
   # - name: LOG-LEVEL
   #   value: debug
 
+serviceExtraLabels: {}
+  # Specifies extra labels for the operator-metric service:
+  # foo: bar
+
 extraLabels: {}
   # Specifies extra labels for the operator deployment:
   # foo: bar
