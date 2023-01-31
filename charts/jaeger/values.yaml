@@ -202,6 +202,7 @@ ingester:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
+    behavior: {}
     # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
   service:
@@ -334,6 +335,7 @@ collector:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
+    behavior: {}
     # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
   service:
