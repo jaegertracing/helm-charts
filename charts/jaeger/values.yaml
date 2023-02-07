@@ -601,7 +601,7 @@ spark:
   image: jaegertracing/spark-dependencies
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv: []
   schedule: "49 23 * * *"
@@ -640,7 +640,7 @@ esIndexCleaner:
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
   imagePullSecrets: []
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv: []
     # - name: ROLLOVER
@@ -682,7 +682,7 @@ esRollover:
   image: jaegertracing/jaeger-es-rollover
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv:
     - name: CONDITIONS
@@ -731,7 +731,7 @@ esLookback:
   image: jaegertracing/jaeger-es-rollover
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv:
     - name: UNIT
@@ -773,7 +773,7 @@ hotrod:
   replicaCount: 1
   image:
     repository: jaegertracing/example-hotrod
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     pullSecrets: []
   service:
     annotations: {}
