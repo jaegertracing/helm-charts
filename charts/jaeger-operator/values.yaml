@@ -16,6 +16,10 @@ certs:
     create: true
     namespace: ""
     secretName: ""
+    # Specify the cert-manager issuer kind to use an existing cert-manager
+    # issuer; typically Issuer or ClusterIssuer
+    # This field will be ignored if issuer.create is true
+    issuerKind: Issuer
 
 webhooks:
   mutatingWebhook:

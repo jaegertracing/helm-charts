@@ -9,7 +9,11 @@ spec:
   - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ .Release.Namespace }}.svc"
   - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ .Release.Namespace }}.svc.cluster.local"
   issuerRef:
+    {{- if .Values.certs.issuer.create }}
     kind: Issuer
+    {{- else }}
+    kind: {{ .Values.certs.certificate.issuerKind }}
+    {{- end }}
     name: {{ default "selfsigned-issuer" .Values.certs.issuer.name }}
   secretName: {{ default "jaeger-operator-service-cert" .Values.certs.certificate.secretName }}
   subject:
