@@ -114,6 +114,9 @@ storage:
       # es.server-urls: http://elasticsearch-master:9200
       # es.username: elastic
       # es.index-prefix: test
+    tls:
+      enabled: false
+      secretName: es-tls-secret
   kafka:
     brokers:
       - kafka:9092

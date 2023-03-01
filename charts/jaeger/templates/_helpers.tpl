@@ -353,6 +353,7 @@ Elasticsearch related environment variables
 {{- if not .Values.storage.elasticsearch.anonymous }}
 - name: ES_USERNAME
   value: {{ .Values.storage.elasticsearch.user }}
+{{- end }}
 {{- if .Values.storage.elasticsearch.usePassword }}
 - name: ES_PASSWORD
   valueFrom:
@@ -360,6 +361,11 @@ Elasticsearch related environment variables
       name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
       key: {{ default "password" .Values.storage.elasticsearch.existingSecretKey }}
 {{- end }}
+{{- if .Values.storage.elasticsearch.tls.enabled }}
+- name: ES_TLS_ENABLED
+  value: "true"
+- name: ES_TLS_CA
+  value: /es-tls/ca-cert.pem
 {{- end }}
 {{- if .Values.storage.elasticsearch.indexPrefix }}
 - name: ES_INDEX_PREFIX
