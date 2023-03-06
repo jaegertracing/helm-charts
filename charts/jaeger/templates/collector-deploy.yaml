@@ -42,6 +42,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.collector.initContainers }}
       initContainers:
         {{- toYaml .Values.collector.initContainers | nindent 8 }}
       {{- end}}
