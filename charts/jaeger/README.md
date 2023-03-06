@@ -258,13 +258,33 @@ helm install jaeger jaegertracing/jaeger \
 
 #### Installing the Chart with Ingester using an existing Kafka Cluster
 
-You can use an exisiting Kafka cluster with jaeger too
+You can use an existing Kafka cluster with jaeger too
 
 ```console
 helm install jaeger jaegertracing/jaeger \
   --set ingester.enabled=true \
   --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
   --set storage.kafka.topic=<TOPIC>
+```
+
+### Other Storage Configuration
+
+If you are using grpc-plugin based storage, you can set environment
+variables that are needed by the plugin.
+
+As as example if using the [jaeger-mongodb](https://github.com/mongodb-labs/jaeger-mongodb)
+plugin you can set the `MONGO_URL` as follows...
+
+```YAML
+storage:
+  type: grpc-plugin
+  grpcPlugin:
+    extraEnv:
+      - name: MONGO_URL
+        valueFrom:
+          secretKeyRef:
+            key: MONGO_URL
+            name: jaeger-secrets
 ```
 
 ### All in One In-Memory Configuration
@@ -291,6 +311,22 @@ query:
   enabled: false
 ```
 
+It's possible to specify resources and extra environment variables for the all in one deployment:
+
+```yaml
+allInOne:
+  extraEnv:
+    - name: QUERY_BASE_PATH
+      value: /jaeger
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+```
+
 ```bash
 helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
@@ -300,6 +336,8 @@ If extra protection of the Jaeger UI is needed, then the oAuth2 sidecar can be e
 sidecar acts as a security proxy in front of the Jaeger Query service and enforces user authentication before reaching
 the Jaeger UI. This method can work with any valid provider including Keycloak, Azure, Google, GitHub, and more.
 
+Offical docs [here](https://oauth2-proxy.github.io/oauth2-proxy/docs/behaviour)
+
 Content of the `jaeger-values.yaml` file:
 
 ```YAML
@@ -307,7 +345,7 @@ query:
   enabled: true
   oAuthSidecar:
     enabled: true
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
     pullPolicy: IfNotPresent
     containerPort: 4180
     args:
@@ -331,6 +369,7 @@ query:
       client_id = "jaeger-query"
       oidc_issuer_url = "https://keycloak-svc-domain/auth/realms/Default"
       cookie_secure = "true"
+      cookie_secret = ""
       email_domains = "*"
       oidc_groups_claim = "groups"
       user_id_claim = "preferred_username"
@@ -339,8 +378,8 @@ query:
 
 ## Installing extra kubernetes objects
 
-If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain 
-the yaml describing these objects. The values in the array are treated as a template to allow the use of variable 
+If additional kubernetes objects need to be installed alongside this chart, set the `extraObjects` array to contain
+the yaml describing these objects. The values in the array are treated as a template to allow the use of variable
 substitution and function calls as in the example below.
 
 Content of the `jaeger-values.yaml` file:

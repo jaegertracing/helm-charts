@@ -13,3 +13,4 @@ will close that issue when PR gets merged)*
 - [ ] Commits are [GPG signed](https://docs.github.com/en/github/authenticating-to-github/about-commit-signature-verification)
 - [ ] Chart Version bumped
 - [ ] Title of the PR starts with chart name (`[jaeger]` or `[jaeger-operator]`)
+- [ ] README.md has been updated to match version/contain new values

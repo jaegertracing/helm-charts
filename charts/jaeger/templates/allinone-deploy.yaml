@@ -21,18 +21,26 @@ spec:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: all-in-one
+{{- if .Values.allInOne.podLabels }}
+        {{- toYaml .Values.allInOne.podLabels | nindent 8 }}
+{{- end }}
       annotations:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
       containers:
         - env:
+          {{- if .Values.allInOne.extraEnv }}
+            {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
+          {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: memory
             - name: COLLECTOR_ZIPKIN_HOST_PORT
               value: :9411
             - name: JAEGER_DISABLED
               value: "false"
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
             {{- if .Values.allInOne.samplingConfig }}
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
@@ -40,6 +48,10 @@ spec:
           image: {{ .Values.allInOne.image }}:{{- .Values.allInOne.tag | default (include "jaeger.image.tag" .) }}
           imagePullPolicy: {{ .Values.allInOne.pullPolicy }}
           name: jaeger
+          args:
+            {{- range $arg := .Values.allInOne.args }}
+            - "{{ tpl $arg $ }}"
+            {{- end }}
           ports:
             - containerPort: 5775
               protocol: UDP
@@ -51,7 +63,13 @@ spec:
               protocol: TCP
             - containerPort: 16686
               protocol: TCP
+            - containerPort: 16685
+              protocol: TCP
             - containerPort: 9411
+              protocol: TCP
+            - containerPort: 4317
+              protocol: TCP
+            - containerPort: 4318
               protocol: TCP
           livenessProbe:
             failureThreshold: 5
@@ -73,6 +91,11 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
+      {{- with .Values.allInOne.resources }}
+          resources:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+
         {{- if .Values.allInOne.samplingConfig}}
           volumeMounts:
             - name: strategies
@@ -84,5 +107,9 @@ spec:
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
+    {{- end }}
+    {{- with .Values.allInOne.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
     {{- end }}
 {{- end -}}

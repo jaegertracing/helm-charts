@@ -16,8 +16,11 @@ fullnameOverride: ""
 allInOne:
   enabled: false
   image: jaegertracing/all-in-one
-  tag: 1.29.0
   pullPolicy: IfNotPresent
+  extraEnv: []
+  # command line arguments / CLI flags
+  # See https://www.jaegertracing.io/docs/cli/
+  args: []
   # samplingConfig: |-
   #   {
   #     "default_strategy": {
@@ -26,7 +29,33 @@ allInOne:
   #     }
   #   }
   ingress:
-    enabled: true
+    enabled: false
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    # ingressClassName: nginx
+    annotations: {}
+    labels: {}
+    # Used to create an Ingress record.
+    # hosts:
+    #   - chart-example.local
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # labels:
+    #   app: jaeger
+    # tls:
+    #   # Secrets must be manually created in the namespace.
+    #   - secretName: chart-example-tls
+    #     hosts:
+    #       - chart-example.local
+  # resources:
+  #   limits:
+  #     cpu: 500m
+  #     memory: 512Mi
+  #   requests:
+  #     cpu: 256m
+  #     memory: 128Mi
+  nodeSelector: {}
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -63,6 +92,7 @@ storage:
     scheme: http
     host: elasticsearch-master
     port: 9200
+    anonymous: false
     user: elastic
     usePassword: true
     password: changeme
@@ -84,11 +114,16 @@ storage:
       # es.server-urls: http://elasticsearch-master:9200
       # es.username: elastic
       # es.index-prefix: test
+    tls:
+      enabled: false
+      secretName: es-tls-secret
   kafka:
     brokers:
       - kafka:9092
     topic: jaeger_v1_test
     authentication: none
+    extraEnv: []
+  grpcPlugin:
     extraEnv: []
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
@@ -171,6 +206,7 @@ ingester:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
+    behavior: {}
     # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
   service:
@@ -203,6 +239,11 @@ ingester:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 agent:
   podSecurityContext: {}
@@ -274,6 +315,11 @@ agent:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 collector:
   podSecurityContext: {}
@@ -285,12 +331,15 @@ collector:
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
+  extraEnv: []
   cmdlineParams: {}
+  basePath: /
   replicaCount: 1
   autoscaling:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
+    behavior: {}
     # targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
   service:
@@ -300,6 +349,8 @@ collector:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
+    # Cluster IP address to assign to service. Set to None to make service headless
+    clusterIP: ""
     grpc:
       port: 14250
       # nodePort:
@@ -311,12 +362,20 @@ collector:
     zipkin: {}
       # port: 9411
       # nodePort:
+    otlp:
+      grpc: {}
+        # port: 4317
+        # nodePort:
+      http: {}
+        # port: 4318
+        # nodePort:
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     # ingressClassName: nginx
     annotations: {}
+    labels: {}
     # Used to create an Ingress record.
     # The 'hosts' variable accepts two formats:
     # hosts:
@@ -328,6 +387,8 @@ collector:
     # annotations:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
+    # labels:
+      # app: jaeger-collector
     # tls:
       # Secrets must be manually created in the namespace.
       # - secretName: chart-example-tls
@@ -400,9 +461,15 @@ collector:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
 
 query:
   enabled: true
+  basePath: /
   oAuthSidecar:
     enabled: false
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
@@ -460,12 +527,15 @@ query:
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     # ingressClassName: nginx
     annotations: {}
+    labels: {}
     # Used to create an Ingress record.
     # hosts:
     #   - chart-example.local
     # annotations:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
+    # labels:
+      # app: jaeger-query
     # tls:
       # Secrets must be manually created in the namespace.
       # - secretName: chart-example-tls
@@ -510,6 +580,11 @@ query:
   serviceMonitor:
     enabled: false
     additionalLabels: {}
+    # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    relabelings: []
+    # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
+    # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
+    metricRelabelings: []
   # config: |-
   #   {
   #     "dependencies": {
@@ -529,7 +604,7 @@ spark:
   image: jaegertracing/spark-dependencies
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv: []
   schedule: "49 23 * * *"
@@ -557,6 +632,7 @@ spark:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 
 esIndexCleaner:
   enabled: false
@@ -567,7 +643,7 @@ esIndexCleaner:
   annotations: {}
   image: jaegertracing/jaeger-es-index-cleaner
   imagePullSecrets: []
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv: []
     # - name: ROLLOVER
@@ -598,6 +674,7 @@ esIndexCleaner:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 
 esRollover:
   enabled: false
@@ -608,7 +685,7 @@ esRollover:
   image: jaegertracing/jaeger-es-rollover
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv:
     - name: CONDITIONS
@@ -638,6 +715,7 @@ esRollover:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
   initHook:
     extraEnv: []
       # - name: SHARDS
@@ -656,7 +734,7 @@ esLookback:
   image: jaegertracing/jaeger-es-rollover
   imagePullSecrets: []
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   cmdlineParams: {}
   extraEnv:
     - name: UNIT
@@ -688,6 +766,7 @@ esLookback:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  # ttlSecondsAfterFinished: 120
 # End: Default values for the various components of Jaeger
 
 hotrod:
@@ -697,7 +776,7 @@ hotrod:
   replicaCount: 1
   image:
     repository: jaegertracing/example-hotrod
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     pullSecrets: []
   service:
     annotations: {}

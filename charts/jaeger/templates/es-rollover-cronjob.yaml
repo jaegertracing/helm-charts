@@ -1,5 +1,5 @@
 {{- if .Values.esRollover.enabled -}}
-apiVersion: batch/v1beta1
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-es-rollover
@@ -20,6 +20,9 @@ spec:
     spec:
       {{- if .Values.esRollover.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esRollover.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esRollover.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esRollover.ttlSecondsAfterFinished }}
       {{- end }}
       template:
         metadata:
@@ -64,6 +67,7 @@ spec:
             args:
               - rollover
               - {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 14  }}
             env:
               {{ include "elasticsearch.env" . | nindent 14 }}
               {{- if .Values.esRollover.extraEnv }}
@@ -84,6 +88,12 @@ spec:
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
             {{- end }}
+            {{- if .Values.storage.elasticsearch.tls.enabled }}
+              - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+                mountPath: "/es-tls/ca-cert.pem"
+                subPath: "ca-cert.pem"
+                readOnly: true
+            {{- end }}
           volumes:
           {{- range .Values.esRollover.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -94,5 +104,10 @@ spec:
             - name: {{ .name }}
               secret:
                 secretName: {{ .secretName }}
+        {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+            - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+              secret:
+                secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
         {{- end }}
 {{- end -}}

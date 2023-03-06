@@ -350,14 +350,22 @@ Elasticsearch related environment variables
 {{- define "elasticsearch.env" -}}
 - name: ES_SERVER_URLS
   value: {{ include "elasticsearch.client.url" . }}
+{{- if not .Values.storage.elasticsearch.anonymous }}
 - name: ES_USERNAME
   value: {{ .Values.storage.elasticsearch.user }}
+{{- end }}
 {{- if .Values.storage.elasticsearch.usePassword }}
 - name: ES_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ if .Values.storage.elasticsearch.existingSecret }}{{ .Values.storage.elasticsearch.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-elasticsearch{{- end }}
       key: {{ default "password" .Values.storage.elasticsearch.existingSecretKey }}
+{{- end }}
+{{- if .Values.storage.elasticsearch.tls.enabled }}
+- name: ES_TLS_ENABLED
+  value: "true"
+- name: ES_TLS_CA
+  value: /es-tls/ca-cert.pem
 {{- end }}
 {{- if .Values.storage.elasticsearch.indexPrefix }}
 - name: ES_INDEX_PREFIX
@@ -373,13 +381,24 @@ Elasticsearch related environment variables
 {{- end -}}
 
 {{/*
-Cassandra or Elasticsearch related environment variables depending on which is used
+grpcPlugin related environment variables
+*/}}
+{{- define "grpcPlugin.env" -}}
+{{- if .Values.storage.grpcPlugin.extraEnv }}
+{{- toYaml .Values.storage.grpcPlugin.extraEnv }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Cassandra, Elasticsearch, or grpc-plugin related environment variables depending on which is used
 */}}
 {{- define "storage.env" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
 {{ include "cassandra.env" . }}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{ include "elasticsearch.env" . }}
+{{- else if eq .Values.storage.type "grpc-plugin" -}}
+{{ include "grpcPlugin.env" . }}
 {{- end -}}
 {{- end -}}
 
@@ -417,5 +436,20 @@ Cassandra or Elasticsearch related command line options depending on which is us
 {{- include "cassandra.cmdArgs" . -}}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{- include "elasticsearch.cmdArgs" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Add extra argument to the command line options
+Usage:
+    {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
+*/}}
+{{- define "extra.cmdArgs" -}}
+{{- range $key, $value := .cmdlineParams -}}
+{{- if $value }}
+- --{{ $key }}={{ $value }}
+{{- else }}
+- --{{ $key }}
+{{- end }}
 {{- end -}}
 {{- end -}}

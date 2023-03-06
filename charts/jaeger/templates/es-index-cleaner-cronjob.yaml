@@ -1,5 +1,5 @@
 {{- if .Values.esIndexCleaner.enabled -}}
-apiVersion: batch/v1beta1
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-es-index-cleaner
@@ -20,6 +20,9 @@ spec:
     spec:
       {{- if .Values.esIndexCleaner.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esIndexCleaner.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esIndexCleaner.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esIndexCleaner.ttlSecondsAfterFinished }}
       {{- end }}
       template:
         metadata:
@@ -50,6 +53,7 @@ spec:
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}
               - {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esIndexCleaner.cmdlineParams ) | nindent 14  }}
             env:
             {{- if .Values.esIndexCleaner.extraEnv }}
               {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}
@@ -69,6 +73,12 @@ spec:
                 mountPath: {{ .mountPath }}
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- if .Values.storage.elasticsearch.tls.enabled }}
+              - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+                mountPath: "/es-tls/ca-cert.pem"
+                subPath: "ca-cert.pem"
+                readOnly: true
             {{- end }}
           restartPolicy: OnFailure
         {{- with .Values.esIndexCleaner.nodeSelector }}
@@ -93,5 +103,10 @@ spec:
             - name: {{ .name }}
               secret:
                 secretName: {{ .secretName }}
+        {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+            - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+              secret:
+                secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
         {{- end }}
 {{- end -}}

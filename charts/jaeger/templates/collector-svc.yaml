@@ -35,15 +35,31 @@ spec:
     protocol: TCP
     targetPort: zipkin
 {{- end }}
+{{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
+  - name: otlp-grpc
+    port: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.otlp.grpc.nodePort) }}
+    nodePort: {{ .Values.collector.service.otlp.grpc.nodePort }}
+{{- end }}
+    protocol: TCP
+    targetPort: otlp-grpc
+  - name: otlp-http
+    port: {{ default 4318 .Values.collector.service.otlp.http.port }}
+{{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.otlp.http.nodePort) }}
+    nodePort: {{ .Values.collector.service.otlp.http.nodePort }}
+{{- end }}
+    protocol: TCP
+    targetPort: otlp-http
+{{- end }}
   - name: admin
     port: 14269
     targetPort: admin
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector
+  {{- if and (eq .Values.collector.service.type "ClusterIP") .Values.collector.service.clusterIP }}
+  clusterIP: {{ .Values.collector.service.clusterIP }}
+  {{- end }}
   type: {{ .Values.collector.service.type }}
-{{- if and (eq .Values.collector.service.type "LoadBalancer") .Values.collector.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.collector.service.loadBalancerIP }}
-{{- end -}}
 {{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}

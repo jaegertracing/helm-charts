@@ -1,5 +1,5 @@
 {{- if .Values.ingester.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta1
+apiVersion: {{ include "common.capabilities.hpa.apiVersion" ( dict "context" $ ) }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template "jaeger.ingester.name" . }}
@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: ingester
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
     name: {{ template "jaeger.ingester.name" . }}
   minReplicas: {{ .Values.ingester.autoscaling.minReplicas }}
@@ -18,10 +18,26 @@ spec:
     - type: Resource
       resource:
         name: memory
+        {{- if eq "autoscaling/v2" (include "common.capabilities.hpa.apiVersion" ( dict "context" $ )) }}
+        target:
+          averageUtilization: {{ .Values.ingester.autoscaling.targetMemoryUtilizationPercentage }}
+          type: Utilization
+        {{- else }}            
         targetAverageUtilization: {{ .Values.ingester.autoscaling.targetMemoryUtilizationPercentage }}
+        {{- end }} 
   {{- end }}
     - type: Resource
       resource:
         name: cpu
+        {{- if eq "autoscaling/v2" (include "common.capabilities.hpa.apiVersion" ( dict "context" $ )) }}        
+        target:
+          averageUtilization: {{ .Values.ingester.autoscaling.targetCPUUtilizationPercentage | default 80 }}
+          type: Utilization
+        {{- else }}    
         targetAverageUtilization: {{ .Values.ingester.autoscaling.targetCPUUtilizationPercentage | default 80 }}
+        {{- end }}
+  {{- with .Values.ingester.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}   
 {{- end }}

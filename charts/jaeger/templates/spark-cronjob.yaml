@@ -1,5 +1,5 @@
 {{- if .Values.spark.enabled -}}
-apiVersion: batch/v1beta1
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-spark
@@ -20,6 +20,9 @@ spec:
       {{- if .Values.spark.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.spark.activeDeadlineSeconds }}
       {{- end}}
+      {{- if .Values.spark.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.spark.ttlSecondsAfterFinished }}
+      {{- end }}
       template:
         metadata:
           {{- if .Values.spark.podAnnotations }}
@@ -43,13 +46,7 @@ spec:
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
             imagePullPolicy: {{ .Values.spark.pullPolicy }}
             args:
-              {{- range $key, $value := .Values.spark.cmdlineParams }}
-              {{- if $value }}
-              - --{{ $key }}={{ $value }}
-              {{- else }}
-              - --{{ $key }}
-              {{- end }}
-              {{- end }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.spark.cmdlineParams ) | nindent 14  }}
             env:
               - name: STORAGE
                 value: {{ .Values.storage.type }}

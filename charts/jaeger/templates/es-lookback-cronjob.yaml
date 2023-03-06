@@ -1,5 +1,5 @@
 {{- if .Values.esLookback.enabled -}}
-apiVersion: batch/v1beta1
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-es-lookback
@@ -20,6 +20,9 @@ spec:
     spec:
       {{- if .Values.esLookback.activeDeadlineSeconds }}
       activeDeadlineSeconds: {{ .Values.esLookback.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esLookback.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esLookback.ttlSecondsAfterFinished }}
       {{- end }}
       template:
         metadata:
@@ -64,6 +67,7 @@ spec:
             args:
               - lookback
               - {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esLookback.cmdlineParams ) | nindent 14  }}
             env:
               {{ include "elasticsearch.env" . | nindent 14 }}
               {{- if .Values.esLookback.extraEnv }}
@@ -84,6 +88,12 @@ spec:
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
             {{- end }}
+            {{- if .Values.storage.elasticsearch.tls.enabled }}
+              - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+                mountPath: "/es-tls/ca-cert.pem"
+                subPath: "ca-cert.pem"
+                readOnly: true
+            {{- end }}
           volumes:
           {{- range .Values.esLookback.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -94,5 +104,10 @@ spec:
             - name: {{ .name }}
               secret:
                 secretName: {{ .secretName }}
+        {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+            - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+              secret:
+                secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
         {{- end }}
 {{- end -}}

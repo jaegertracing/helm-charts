@@ -49,20 +49,29 @@ spec:
         image: {{ .Values.collector.image }}:{{- .Values.collector.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         args:
-          {{- range $key, $value := .Values.collector.cmdlineParams -}}
-          {{- if $value }}
-          - --{{ $key }}={{ $value }}
-          {{- else }}
-          - --{{ $key }}
-          {{- end }}
-          {{- end -}}
+          {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
           {{- if not .Values.ingester.enabled -}}
           {{- include "storage.cmdArgs" . | nindent 10 }}
           {{- end }}
         env:
+          {{- if .Values.collector.extraEnv }}
+            {{- toYaml .Values.collector.extraEnv | nindent 10 }}
+          {{- end }}
           {{- if .Values.collector.service.zipkin }}
           - name: COLLECTOR_ZIPKIN_HOST_PORT
             value: {{ .Values.collector.service.zipkin.port | quote }}
+          {{- end }}
+          {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
+          - name: COLLECTOR_OTLP_ENABLED
+            value: "true"
+          {{- end }}
+          {{- if ne (default 4317 .Values.collector.service.otlp.grpc.port | toString ) "4317" }}
+          - name: COLLECTOR_OTLP_GRPC_HOST_PORT
+            value: {{ .Values.collector.service.otlp.grpc.port | quote }}
+          {{- end }}
+          {{- if ne (default 4318 .Values.collector.service.otlp.http.port | toString) "4318" }}
+          - name: COLLECTOR_OTLP_HTTP_HOST_PORT
+            value: {{ .Values.collector.service.otlp.http.port | quote }}
           {{- end }}
           {{- if .Values.ingester.enabled }}
           - name: SPAN_STORAGE_TYPE
@@ -104,6 +113,14 @@ spec:
           name: zipkin
           protocol: TCP
         {{- end }}
+        {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
+        - containerPort: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
+          name: otlp-grpc
+          protocol: TCP
+        - containerPort: {{ default 4318 .Values.collector.service.otlp.http.port }}
+          name: otlp-http
+          protocol: TCP
+        {{- end }}
         readinessProbe:
           httpGet:
             path: /
@@ -141,6 +158,12 @@ spec:
             subPath: "client-key.pem"
             readOnly: true
         {{- end }}
+        {{- if .Values.storage.elasticsearch.tls.enabled }}
+          - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+            mountPath: "/es-tls/ca-cert.pem"
+            subPath: "ca-cert.pem"
+            readOnly: true
+        {{- end }}
         {{- if .Values.collector.samplingConfig}}
           - name: strategies
             mountPath: /etc/conf/
@@ -168,6 +191,11 @@ spec:
           secret:
             secretName: {{ .Values.storage.cassandra.tls.secretName }}
       {{- end }}
+      {{- if .Values.storage.elasticsearch.tls.enabled }}
+        - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
+       {{- end }}
     {{- with .Values.collector.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
