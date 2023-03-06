@@ -466,6 +466,7 @@ collector:
     # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
     # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
     metricRelabelings: []
+  initContainers: []
 
 query:
   enabled: true
