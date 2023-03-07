@@ -1,5 +1,6 @@
 {{- if .Values.collector.enabled -}}
 {{- if eq .Values.storage.type "cassandra" -}}
+{{- if .Values.storage.cassandra.schemaJobEnabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -98,5 +99,6 @@ spec:
           secret:
             secretName: {{ .Values.storage.cassandra.tls.secretName }}
       {{- end }}
+{{- end -}}
 {{- end -}}
 {{- end -}}

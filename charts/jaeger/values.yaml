@@ -63,6 +63,7 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
+    schemaJobEnabled: true
     tls:
       enabled: false
       secretName: cassandra-tls-secret
