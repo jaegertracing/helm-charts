@@ -63,6 +63,9 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
+    # Change this value to false if you want to avoid starting the
+    # -cassandra-schema Job
+    schemaJobEnabled: true
     tls:
       enabled: false
       secretName: cassandra-tls-secret
