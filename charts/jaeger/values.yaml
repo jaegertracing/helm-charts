@@ -48,6 +48,7 @@ allInOne:
     #   - secretName: chart-example-tls
     #     hosts:
     #       - chart-example.local
+    pathType:
   # resources:
   #   limits:
   #     cpu: 500m
@@ -397,6 +398,7 @@ collector:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
+    pathType:
   resources: {}
     # limits:
     #   cpu: 1
@@ -545,6 +547,7 @@ query:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
+    pathType:
     health:
       exposed: false
   resources: {}
@@ -805,6 +808,7 @@ hotrod:
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
+    pathType:
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
