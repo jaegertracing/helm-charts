@@ -26,7 +26,7 @@ spec:
       http:
         paths:
           - path: {{ $basePath }}
-            pathType: {{ default "Prefix" $.Values.collector.ingress.pathType }}
+            pathType: {{ default "ImplementationSpecific" $.Values.collector.ingress.pathType }}
             {{- $servicePortString := (include "jaeger.collector.ingressServicePort" (dict "defaultServicePort" $defaultServicePort "context" .)) }}
             {{- $servicePort := default $servicePortString ($servicePortString | float64) }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.collector.name" $) "servicePort" $servicePort "context" $) | nindent 14 }}
