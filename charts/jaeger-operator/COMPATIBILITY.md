@@ -2,6 +2,10 @@ The following table shows the compatibility of `Jaeger Operator helm chart` with
 
 | Chart version             | Jaeger Operator | Kubernetes      | Strimzi Operator   | Cert-Manager |
 |---------------------------|-----------------|-----------------|--------------------|--------------|
+| 2.41.0                    | v1.42.x         | v1.19 to v1.24  | v0.23              | v1.6.1+      |
+| (Missing)                 |                 | v1.19 to v1.23  | v0.23              | v1.6.1+      |
+| (Missing)                 | v1.41.x         | v1.19 to v1.23  | v0.23              | v1.6.1+      |
+| (Missing)                 | v1.40.x         | v1.19 to v1.23  | v0.23              | v1.6.1+      |
 | 2.37.0                    | v1.39.x         | v1.19 to v1.24  | v0.23              | v1.6.1+      |
 | 2.36.0                    | v1.38.x         | v1.19 to v1.24  | v0.23              | v1.6.1+      |
 | 2.35.0                    | v1.37.x         | v1.19 to v1.24  | v0.23              | v1.6.1+      |
