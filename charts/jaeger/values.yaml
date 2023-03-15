@@ -7,6 +7,9 @@ provisionDataStore:
   elasticsearch: false
   kafka: false
 
+networkPolicy:
+  enabled: false
+
 # Overrides the image tag where default is the chart appVersion.
 tag: ""
 
@@ -472,6 +475,16 @@ collector:
     # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
     metricRelabelings: []
   initContainers: []
+  networkPolicy:
+    enabled: false
+    # ingressRules:
+    #   namespaceSelector: {}
+    #   podSelector: {}
+    #   customRules: []
+    # egressRules:
+    #   namespaceSelector: {}
+    #   podSelector: {}
+    #   customRules: []
 
 query:
   enabled: true
@@ -604,6 +617,16 @@ query:
   #       "trackErrors": true
   #     }
   #   }
+  networkPolicy:
+    enabled: false
+    # ingressRules:
+    #   namespaceSelector: {}
+    #   podSelector: {}
+    #   customRules: []
+    # egressRules:
+    #   namespaceSelector: {}
+    #   podSelector: {}
+    #   customRules: []
 
 spark:
   enabled: false

@@ -1,0 +1,31 @@
+{{- if and .Values.networkPolicy.enabled .Values.query.networkPolicy.enabled .Values.query.networkPolicy.egressRules }}
+apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-egress" (include "jaeger.query.name" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: query
+    {{- include "jaeger.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: query
+  policyTypes:
+  - Egress
+  egress:
+  {{- if or .Values.query.networkPolicy.egressRules.namespaceSelector .Values.query.networkPolicy.egressRules.podSelector }}
+  - to:
+    {{- if .Values.query.networkPolicy.egressRules.namespaceSelector }}
+    - namespaceSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.query.networkPolicy.egressRules.namespaceSelector "context" $) | nindent 10 }}
+    {{- end }}
+    {{- if .Values.query.networkPolicy.egressRules.podSelector }}
+    - podSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.query.networkPolicy.egressRules.podSelector "context" $) | nindent 10 }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.query.networkPolicy.egressRules.customRules }}
+  {{- include "common.tplvalues.render" (dict "value" .Values.query.networkPolicy.egressRules.customRules "context" $) | nindent 2 }}
+  {{- end }}
+{{- end }}
