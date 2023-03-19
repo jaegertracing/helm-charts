@@ -453,3 +453,73 @@ Usage:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Provides a basic ingress network policy
+*/}}
+{{- define "jaeger.ingress.networkPolicy" -}}
+apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-ingress" .Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ .Component }}
+    {{- include "jaeger.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Component }}
+  policyTypes:
+  - Ingress
+  ingress:
+  {{- if or .ComponentValues.networkPolicy.ingressRules.namespaceSelector .ComponentValues.networkPolicy.ingressRules.podSelector }}
+  - from:
+    {{- if .ComponentValues.networkPolicy.ingressRules.namespaceSelector }}
+    - namespaceSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.namespaceSelector "context" $) | nindent 10 }}
+    {{- end }}
+    {{- if .ComponentValues.networkPolicy.ingressRules.podSelector }}
+    - podSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.podSelector "context" $) | nindent 10 }}
+    {{- end }}
+  {{- end }}
+  {{- if .ComponentValues.networkPolicy.ingressRules.customRules }}
+  {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.customRules "context" $) | nindent 2 }}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Provides a basic egress network policy
+*/}}
+{{- define "jaeger.egress.networkPolicy" -}}
+apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-egress" .Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ .Component }}
+    {{- include "jaeger.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Component }}
+  policyTypes:
+  - Egress
+  egress:
+  {{- if or .ComponentValues.networkPolicy.egressRules.namespaceSelector .ComponentValues.networkPolicy.egressRules.podSelector }}
+  - to:
+    {{- if .ComponentValues.networkPolicy.egressRules.namespaceSelector }}
+    - namespaceSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.namespaceSelector "context" $) | nindent 10 }}
+    {{- end }}
+    {{- if .ComponentValues.networkPolicy.egressRules.podSelector }}
+    - podSelector:
+        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.podSelector "context" $) | nindent 10 }}
+    {{- end }}
+  {{- end }}
+  {{- if .ComponentValues.networkPolicy.egressRules.customRules }}
+  {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.customRules "context" $) | nindent 2 }}
+  {{- end }}
+{{- end -}}
