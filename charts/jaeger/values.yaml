@@ -804,6 +804,17 @@ hotrod:
   podSecurityContext: {}
   securityContext: {}
   replicaCount: 1
+  # set the primary command(s) for the hotrod application
+  args:
+    - all
+  # add extra arguments to the hotrod application to customize tracing
+  extraArgs: []
+  #   - --otel-exporter=otlp
+  #   - --jaeger-ui=http://jaeger.chart.local
+  # add extra environment variables to the hotrod application
+  extraEnv: []
+  #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
+  #     value: http://my-otel-collector.chart.local:4318
   image:
     repository: jaegertracing/example-hotrod
     pullPolicy: IfNotPresent
