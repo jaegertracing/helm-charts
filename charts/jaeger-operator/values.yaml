@@ -91,6 +91,8 @@ affinity: {}
 
 securityContext: {}
 
+containerSecurityContext: {}
+
 priorityClassName:
 
 # Specifies weather host network should be used
