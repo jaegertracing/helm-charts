@@ -31,11 +31,19 @@ spec:
             {{- toYaml .Values.hotrod.securityContext | nindent 12 }}
           image: {{ .Values.hotrod.image.repository }}:{{- include "jaeger.image.tag" . }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
+          args:
+            {{- toYaml .Values.hotrod.args | nindent 12 }}
+          {{- with .Values.hotrod.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+          {{-  end }}
           env:
             - name: JAEGER_AGENT_HOST
               value: {{ template "jaeger.hotrod.tracing.host" . }}
             - name: JAEGER_AGENT_PORT
               value: {{ .Values.hotrod.tracing.port | quote }}
+          {{- if .Values.hotrod.extraEnv }}
+            {{- toYaml .Values.hotrod.extraEnv | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
