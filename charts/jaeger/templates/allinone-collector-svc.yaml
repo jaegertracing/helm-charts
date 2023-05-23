@@ -7,7 +7,7 @@ metadata:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: service-collector
 spec:
-  clusterIP: None
+  clusterIP: {{ .Values.allInOne.service.headless | ternary "None" "null" }}
   ports:
     - name: http-zipkin
       port: 9411
