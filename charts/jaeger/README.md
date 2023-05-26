@@ -56,7 +56,7 @@ helm show values incubator/cassandra
 ```
 
 ```console
-helm repo add bitnami
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm show values bitnami/kafka
 ```
 
