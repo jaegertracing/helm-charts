@@ -12,10 +12,10 @@ metadata:
 {{- end }}
 spec:
   ports:
-  - name: query
+  - name: http-query
     port: {{ .Values.query.service.port }}
     protocol: TCP
-    targetPort: {{ default (ternary "oauth-proxy" "query" .Values.query.oAuthSidecar.enabled) .Values.query.service.targetPort }}
+    targetPort: {{ default (ternary "oauth-proxy" "http-query" .Values.query.oAuthSidecar.enabled) .Values.query.service.targetPort }}
 {{- if and (eq .Values.query.service.type "NodePort") (.Values.query.service.nodePort) }}
     nodePort: {{ .Values.query.service.nodePort }}
 {{- end }}
@@ -23,10 +23,10 @@ spec:
     port: 16685
     protocol: TCP
     targetPort: grpc
-  - name: admin
+  - name: http-admin
     port: 16687
     protocol: TCP
-    targetPort: admin
+    targetPort: http-admin
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query

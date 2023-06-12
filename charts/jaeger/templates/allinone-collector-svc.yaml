@@ -15,16 +15,16 @@ spec:
     - name: grpc-http
       port: 14250
       targetPort: 0
-    - name: c-tchan-trft
+    - name: http-c-tchan-trft
       port: 14267
       targetPort: 0
     - name: http-c-binary-trft
       port: 14268
       targetPort: 0
-    - name: otlp-grpc
+    - name: grpc-otlp
       port: 4317
       targetPort: 0
-    - name: otlp-http
+    - name: http-otlp
       port: 4318
       targetPort: 0
   selector:
