@@ -379,7 +379,7 @@ collector:
       # port: 9411
       # nodePort:
     otlp:
-      grpc: 
+      grpc:
         name: grpc-otlp
         # port: 4317
         # nodePort:
