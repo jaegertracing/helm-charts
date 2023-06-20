@@ -15,16 +15,16 @@ spec:
     - name: grpc-http
       port: 14250
       targetPort: 0
-    - name: http-c-tchan-trft
+    - name: c-tchan-trft
       port: 14267
       targetPort: 0
     - name: http-c-binary-trft
       port: 14268
       targetPort: 0
-    - name: grpc-otlp
+    - name: {{ .Values.allInOne.service.collector.otlp.grpc.name }}
       port: 4317
       targetPort: 0
-    - name: http-otlp
+    - name: {{ .Values.allInOne.service.collector.otlp.http.name }}
       port: 4318
       targetPort: 0
   selector:

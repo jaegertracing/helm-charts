@@ -28,10 +28,10 @@ spec:
     port: {{ .Values.agent.service.samplingPort }}
     protocol: TCP
     targetPort: http
-  - name: http-admin
+  - name: admin
     port: 14271
     protocol: TCP
-    targetPort: http-admin
+    targetPort: admin
   type: {{ .Values.agent.service.type }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}

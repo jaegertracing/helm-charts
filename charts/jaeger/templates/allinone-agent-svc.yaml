@@ -13,7 +13,7 @@ spec:
       port: 5775
       protocol: UDP
       targetPort: 0
-    - name: http-config-rest
+    - name: config-rest
       port: 5778
       targetPort: 0
     - name: jg-compact-trft
