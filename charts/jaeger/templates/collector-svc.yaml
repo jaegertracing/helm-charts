@@ -27,13 +27,13 @@ spec:
     protocol: TCP
     targetPort: http
 {{- if .Values.collector.service.zipkin }}
-  - name: http-zipkin
+  - name: zipkin
     port: {{ .Values.collector.service.zipkin.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.zipkin.nodePort) }}
     nodePort: {{ .Values.collector.service.zipkin.nodePort }}
 {{- end }}
     protocol: TCP
-    targetPort: http-zipkin
+    targetPort: zipkin
 {{- end }}
 {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
   - name: {{ .Values.collector.service.otlp.grpc.name }}
@@ -51,9 +51,9 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.collector.service.otlp.http.name }}
 {{- end }}
-  - name: http-admin
+  - name: admin
     port: 14269
-    targetPort: http-admin
+    targetPort: admin
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector
