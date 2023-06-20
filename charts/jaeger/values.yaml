@@ -33,7 +33,6 @@ allInOne:
   #   }
   service:
     headless: true
-    allInOne:
       collector:
         otlp: 
           grpc:
