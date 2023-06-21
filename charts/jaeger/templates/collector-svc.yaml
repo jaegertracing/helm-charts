@@ -36,20 +36,20 @@ spec:
     targetPort: zipkin
 {{- end }}
 {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
-  - name: otlp-grpc
+  - name: {{ .Values.collector.service.otlp.grpc.name }}
     port: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.otlp.grpc.nodePort) }}
     nodePort: {{ .Values.collector.service.otlp.grpc.nodePort }}
 {{- end }}
     protocol: TCP
-    targetPort: otlp-grpc
-  - name: otlp-http
+    targetPort: {{ .Values.collector.service.otlp.grpc.name }}
+  - name: {{ .Values.collector.service.otlp.http.name }}
     port: {{ default 4318 .Values.collector.service.otlp.http.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.otlp.http.nodePort) }}
     nodePort: {{ .Values.collector.service.otlp.http.nodePort }}
 {{- end }}
     protocol: TCP
-    targetPort: otlp-http
+    targetPort: {{ .Values.collector.service.otlp.http.name }}
 {{- end }}
   - name: admin
     port: 14269

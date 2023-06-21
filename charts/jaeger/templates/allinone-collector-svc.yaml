@@ -21,10 +21,10 @@ spec:
     - name: http-c-binary-trft
       port: 14268
       targetPort: 0
-    - name: otlp-grpc
+    - name: {{ .Values.allInOne.service.collector.otlp.grpc.name }}
       port: 4317
       targetPort: 0
-    - name: otlp-http
+    - name: {{ .Values.allInOne.service.collector.otlp.http.name }}
       port: 4318
       targetPort: 0
   selector:
