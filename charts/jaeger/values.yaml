@@ -36,9 +36,9 @@ allInOne:
     collector:
       otlp:
         grpc:
-          name: gtpc-otlp
+          name: otlp-grpc
         http:
-          name: http-otlp
+          name: otlp-http
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -379,11 +379,11 @@ collector:
       # nodePort:
     otlp:
       grpc:
-        name: grpc-otlp
+        name: otlp-grpc
         # port: 4317
         # nodePort:
       http:
-        name: http-otlp
+        name: otlp-http
         # port: 4318
         # nodePort:
   ingress:

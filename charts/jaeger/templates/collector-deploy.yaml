@@ -119,10 +119,10 @@ spec:
         {{- end }}
         {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
         - containerPort: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
-          name: otlp-grpc
+          name: {{ .Values.collector.service.otlp.grpc.name }}
           protocol: TCP
         - containerPort: {{ default 4318 .Values.collector.service.otlp.http.port }}
-          name: otlp-http
+          name: {{ .Values.collector.service.otlp.http.name }}
           protocol: TCP
         {{- end }}
         readinessProbe:
