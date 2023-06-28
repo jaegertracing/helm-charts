@@ -78,6 +78,9 @@ spec:
           - name: KAFKA_CONSUMER_AUTHENTICATION
             value: {{ .Values.storage.kafka.authentication }}
           {{- end }}
+      {{- with .Values.ingester.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - containerPort: 14270
           name: admin

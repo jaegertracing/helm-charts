@@ -102,6 +102,9 @@ spec:
           - name: SAMPLING_STRATEGIES_FILE
             value: /etc/conf/strategies.json
           {{- end }}
+      {{- with .Values.collector.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.grpc.port }}
           name: grpc

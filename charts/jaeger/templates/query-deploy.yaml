@@ -70,6 +70,9 @@ spec:
           - name: QUERY_UI_CONFIG
             value: /etc/conf/query-ui-config.json
           {{- end }}
+      {{- with .Values.query.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - name: query
           containerPort: 16686

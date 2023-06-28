@@ -66,6 +66,9 @@ spec:
           - name: REPORTER_GRPC_HOST_PORT
             value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
         {{- end }}
+      {{- with .Values.agent.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - name: zipkin-compact
           containerPort: {{ .Values.agent.service.zipkinThriftPort }}
