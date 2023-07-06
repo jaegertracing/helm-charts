@@ -54,7 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the jaeger-operator chart and their default values.
 
 | Parameter                  | Description                                                                                                 | Default                         |
-|-:--------------------------|-:-----------------------------------------------------------------------------------------------------------|-:-------------------------------|
+|---------------------------:|-------------------------------------------------------------------------------------------------------------|---------------------------------|
 | `serviceExtraLabels`       | Additional labels to jaeger-operator service                                                                | `{}`                            |
 | `extraLabels`              | Additional labels to jaeger-operator deployment                                                             | `{}`                            |
 | `image.repository`         | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `rbac.pspEnabled`          | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
 | `rbac.clusterRole`         | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
 | `serviceAccount.name`      | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
-| `extraEnv`                 | Additional environment variables passed to the operator. For example:   name: LOG-LEVEL   value: debug      | `[]`                            |
+| `extraEnv`                 | Additional environment variables passed to the operator. For example: name: LOG-LEVEL value: debug          | `[]`                            |
 | `resources`                | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`             | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`              | Toleration labels for pod assignment                                                                        | `[]`                            |
