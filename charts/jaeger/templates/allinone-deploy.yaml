@@ -98,18 +98,28 @@ spec:
           resources:
         {{- toYaml . | nindent 12 }}
       {{- end }}
-
-        {{- if .Values.allInOne.samplingConfig}}
           volumeMounts:
+        {{- if .Values.allInOne.samplingConfig}}
             - name: strategies
               mountPath: /etc/conf/
         {{- end }}
+        {{- range .Values.allInOne.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+        {{- end }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
-    {{- if .Values.allInOne.samplingConfig}}
       volumes:
+    {{- if .Values.allInOne.samplingConfig}}
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
+    {{- end }}
+    {{- range .Values.allInOne.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
     {{- end }}
     {{- with .Values.allInOne.nodeSelector }}
       nodeSelector:

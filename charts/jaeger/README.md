@@ -311,7 +311,7 @@ query:
   enabled: false
 ```
 
-It's possible to specify resources and extra environment variables for the all in one deployment:
+It's possible to specify resources, extra environment variables, and extra secrets for the all in one deployment:
 
 ```yaml
 allInOne:
@@ -325,6 +325,12 @@ allInOne:
     requests:
       cpu: 256m
       memory: 128Mi
+  extraSecretMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      subPath: ""
+      secretName: jaeger-tls
+      readOnly: true
 ```
 
 ```bash

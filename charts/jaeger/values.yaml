@@ -21,6 +21,12 @@ allInOne:
   image: jaegertracing/all-in-one
   pullPolicy: IfNotPresent
   extraEnv: []
+  extraSecretMounts: []
+    # - name: jaeger-tls
+    #   mountPath: /tls
+    #   subPath: ""
+    #   secretName: jaeger-tls
+    #   readOnly: true
   # command line arguments / CLI flags
   # See https://www.jaegertracing.io/docs/cli/
   args: []
