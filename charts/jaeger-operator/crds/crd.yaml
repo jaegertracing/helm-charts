@@ -1,10 +1,12 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: jaegers.jaegertracing.io
+  annotations:
+    cert-manager.io/inject-ca-from: observability/jaeger-operator-serving-cert
+    controller-gen.kubebuilder.io/version: v0.9.2
   labels:
-    app.kubernetes.io/name: jaeger-operator
-    app.kubernetes.io/instance: jaeger-operator
+    name: jaeger-operator
+  name: jaegers.jaegertracing.io
 spec:
   group: jaegertracing.io
   names:
@@ -955,6 +957,18 @@ spec:
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -1378,13 +1392,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -2395,9 +2422,23 @@ spec:
                   options:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
+                  priorityClassName:
+                    type: string
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -2778,13 +2819,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -3802,6 +3856,11 @@ spec:
                   minReplicas:
                     format: int32
                     type: integer
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    nullable: true
+                    type: object
                   options:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
@@ -3813,6 +3872,18 @@ spec:
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -4193,13 +4264,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -5284,6 +5368,11 @@ spec:
                   minReplicas:
                     format: int32
                     type: integer
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    nullable: true
+                    type: object
                   options:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
@@ -5293,6 +5382,18 @@ spec:
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -5671,13 +5772,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -6703,6 +6817,18 @@ spec:
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -7080,13 +7206,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -8179,6 +8318,11 @@ spec:
                   nodePort:
                     format: int32
                     type: integer
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    nullable: true
+                    type: object
                   options:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
@@ -8190,6 +8334,18 @@ spec:
                   resources:
                     nullable: true
                     properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -8572,13 +8728,26 @@ spec:
                                           type: string
                                         name:
                                           type: string
+                                        namespace:
+                                          type: string
                                       required:
                                       - kind
                                       - name
                                       type: object
-                                      x-kubernetes-map-type: atomic
                                     resources:
                                       properties:
+                                        claims:
+                                          items:
+                                            properties:
+                                              name:
+                                                type: string
+                                            required:
+                                            - name
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-map-keys:
+                                          - name
+                                          x-kubernetes-list-type: map
                                         limits:
                                           additionalProperties:
                                             anyOf:
@@ -9053,6 +9222,18 @@ spec:
               resources:
                 nullable: true
                 properties:
+                  claims:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
                   limits:
                     additionalProperties:
                       anyOf:
@@ -10073,6 +10254,18 @@ spec:
                       resources:
                         nullable: true
                         properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -10443,13 +10636,26 @@ spec:
                                               type: string
                                             name:
                                               type: string
+                                            namespace:
+                                              type: string
                                           required:
                                           - kind
                                           - name
                                           type: object
-                                          x-kubernetes-map-type: atomic
                                         resources:
                                           properties:
+                                            claims:
+                                              items:
+                                                properties:
+                                                  name:
+                                                    type: string
+                                                required:
+                                                - name
+                                                type: object
+                                              type: array
+                                              x-kubernetes-list-map-keys:
+                                              - name
+                                              x-kubernetes-list-type: map
                                             limits:
                                               additionalProperties:
                                                 anyOf:
@@ -10938,6 +11144,18 @@ spec:
                         type: object
                       proxyResources:
                         properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -10964,6 +11182,18 @@ spec:
                         type: string
                       resources:
                         properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -11552,6 +11782,18 @@ spec:
                       resources:
                         nullable: true
                         properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -11920,13 +12162,26 @@ spec:
                                               type: string
                                             name:
                                               type: string
+                                            namespace:
+                                              type: string
                                           required:
                                           - kind
                                           - name
                                           type: object
-                                          x-kubernetes-map-type: atomic
                                         resources:
                                           properties:
+                                            claims:
+                                              items:
+                                                properties:
+                                                  name:
+                                                    type: string
+                                                required:
+                                                - name
+                                                type: object
+                                              type: array
+                                              x-kubernetes-list-map-keys:
+                                              - name
+                                              x-kubernetes-list-type: map
                                             limits:
                                               additionalProperties:
                                                 anyOf:
@@ -12936,6 +13191,18 @@ spec:
                       resources:
                         nullable: true
                         properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -13304,13 +13571,26 @@ spec:
                                               type: string
                                             name:
                                               type: string
+                                            namespace:
+                                              type: string
                                           required:
                                           - kind
                                           - name
                                           type: object
-                                          x-kubernetes-map-type: atomic
                                         resources:
                                           properties:
+                                            claims:
+                                              items:
+                                                properties:
+                                                  name:
+                                                    type: string
+                                                required:
+                                                - name
+                                                type: object
+                                              type: array
+                                              x-kubernetes-list-map-keys:
+                                              - name
+                                              x-kubernetes-list-type: map
                                             limits:
                                               additionalProperties:
                                                 anyOf:
@@ -14080,13 +14360,26 @@ spec:
                                       type: string
                                     name:
                                       type: string
+                                    namespace:
+                                      type: string
                                   required:
                                   - kind
                                   - name
                                   type: object
-                                  x-kubernetes-map-type: atomic
                                 resources:
                                   properties:
+                                    claims:
+                                      items:
+                                        properties:
+                                          name:
+                                            type: string
+                                        required:
+                                        - name
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-map-keys:
+                                      - name
+                                      x-kubernetes-list-type: map
                                     limits:
                                       additionalProperties:
                                         anyOf:
@@ -14573,3 +14866,669 @@ spec:
     storage: true
     subresources:
       status: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator
+  namespace: observability
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    name: jaeger-operator
+  name: leader-election-role
+  namespace: observability
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    include.release.openshift.io/self-managed-high-availability: "true"
+    include.release.openshift.io/single-node-developer: "true"
+  labels:
+    name: jaeger-operator
+  name: prometheus
+  namespace: observability
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  labels:
+    name: jaeger-operator
+  name: manager-role
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - console.openshift.io
+  resources:
+  - consolelinks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - list
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - persistentvolumeclaims
+  - pods
+  - secrets
+  - serviceaccounts
+  - services
+  - services/finalizers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - namespaces/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - image.openshift.io
+  resources:
+  - imagestreams
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - jaegertracing.io
+  resources:
+  - jaegers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - jaegertracing.io
+  resources:
+  - jaegers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - jaegertracing.io
+  resources:
+  - jaegers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kafka.strimzi.io
+  resources:
+  - kafkas
+  - kafkausers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.openshift.io
+  resources:
+  - elasticsearch
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.openshift.io
+  resources:
+  - elasticsearches
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterrolebindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    name: jaeger-operator
+  name: proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    name: jaeger-operator
+  name: leader-election-rolebinding
+  namespace: observability
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: jaeger-operator
+  namespace: observability
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    include.release.openshift.io/self-managed-high-availability: "true"
+    include.release.openshift.io/single-node-developer: "true"
+  labels:
+    name: jaeger-operator
+  name: prometheus
+  namespace: observability
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus-k8s
+  namespace: openshift-monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: proxy-role
+subjects:
+- kind: ServiceAccount
+  name: jaeger-operator
+  namespace: observability
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    name: jaeger-operator
+  name: manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: manager-role
+subjects:
+- kind: ServiceAccount
+  name: jaeger-operator
+  namespace: observability
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics
+    name: jaeger-operator
+  name: jaeger-operator-metrics
+  namespace: observability
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  selector:
+    name: jaeger-operator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-webhook-service
+  namespace: observability
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 9443
+  selector:
+    name: jaeger-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jaeger-operator
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: jaeger-operator
+    spec:
+      containers:
+      - args:
+        - start
+        - --health-probe-bind-address=:8081
+        - --leader-elect
+        command:
+        - /jaeger-operator
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['olm.targetNamespaces']
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: OPERATOR_NAME
+          value: jaeger-operator
+        image: quay.io/jaegertracing/jaeger-operator:1.46.0
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: jaeger-operator
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8383/
+        - --logtostderr=true
+        - --v=0
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: jaeger-operator
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: jaeger-operator-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-serving-cert
+  namespace: observability
+spec:
+  dnsNames:
+  - jaeger-operator-webhook-service.observability.svc
+  - jaeger-operator-webhook-service.observability.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: jaeger-operator-selfsigned-issuer
+  secretName: jaeger-operator-service-cert
+  subject:
+    organizationalUnits:
+    - jaeger-operator
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-selfsigned-issuer
+  namespace: observability
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: observability/jaeger-operator-serving-cert
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-mutating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: jaeger-operator-webhook-service
+      namespace: observability
+      path: /mutate-v1-deployment
+  failurePolicy: Ignore
+  name: deployment.sidecar-injector.jaegertracing.io
+  objectSelector:
+    matchExpressions:
+    - key: name
+      operator: NotIn
+      values:
+      - jaeger-operator
+  rules:
+  - apiGroups:
+    - apps
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - deployments
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: jaeger-operator-webhook-service
+      namespace: observability
+      path: /mutate-jaegertracing-io-v1-jaeger
+  failurePolicy: Fail
+  name: mjaeger.kb.io
+  rules:
+  - apiGroups:
+    - jaegertracing.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - jaegers
+  sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: observability/jaeger-operator-serving-cert
+  labels:
+    name: jaeger-operator
+  name: jaeger-operator-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: jaeger-operator-webhook-service
+      namespace: observability
+      path: /validate-jaegertracing-io-v1-jaeger
+  failurePolicy: Fail
+  name: vjaeger.kb.io
+  rules:
+  - apiGroups:
+    - jaegertracing.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - jaegers
+  sideEffects: None
+  
