@@ -1,12 +1,10 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  annotations:
-    cert-manager.io/inject-ca-from: observability/jaeger-operator-serving-cert
-    controller-gen.kubebuilder.io/version: v0.9.2
-  labels:
-    name: jaeger-operator
   name: jaegers.jaegertracing.io
+  labels:
+    app.kubernetes.io/name: jaeger-operator
+    app.kubernetes.io/instance: jaeger-operator
 spec:
   group: jaegertracing.io
   names:
