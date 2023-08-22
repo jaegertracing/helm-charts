@@ -9,7 +9,7 @@ metadata:
     prometheus.io/port: "14269"
     prometheus.io/scrape: "true"
 spec:
-  {{- if .Values.allInOne.replicas }}
+  {{- if hasKey .Values.allInOne "replicas" }}
   replicas: {{ .Values.allInOne.replicas }}
   {{- end }}
   strategy:
