@@ -512,6 +512,13 @@ query:
   basePath: /
   oAuthSidecar:
     enabled: false
+    resources: {}
+      # limits:
+      #   cpu: 500m
+      #   memory: 512Mi
+      # requests:
+      #   cpu: 256m
+      #   memory: 128Mi
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
     pullPolicy: IfNotPresent
     containerPort: 4180

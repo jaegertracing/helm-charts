@@ -162,6 +162,8 @@ spec:
         ports:
           - containerPort: {{ .Values.query.oAuthSidecar.containerPort }}
             name: oauth-proxy
+        resources:
+          {{- toYaml .Values.query.oAuthSidecar.resources | nindent 10 }}
         {{- if .Values.query.oAuthSidecar.livenessProbe }}
         livenessProbe:
           {{- toYaml .Values.query.oAuthSidecar.livenessProbe | nindent 10 }}
