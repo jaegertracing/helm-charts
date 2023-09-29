@@ -351,6 +351,7 @@ query:
   enabled: true
   oAuthSidecar:
     enabled: true
+    resources: {}
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
     pullPolicy: IfNotPresent
     containerPort: 4180
