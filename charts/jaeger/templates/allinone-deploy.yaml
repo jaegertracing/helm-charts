@@ -30,6 +30,10 @@ spec:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
+      {{- with .Values.allInOne.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}    
       containers:
         - env:
           {{- if .Values.allInOne.extraEnv }}
