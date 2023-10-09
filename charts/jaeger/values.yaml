@@ -20,6 +20,7 @@ allInOne:
   enabled: false
   replicas: 1
   image: jaegertracing/all-in-one
+  imagePullSecrets: []
   pullPolicy: IfNotPresent
   extraEnv: []
   extraSecretMounts: []
