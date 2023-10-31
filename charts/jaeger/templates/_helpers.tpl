@@ -365,7 +365,7 @@ Elasticsearch related environment variables
 - name: ES_TLS_ENABLED
   value: "true"
 - name: ES_TLS_CA
-  value: /es-tls/ca-cert.pem
+  value: {{ .Values.storage.elasticsearch.tls.ca }}
 {{- end }}
 {{- if .Values.storage.elasticsearch.indexPrefix }}
 - name: ES_INDEX_PREFIX
