@@ -167,8 +167,8 @@ spec:
         {{- end }}
         {{- if .Values.storage.elasticsearch.tls.enabled }}
           - name: {{ .Values.storage.elasticsearch.tls.secretName }}
-            mountPath: "/es-tls/ca-cert.pem"
-            subPath: "ca-cert.pem"
+            mountPath: {{ .Values.storage.elasticsearch.tls.mountPath }}
+            subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
             readOnly: true
         {{- end }}
         {{- if .Values.collector.samplingConfig}}
