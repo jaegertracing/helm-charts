@@ -76,6 +76,12 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.storage.elasticsearch.tls.enabled }}
+            - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+              mountPath: {{ .Values.storage.elasticsearch.tls.mountPath }}
+              subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
+              readOnly: true
+          {{- end }}
       volumes:
       {{- range .Values.esRollover.extraConfigmapMounts }}
         - name: {{ .name }}
@@ -86,5 +92,10 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- if .Values.storage.elasticsearch.tls.enabled }}
+        - name: {{ .Values.storage.elasticsearch.tls.secretName }}
+          secret:
+            secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
       {{- end }}
 {{- end -}}
