@@ -176,12 +176,25 @@ cassandra:
 
 # Begin: Override values on the Kafka subchart to customize for Jaeger
 kafka:
-  replicaCount: 1
-  autoCreateTopicsEnable: true
-  zookeeper:
-    replicaCount: 1
-    serviceAccount:
-      create: true
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
+    external:
+      protocol: PLAINTEXT
+  controller:
+    replicaCount: 3
+    extraConfig: |
+      auto.create.topics.enable=true
+#Zookeeper has been depricated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/ 
+  # zookeeper:
+  #   enabled: false
+  #   replicaCount: 1
+  #   serviceAccount:
+  #     create: true
 
 # End: Override values on the Kafka subchart to customize for Jaeger
 
@@ -237,7 +250,6 @@ ingester:
   imagePullSecrets: []
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
-  cmdlineParams: {}
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -295,7 +307,6 @@ agent:
   # tag: 1.22
   imagePullSecrets: []
   pullPolicy: IfNotPresent
-  cmdlineParams: {}
   extraEnv: []
   daemonset:
     useHostPort: false
@@ -377,7 +388,6 @@ collector:
   dnsPolicy: ClusterFirst
   extraEnv: []
   envFrom: []
-  cmdlineParams: {}
   basePath: /
   replicaCount: 1
   autoscaling:
@@ -408,17 +418,6 @@ collector:
       {}
       # port: 9411
       # nodePort:
-    otlp:
-      grpc:
-        {}
-        # name: otlp-grpc
-        # port: 4317
-        # nodePort:
-      http:
-        {}
-        # name: otlp-http
-        # port: 4318
-        # nodePort:
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName

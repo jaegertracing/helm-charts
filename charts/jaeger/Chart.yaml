@@ -36,9 +36,9 @@ dependencies:
     repository: https://helm.elastic.co
     condition: provisionDataStore.elasticsearch
   - name: kafka
-    version: ^19.1.5
+    version: ^26.3.2
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common
     repository: https://charts.bitnami.com/bitnami
-    version: 1.16.0
+    version: 2.x.x
