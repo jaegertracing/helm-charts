@@ -1,4 +1,4 @@
-{{- if .Values.ingester.autoscaling.enabled }}
+{{- if and .Values.ingester.enabled .Values.ingester.autoscaling.enabled }}
 apiVersion: {{ include "common.capabilities.hpa.apiVersion" ( dict "context" $ ) }}
 kind: HorizontalPodAutoscaler
 metadata:

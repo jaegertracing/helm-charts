@@ -68,7 +68,6 @@ spec:
           {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
           - name: COLLECTOR_OTLP_ENABLED
             value: "true"
-          {{- end }}
           {{- if ne (default 4317 .Values.collector.service.otlp.grpc.port | toString ) "4317" }}
           - name: COLLECTOR_OTLP_GRPC_HOST_PORT
             value: {{ .Values.collector.service.otlp.grpc.port | quote }}
@@ -76,6 +75,7 @@ spec:
           {{- if ne (default 4318 .Values.collector.service.otlp.http.port | toString) "4318" }}
           - name: COLLECTOR_OTLP_HTTP_HOST_PORT
             value: {{ .Values.collector.service.otlp.http.port | quote }}
+          {{- end }}
           {{- end }}
           {{- if .Values.ingester.enabled }}
           - name: SPAN_STORAGE_TYPE
@@ -102,6 +102,9 @@ spec:
           - name: SAMPLING_STRATEGIES_FILE
             value: /etc/conf/strategies.json
           {{- end }}
+      {{- with .Values.collector.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.grpc.port }}
           name: grpc
@@ -119,10 +122,10 @@ spec:
         {{- end }}
         {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
         - containerPort: {{ default 4317 .Values.collector.service.otlp.grpc.port }}
-          name: otlp-grpc
+          name: {{ .Values.collector.service.otlp.grpc.name }}
           protocol: TCP
         - containerPort: {{ default 4318 .Values.collector.service.otlp.http.port }}
-          name: otlp-http
+          name: {{ .Values.collector.service.otlp.http.name }}
           protocol: TCP
         {{- end }}
         readinessProbe:
@@ -164,8 +167,8 @@ spec:
         {{- end }}
         {{- if .Values.storage.elasticsearch.tls.enabled }}
           - name: {{ .Values.storage.elasticsearch.tls.secretName }}
-            mountPath: "/es-tls/ca-cert.pem"
-            subPath: "ca-cert.pem"
+            mountPath: {{ .Values.storage.elasticsearch.tls.mountPath }}
+            subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
             readOnly: true
         {{- end }}
         {{- if .Values.collector.samplingConfig}}

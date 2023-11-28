@@ -70,6 +70,9 @@ spec:
           - name: QUERY_UI_CONFIG
             value: /etc/conf/query-ui-config.json
           {{- end }}
+      {{- with .Values.query.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - name: query
           containerPort: 16686
@@ -111,8 +114,8 @@ spec:
         {{- end }}
         {{- if .Values.storage.elasticsearch.tls.enabled }}
           - name: {{ .Values.storage.elasticsearch.tls.secretName }}
-            mountPath: "/es-tls/ca-cert.pem"
-            subPath: "ca-cert.pem"
+            mountPath: {{ .Values.storage.elasticsearch.tls.mountPath }}
+            subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
             readOnly: true
         {{- end }}
         {{- if .Values.query.config}}
@@ -159,6 +162,8 @@ spec:
         ports:
           - containerPort: {{ .Values.query.oAuthSidecar.containerPort }}
             name: oauth-proxy
+        resources:
+          {{- toYaml .Values.query.oAuthSidecar.resources | nindent 10 }}
         {{- if .Values.query.oAuthSidecar.livenessProbe }}
         livenessProbe:
           {{- toYaml .Values.query.oAuthSidecar.livenessProbe | nindent 10 }}

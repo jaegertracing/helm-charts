@@ -9,7 +9,9 @@ metadata:
     prometheus.io/port: "14269"
     prometheus.io/scrape: "true"
 spec:
-  replicas: 1
+  {{- if hasKey .Values.allInOne "replicas" }}
+  replicas: {{ .Values.allInOne.replicas }}
+  {{- end }}
   strategy:
     type: Recreate
   selector:
@@ -28,6 +30,10 @@ spec:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
+      {{- with .Values.allInOne.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}    
       containers:
         - env:
           {{- if .Values.allInOne.extraEnv }}
@@ -45,6 +51,9 @@ spec:
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
             {{- end }}
+        {{- with .Values.allInOne.envFrom }}
+          envFrom: {{- toYaml . | nindent 12 }}
+        {{- end }}
           image: {{ .Values.allInOne.image }}:{{- .Values.allInOne.tag | default (include "jaeger.image.tag" .) }}
           imagePullPolicy: {{ .Values.allInOne.pullPolicy }}
           name: jaeger
@@ -95,18 +104,28 @@ spec:
           resources:
         {{- toYaml . | nindent 12 }}
       {{- end }}
-
-        {{- if .Values.allInOne.samplingConfig}}
           volumeMounts:
+        {{- if .Values.allInOne.samplingConfig}}
             - name: strategies
               mountPath: /etc/conf/
         {{- end }}
+        {{- range .Values.allInOne.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+        {{- end }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
-    {{- if .Values.allInOne.samplingConfig}}
       volumes:
+    {{- if .Values.allInOne.samplingConfig}}
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
+    {{- end }}
+    {{- range .Values.allInOne.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
     {{- end }}
     {{- with .Values.allInOne.nodeSelector }}
       nodeSelector:

@@ -66,12 +66,21 @@ spec:
           - name: SPAN_STORAGE_TYPE
             value: {{ .Values.storage.type }}
           {{- include "storage.env" . | nindent 10 }}
+          {{ if .Values.storage.kafka.brokers }}
           - name: KAFKA_CONSUMER_BROKERS
             value: {{ tpl (include "helm-toolkit.utils.joinListWithComma" .Values.storage.kafka.brokers) . }}
+          {{- end }}
+          {{ if .Values.storage.kafka.topic }}
           - name: KAFKA_CONSUMER_TOPIC
             value: {{ .Values.storage.kafka.topic }}
+          {{- end }}
+          {{ if .Values.storage.kafka.authentication }}
           - name: KAFKA_CONSUMER_AUTHENTICATION
             value: {{ .Values.storage.kafka.authentication }}
+          {{- end }}
+      {{- with .Values.ingester.envFrom }}
+        envFrom: {{- toYaml . | nindent 10 }}
+      {{- end }}
         ports:
         - containerPort: 14270
           name: admin
