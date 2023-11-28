@@ -189,7 +189,7 @@ kafka:
     replicaCount: 3
     extraConfig: |
       auto.create.topics.enable=true
-#Zookeeper has been depricated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/ 
+#Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/ 
   # zookeeper:
   #   enabled: false
   #   replicaCount: 1
