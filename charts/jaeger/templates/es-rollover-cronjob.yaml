@@ -73,8 +73,15 @@ spec:
               {{- if .Values.esRollover.extraEnv }}
                 {{- toYaml .Values.esRollover.extraEnv | nindent 14 }}
               {{- end }}
+            {{- if .Values.esRollover.resources }}
             resources:
-              {{- toYaml .Values.esRollover.resources | nindent 14 }}
+            {{- toYaml .Values.esRollover.resources | nindent 14 }}
+            {{- end }}
+            {{- if or (.Values.esRollover.securityContext) (.Values.securityContext) }}
+            securityContext:
+            {{- merge .Values.securityContext .Values.esRollover.securityContext | toYaml | nindent 14 }}
+            {{- end }}
+            {{- if or (.Values.esRollover.extraConfigmapMounts) (.Values.esRollover.extraSecretMounts) (.Values.storage.elasticsearch.tls.enabled) }}
             volumeMounts:
             {{- range .Values.esRollover.extraConfigmapMounts }}
               - name: {{ .name }}
@@ -94,6 +101,12 @@ spec:
                 subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
                 readOnly: true
             {{- end }}
+            {{- end }}
+          {{- if or (.Values.esRollover.podSecurityContext) (.Values.podSecurityContext) }}
+          securityContext:
+          {{- merge .Values.podSecurityContext .Values.esRollover.podSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if or (.Values.esRollover.extraConfigmapMounts) (.Values.esRollover.extraSecretMounts) (.Values.storage.elasticsearch.tls.enabled) }}
           volumes:
           {{- range .Values.esRollover.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -109,5 +122,6 @@ spec:
             - name: {{ .Values.storage.elasticsearch.tls.secretName }}
               secret:
                 secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
+        {{- end }}
         {{- end }}
 {{- end -}}

@@ -35,8 +35,6 @@ spec:
       {{- with .Values.collector.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
-      securityContext:
-        {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
       {{- with .Values.collector.imagePullSecrets }}
       imagePullSecrets:
@@ -48,8 +46,6 @@ spec:
       {{- end}}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
-        securityContext:
-          {{- toYaml .Values.collector.securityContext | nindent 10 }}
         image: {{ .Values.collector.image }}:{{- .Values.collector.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         args:
@@ -136,8 +132,15 @@ spec:
           httpGet:
             path: /
             port: admin
+        {{- if .Values.collector.resources }}
         resources:
-          {{- toYaml .Values.collector.resources | nindent 10 }}
+        {{- toYaml .Values.collector.resources | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.collector.securityContext) (.Values.securityContext) }}
+        securityContext:
+        {{- merge .Values.securityContext .Values.collector.securityContext | toYaml | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.collector.extraConfigmapMounts) (.Values.collector.extraSecretMounts) (.Values.collector.samplingConfig) (.Values.storage.cassandra.tls.enable) (.Values.storage.elasticsearch.tls.enabled) }}
         volumeMounts:
         {{- range .Values.collector.extraConfigmapMounts }}
           - name: {{ .name }}
@@ -175,8 +178,14 @@ spec:
           - name: strategies
             mountPath: /etc/conf/
         {{- end }}
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
+      {{- if or (.Values.collector.podSecurityContext) (.Values.podSecurityContext) }}
+      securityContext:
+      {{- merge .Values.podSecurityContext .Values.collector.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.collector.extraConfigmapMounts) (.Values.collector.extraSecretMounts) (.Values.collector.samplingConfig) (.Values.storage.cassandra.tls.enable) (.Values.storage.elasticsearch.tls.enabled) }}
       volumes:
       {{- range .Values.collector.extraConfigmapMounts }}
         - name: {{ .name }}
@@ -202,6 +211,7 @@ spec:
         - name: {{ .Values.storage.elasticsearch.tls.secretName }}
           secret:
             secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
+       {{- end }}
        {{- end }}
     {{- with .Values.collector.nodeSelector }}
       nodeSelector:

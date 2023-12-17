@@ -26,8 +26,6 @@ spec:
         {{- toYaml .Values.schema.podLabels | nindent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        {{- toYaml .Values.schema.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
       {{- with .Values.schema.imagePullSecrets }}
       imagePullSecrets:
@@ -37,8 +35,6 @@ spec:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
         image: {{ .Values.schema.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
-        securityContext:
-          {{- toYaml .Values.schema.securityContext | nindent 10 }}
         env:
         {{- if .Values.schema.extraEnv }}
           {{- toYaml .Values.schema.extraEnv | nindent 10 }}
@@ -60,8 +56,15 @@ spec:
           - name: KEYSPACE
             value: {{ .Values.storage.cassandra.keyspace }}
         {{- end }}
+        {{- if .Values.schema.resources }}
         resources:
-          {{- toYaml .Values.schema.resources | nindent 10 }}
+        {{- toYaml .Values.schema.resources | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.schema.podSecurityContext) (.Values.podSecurityContext) }}
+        securityContext:
+        {{- merge .Values.podSecurityContext .Values.schema.podSecurityContext | toYaml | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.schema.extraConfigmapMounts) (.Values.storage.cassandra.tls.enabled) }}
         volumeMounts:
         {{- range .Values.schema.extraConfigmapMounts }}
           - name: {{ .name }}
@@ -87,7 +90,13 @@ spec:
             subPath: "cqlshrc"
             readOnly: true
         {{- end }}
+        {{- end }}
       restartPolicy: OnFailure
+      {{- if or (.Values.schema.podSecurityContext) (.Values.podSecurityContext) }}
+      securityContext:
+      {{- merge .Values.podSecurityContext .Values.schema.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.schema.extraConfigmapMounts) (.Values.storage.cassandra.tls.enabled) }}
       volumes:
       {{- range .Values.schema.extraConfigmapMounts }}
         - name: {{ .name }}
@@ -98,6 +107,7 @@ spec:
         - name: {{ .Values.storage.cassandra.tls.secretName }}
           secret:
             secretName: {{ .Values.storage.cassandra.tls.secretName }}
+      {{- end }}
       {{- end }}
 {{- end -}}
 {{- end -}}

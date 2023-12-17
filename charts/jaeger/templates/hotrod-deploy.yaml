@@ -18,8 +18,10 @@ spec:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: hotrod
     spec:
+      {{- if or (.Values.hotrod.podSecurityContext) (.Values.podSecurityContext) }}
       securityContext:
-        {{- toYaml .Values.hotrod.podSecurityContext | nindent 8 }}
+      {{- merge .Values.podSecurityContext .Values.hotrod.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
       {{- with .Values.hotrod.image.pullSecrets }}
       imagePullSecrets:
@@ -27,8 +29,6 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
-          securityContext:
-            {{- toYaml .Values.hotrod.securityContext | nindent 12 }}
           image: {{ .Values.hotrod.image.repository }}:{{- include "jaeger.image.tag" . }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           args:
@@ -58,6 +58,10 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.hotrod.resources | nindent 12 }}
+          {{- if or (.Values.hotrod.securityContext) (.Values.securityContext) }}
+          securityContext:
+          {{- merge .Values.securityContext .Values.hotrod.securityContext | toYaml | nindent 12 }}
+          {{- end }}
     {{- with .Values.hotrod.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

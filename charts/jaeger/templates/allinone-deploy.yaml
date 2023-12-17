@@ -100,12 +100,17 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
-      {{- with .Values.allInOne.resources }}
+        {{- with .Values.allInOne.resources }}
           resources:
         {{- toYaml . | nindent 12 }}
-      {{- end }}
+        {{- end }}
+        {{- if or (.Values.allInOne.securityContext) (.Values.securityContext) }}
+          securityContext:
+        {{- merge .Values.securityContext .Values.allInOne.securityContext | toYaml | nindent 12 }}
+        {{- end }}
+        {{- if or (.Values.allInOne.samplingConfig) (.Values.allInOne.extraSecretMounts) }}
           volumeMounts:
-        {{- if .Values.allInOne.samplingConfig}}
+        {{- if .Values.allInOne.samplingConfig }}
             - name: strategies
               mountPath: /etc/conf/
         {{- end }}
@@ -115,20 +120,27 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
         {{- end }}
+        {{- end }}
+      {{- if or (.Values.allInOne.podSecurityContext) (.Values.podSecurityContext) }}
+      securityContext:
+      {{- merge .Values.podSecurityContext .Values.allInOne.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
+      {{- if or (.Values.allInOne.samplingConfig) (.Values.allInOne.extraSecretMounts)}}
       volumes:
-    {{- if .Values.allInOne.samplingConfig}}
+       {{- if .Values.allInOne.samplingConfig}}
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
-    {{- end }}
-    {{- range .Values.allInOne.extraSecretMounts }}
+      {{- end }}
+      {{- range .Values.allInOne.extraSecretMounts }}
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
-    {{- end }}
-    {{- with .Values.allInOne.nodeSelector }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.allInOne.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 {{- end -}}

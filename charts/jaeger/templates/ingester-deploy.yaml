@@ -32,8 +32,10 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ include "jaeger.ingester.serviceAccountName" . }}
+      {{- if or (.Values.ingester.podSecurityContext) (.Values.podSecurityContext) }}
       securityContext:
-        {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
+      {{- merge .Values.podSecurityContext .Values.ingester.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
       {{- with .Values.ingester.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -52,8 +54,6 @@ spec:
       {{- end }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
-        securityContext:
-          {{- toYaml .Values.ingester.securityContext | nindent 10 }}
         image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
         imagePullPolicy: {{ .Values.ingester.pullPolicy }}
         args:
@@ -95,6 +95,10 @@ spec:
             port: admin
         resources:
           {{- toYaml .Values.ingester.resources | nindent 10 }}
+        {{- if or (.Values.ingester.securityContext) (.Values.securityContext) }}
+        securityContext:
+        {{- merge .Values.securityContext .Values.ingester.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         volumeMounts:
         {{- range .Values.ingester.extraConfigmapMounts }}
           - name: {{ .name }}

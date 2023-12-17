@@ -59,8 +59,15 @@ spec:
               {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}
             {{- end }}
               {{ include "elasticsearch.env" . | nindent 14 }}
+            {{- if .Values.esIndexCleaner.resources }}
             resources:
-              {{- toYaml .Values.esIndexCleaner.resources | nindent 14 }}
+            {{- toYaml .Values.esIndexCleaner.resources | nindent 14 }}
+            {{- end }}
+            {{- if or (.Values.esIndexCleaner.securityContext) (.Values.securityContext) }}
+            securityContext:
+            {{- merge .Values.securityContext .Values.esIndexCleaner.securityContext | toYaml | nindent 14 }}
+            {{- end }}
+            {{- if or (.Values.esIndexCleaner.extraConfigmapMounts) (.Values.esIndexCleaner.extraSecretMounts) (.Values.storage.elasticsearch.tls.enabled) }}
             volumeMounts:
             {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
               - name: {{ .name }}
@@ -80,6 +87,7 @@ spec:
                 subPath: {{ .Values.storage.elasticsearch.tls.subPath }}
                 readOnly: true
             {{- end }}
+            {{- end }}
           restartPolicy: OnFailure
         {{- with .Values.esIndexCleaner.nodeSelector }}
           nodeSelector:
@@ -93,6 +101,11 @@ spec:
           tolerations:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+          {{- if or (.Values.esIndexCleaner.podSecurityContext) (.Values.podSecurityContext) }}
+          securityContext:
+          {{- merge .Values.podSecurityContext .Values.esIndexCleaner.podSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if or (.Values.esIndexCleaner.extraConfigmapMounts) (.Values.esIndexCleaner.extraSecretMounts) (.Values.storage.elasticsearch.tls.enabled) }}
           volumes:
           {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -108,5 +121,6 @@ spec:
             - name: {{ .Values.storage.elasticsearch.tls.secretName }}
               secret:
                 secretName: {{ .Values.storage.elasticsearch.tls.secretName }}
+        {{- end }}
         {{- end }}
 {{- end -}}

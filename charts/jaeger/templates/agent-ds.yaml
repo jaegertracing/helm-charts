@@ -32,8 +32,6 @@ spec:
         {{- toYaml .Values.agent.podLabels | nindent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        {{- toYaml .Values.agent.podSecurityContext | nindent 8 }}
       {{- if .Values.agent.useHostNetwork }}
       hostNetwork: true
       {{- end }}
@@ -52,8 +50,6 @@ spec:
       {{- end}}
       containers:
       - name: {{ template "jaeger.agent.name" . }}
-        securityContext:
-          {{- toYaml .Values.agent.securityContext | nindent 10 }}
         image: {{ .Values.agent.image }}:{{- .Values.agent.tag | default (include "jaeger.image.tag" .) }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         args:
@@ -105,8 +101,15 @@ spec:
           httpGet:
             path: /
             port: admin
+        {{- if .Values.agent.resources }}
         resources:
-          {{- toYaml .Values.agent.resources | nindent 10 }}
+        {{- toYaml .Values.agent.resources | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.agent.securityContext) (.Values.securityContext) }}
+        securityContext:
+        {{- merge .Values.securityContext .Values.agent.securityContext | toYaml | nindent 10 }}
+        {{- end }}
+        {{- if or (.Values.agent.extraConfigmapMounts) (.Values.agent.extraSecretMounts) }}
         volumeMounts:
         {{- range .Values.agent.extraConfigmapMounts }}
           - name: {{ .name }}
@@ -120,6 +123,12 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
+        {{- end }}
+      {{- if or (.Values.agent.podSecurityContext) (.Values.podSecurityContext) }}
+      securityContext:
+      {{- merge .Values.podSecurityContext .Values.agent.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.agent.extraConfigmapMounts) (.Values.agent.extraSecretMounts) }}
       volumes:
       {{- range .Values.agent.extraConfigmapMounts }}
         - name: {{ .name }}
@@ -130,6 +139,7 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
       {{- end }}
     {{- with .Values.agent.nodeSelector }}
       nodeSelector:

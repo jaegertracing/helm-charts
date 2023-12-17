@@ -2,6 +2,23 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+# Set securityContext for pod or container global and/or define for each service
+podSecurityContext: {}
+# podSecurityContext:
+#   fsGroup: 1000
+#   supplementalGroups:
+#     - 1000
+securityContext: {}
+# securityContext:
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#     drop:
+#     - ALL
+#   privileged: false
+#   readOnlyRootFilesystem: true
+#   runAsUser: 1000
+#   runAsGroup: 1000
+
 provisionDataStore:
   cassandra: true
   elasticsearch: false
@@ -17,7 +34,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 allInOne:
-  enabled: false
+  enabled: true
   replicas: 1
   image: jaegertracing/all-in-one
   imagePullSecrets: []
@@ -77,6 +94,8 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+  podSecurityContext: {}
+  securityContext: {}
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -194,8 +213,7 @@ schema:
   image: jaegertracing/jaeger-cassandra-schema
   imagePullSecrets: []
   pullPolicy: IfNotPresent
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -213,8 +231,7 @@ schema:
   podSecurityContext: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
-  extraEnv:
-    []
+  extraEnv: []
     # - name: MODE
     #   value: prod
     # - name: TRACE_TTL
@@ -249,8 +266,7 @@ ingester:
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 1
     #   memory: 1Gi
@@ -284,8 +300,6 @@ ingester:
     metricRelabelings: []
 
 agent:
-  podSecurityContext: {}
-  securityContext: {}
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
@@ -314,14 +328,15 @@ agent:
     binaryPort: 6832
     # samplingPort: (HTTP) serve configs, sampling strategies
     samplingPort: 5778
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -363,8 +378,6 @@ agent:
     metricRelabelings: []
 
 collector:
-  podSecurityContext: {}
-  securityContext: {}
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
@@ -442,14 +455,15 @@ collector:
     #   hosts:
     #     - chart-example.local
     pathType:
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 1
     #   memory: 1Gi
     # requests:
     #   cpu: 500m
     #   memory: 512Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -475,6 +489,7 @@ collector:
   #   subPath: ""
   #   configMap: jaeger-config
   #   readOnly: true
+  samplingConfig: {}
   # samplingConfig: |-
   #   {
   #     "service_strategies": [
@@ -532,14 +547,15 @@ query:
   basePath: /
   oAuthSidecar:
     enabled: false
-    resources:
-      {}
+    resources: {}
       # limits:
       #   cpu: 500m
       #   memory: 512Mi
       # requests:
       #   cpu: 256m
       #   memory: 128Mi
+    podSecurityContext: {}
+    securityContext: {}
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
     pullPolicy: IfNotPresent
     containerPort: 4180
@@ -559,17 +575,27 @@ query:
   #   oidc_groups_claim = "groups"
   #   user_id_claim = "preferred_username"
   #   skip_provider_button = "true"
+  resources: {}
+  # resources:
+  #   limits:
+  #     cpu: 500m
+  #     memory: 512Mi
+  #   requests:
+  #     cpu: 256m
+  #     memory: 128Mi
   podSecurityContext: {}
   securityContext: {}
   agentSidecar:
     enabled: true
-  #    resources:
-  #      limits:
-  #        cpu: 500m
-  #        memory: 512Mi
-  #      requests:
-  #        cpu: 256m
-  #        memory: 128Mi
+    resources: {}
+      # limits:
+      #   cpu: 500m
+      #   memory: 512Mi
+      # requests:
+      #   cpu: 256m
+      #   memory: 128Mi
+    podSecurityContext: {}
+    securityContext: {}
   annotations: {}
   image: jaegertracing/jaeger-query
   # tag: 1.22
@@ -613,14 +639,6 @@ query:
     pathType:
     health:
       exposed: false
-  resources:
-    {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #    cpu: 256m
-    #    memory: 128Mi
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -680,7 +698,7 @@ query:
     #   customRules: []
 
 spark:
-  enabled: false
+  enabled: true
   annotations: {}
   image: jaegertracing/spark-dependencies
   imagePullSecrets: []
@@ -692,14 +710,15 @@ spark:
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -735,14 +754,15 @@ esIndexCleaner:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   numberOfDays: 7
   serviceAccount:
     create: true
@@ -778,14 +798,15 @@ esRollover:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -831,14 +852,15 @@ esLookback:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
     #   cpu: 256m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
@@ -858,8 +880,6 @@ esLookback:
 
 hotrod:
   enabled: false
-  podSecurityContext: {}
-  securityContext: {}
   replicaCount: 1
   # set the primary command(s) for the hotrod application
   args:
@@ -901,8 +921,7 @@ hotrod:
       #   hosts:
       #     - chart-example.local
     pathType:
-  resources:
-    {}
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -913,6 +932,8 @@ hotrod:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+  podSecurityContext: {}
+  securityContext: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account

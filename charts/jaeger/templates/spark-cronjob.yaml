@@ -64,8 +64,14 @@ spec:
               - name: ES_NODES_WAN_ONLY
                 value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
             {{- end }}
+            {{- if .Values.spark.resources }}
             resources:
-              {{- toYaml .Values.spark.resources | nindent 14 }}
+            {{- toYaml .Values.spark.resources | nindent 14 }}
+            {{- end }}
+            {{- if or (.Values.spark.securityContext) (.Values.securityContext) }}
+            securityContext:
+            {{- merge .Values.securityContext .Values.spark.securityContext | toYaml | nindent 14 }}
+            {{- end }}
             volumeMounts:
             {{- range .Values.spark.extraConfigmapMounts }}
               - name: {{ .name }}
@@ -80,6 +86,10 @@ spec:
                 readOnly: {{ .readOnly }}
             {{- end }}
           restartPolicy: OnFailure
+          {{- if or (.Values.spark.podSecurityContext) (.Values.podSecurityContext) }}
+          securityContext:
+          {{- merge .Values.podSecurityContext .Values.spark.podSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
           volumes:
           {{- range .Values.spark.extraConfigmapMounts }}
             - name: {{ .name }}
