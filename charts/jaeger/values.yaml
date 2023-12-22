@@ -40,6 +40,8 @@ allInOne:
   #       "param": 1
   #     }
   #   }
+  serviceAccount:
+    annotations: {}
   service:
     headless: true
     collector:
@@ -261,6 +263,7 @@ ingester:
     create: true
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
+    annotations: {}
     name:
   nodeSelector: {}
   tolerations: []
@@ -702,6 +705,7 @@ spark:
     #   memory: 128Mi
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -746,6 +750,7 @@ esIndexCleaner:
   numberOfDays: 7
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -841,6 +846,7 @@ esLookback:
     #   memory: 128Mi
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -917,6 +923,7 @@ hotrod:
     create: true
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
+    annotations: {}
     name:
   nodeSelector: {}
   tolerations: []
