@@ -639,7 +639,6 @@ query:
     pathType:
     health:
       exposed: false
-  resources: {}
   serviceAccount:
     create: true
     # Explicitly mounts the API credentials for the Service Account
