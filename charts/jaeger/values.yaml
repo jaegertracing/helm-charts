@@ -34,7 +34,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 allInOne:
-  enabled: true
+  enabled: false
   replicas: 1
   image: jaegertracing/all-in-one
   imagePullSecrets: []
@@ -698,7 +698,7 @@ query:
     #   customRules: []
 
 spark:
-  enabled: true
+  enabled: false
   annotations: {}
   image: jaegertracing/spark-dependencies
   imagePullSecrets: []
