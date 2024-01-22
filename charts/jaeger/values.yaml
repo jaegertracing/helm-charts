@@ -189,7 +189,7 @@ kafka:
     replicaCount: 3
     extraConfig: |
       auto.create.topics.enable=true
-# Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/ 
+# Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/
 # Documentation for upgrading Kafka and keeping Zookeeper: https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode
 # Documentation for migrating away from Zookeeper to Kraft Mode: https://github.com/bitnami/charts/tree/main/bitnami/kafka#migrating-from-zookeeper-early-access
   # zookeeper:
