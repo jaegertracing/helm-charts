@@ -44,6 +44,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.query.initContainers }}
+      initContainers:
+      {{- toYaml .Values.query.initContainers | nindent 8 }}
+      {{- end}} 
       containers:
       - name: {{ template "jaeger.query.name" . }}
         securityContext:
