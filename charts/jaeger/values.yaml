@@ -291,6 +291,7 @@ ingester:
   extraConfigmapMounts: []
   extraEnv: []
   envFrom: []
+  initContainers: []
 
   serviceMonitor:
     enabled: false
@@ -548,6 +549,7 @@ collector:
 query:
   enabled: true
   basePath: /
+  initContainers: []
   oAuthSidecar:
     enabled: false
     resources:
