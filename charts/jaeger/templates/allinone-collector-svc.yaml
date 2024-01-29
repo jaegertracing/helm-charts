@@ -12,21 +12,26 @@ spec:
     - name: http-zipkin
       port: 9411
       targetPort: 0
+      appProcotol: http
     - name: grpc-http
       port: 14250
       targetPort: 0
+      appProcotol: grpc
     - name: c-tchan-trft
       port: 14267
       targetPort: 0
     - name: http-c-binary-trft
       port: 14268
       targetPort: 0
+      appProtocol: http
     - name: {{ .Values.allInOne.service.collector.otlp.grpc.name }}
       port: 4317
       targetPort: 0
+      appProcotol: grpc
     - name: {{ .Values.allInOne.service.collector.otlp.http.name }}
       port: 4318
       targetPort: 0
+      appProcotol: http
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one

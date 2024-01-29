@@ -19,6 +19,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: grpc
+    appProcotol: grpc
   - name: http
     port: {{ .Values.collector.service.http.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.http.nodePort) }}
@@ -26,6 +27,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: http
+    appProcotol: http
 {{- if .Values.collector.service.zipkin }}
   - name: zipkin
     port: {{ .Values.collector.service.zipkin.port }}
@@ -34,6 +36,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: zipkin
+    appProcotol: http
 {{- end }}
 {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
   - name: {{ .Values.collector.service.otlp.grpc.name }}
