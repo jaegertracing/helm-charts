@@ -176,12 +176,27 @@ cassandra:
 
 # Begin: Override values on the Kafka subchart to customize for Jaeger
 kafka:
-  replicaCount: 1
-  autoCreateTopicsEnable: true
-  zookeeper:
-    replicaCount: 1
-    serviceAccount:
-      create: true
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
+    external:
+      protocol: PLAINTEXT
+  controller:
+    replicaCount: 3
+    extraConfig: |
+      auto.create.topics.enable=true
+# Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/
+# Documentation for upgrading Kafka and keeping Zookeeper: https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode
+# Documentation for migrating away from Zookeeper to Kraft Mode: https://github.com/bitnami/charts/tree/main/bitnami/kafka#migrating-from-zookeeper-early-access
+  # zookeeper:
+  #   enabled: false
+  #   replicaCount: 1
+  #   serviceAccount:
+  #     create: true
 
 # End: Override values on the Kafka subchart to customize for Jaeger
 
