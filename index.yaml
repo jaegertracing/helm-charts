@@ -3,6 +3,53 @@ entries:
   jaeger:
   - apiVersion: v2
     appVersion: 1.53.0
+    created: "2024-02-22T22:32:55.929040617Z"
+    dependencies:
+    - condition: provisionDataStore.cassandra
+      name: cassandra
+      repository: https://charts.helm.sh/incubator
+      version: 0.15.3
+    - condition: provisionDataStore.elasticsearch
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: ^7.11.1
+    - condition: provisionDataStore.kafka
+      name: kafka
+      repository: https://charts.bitnami.com/bitnami
+      version: ^26.6.2
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: A Jaeger Helm chart for Kubernetes
+    digest: 529573dfefcd8ef7fe66cff830de16355dcb8f50584cd2bd06f8e36f7338d18f
+    home: https://jaegertracing.io
+    icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+    keywords:
+    - jaeger
+    - opentracing
+    - tracing
+    - instrumentation
+    kubeVersion: '>= 1.21-0'
+    maintainers:
+    - email: david.vonthenen@dell.com
+      name: dvonthenen
+    - email: ankit.mehta@appian.com
+      name: mehta-ankit
+    - email: michael.lorant@fairfaxmedia.com.au
+      name: mikelorant
+    - email: naseem@transit.app
+      name: naseemkullah
+    - email: me@pavelnikolov.net
+      name: pavelnikolov
+    name: jaeger
+    sources:
+    - https://hub.docker.com/u/jaegertracing/
+    type: application
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-1.0.1/jaeger-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.53.0
     created: "2024-02-05T11:57:40.7350692Z"
     dependencies:
     - condition: provisionDataStore.cassandra
