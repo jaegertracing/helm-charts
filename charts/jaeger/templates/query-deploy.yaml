@@ -23,6 +23,9 @@ spec:
       {{- if .Values.query.config }}
         checksum/ui-config: {{ include (print $.Template.BasePath "/query-configmap.yaml") . | sha256sum }}
       {{- end }}
+      {{- if and .Values.query.oAuthSidecar.enabled .Values.query.oAuthSidecar.config }}
+        checksum/oauth2-config: {{ sha256sum .Values.query.oAuthSidecar.config }}
+      {{- end }}
       {{- if .Values.query.podAnnotations }}
         {{- toYaml .Values.query.podAnnotations | nindent 8 }}
       {{- end }}
