@@ -19,7 +19,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: grpc
-    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
+    {{- if semverCompare ">=1.20" .Capabilities.KubeVersion.Version }}
     appProtocol: grpc
     {{- end }}
   - name: http
@@ -29,7 +29,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: http
-    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
+    {{- if semverCompare ">=1.20" .Capabilities.KubeVersion.Version }}
     appProtocol: http
     {{- end }}
 {{- if .Values.collector.service.zipkin }}
@@ -40,7 +40,7 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: zipkin
-    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
+    {{- if semverCompare ">=1.20" .Capabilities.KubeVersion.Version }}
     appProtocol: http
     {{- end }}
 {{- end }}
