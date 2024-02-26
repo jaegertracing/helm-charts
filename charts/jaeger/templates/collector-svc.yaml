@@ -19,7 +19,9 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: grpc
+    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
     appProcotol: grpc
+    {{- end }}
   - name: http
     port: {{ .Values.collector.service.http.port }}
 {{- if and (eq .Values.collector.service.type "NodePort") (.Values.collector.service.http.nodePort) }}
@@ -27,7 +29,9 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: http
+    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
     appProcotol: http
+    {{- end }}
 {{- if .Values.collector.service.zipkin }}
   - name: zipkin
     port: {{ .Values.collector.service.zipkin.port }}
@@ -36,7 +40,9 @@ spec:
 {{- end }}
     protocol: TCP
     targetPort: zipkin
+    {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
     appProcotol: http
+    {{- end }}
 {{- end }}
 {{- if or .Values.collector.service.otlp.grpc .Values.collector.service.otlp.http }}
   - name: {{ .Values.collector.service.otlp.grpc.name }}

@@ -12,11 +12,15 @@ spec:
     - name: http-zipkin
       port: 9411
       targetPort: 0
+      {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
       appProcotol: http
+      {{- end }}
     - name: grpc-http
       port: 14250
       targetPort: 0
+      {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
       appProcotol: grpc
+      {{- end }}
     - name: c-tchan-trft
       port: 14267
       targetPort: 0
@@ -27,11 +31,15 @@ spec:
     - name: {{ .Values.allInOne.service.collector.otlp.grpc.name }}
       port: 4317
       targetPort: 0
+      {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
       appProcotol: grpc
+      {{- end }}
     - name: {{ .Values.allInOne.service.collector.otlp.http.name }}
       port: 4318
       targetPort: 0
+      {{- if and (ge .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "20") }}
       appProcotol: http
+      {{- end }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
