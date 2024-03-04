@@ -747,7 +747,9 @@ esIndexCleaner:
   image: jaegertracing/jaeger-es-index-cleaner
   imagePullSecrets: []
   pullPolicy: IfNotPresent
-  cmdlineParams: {}
+  cmdlineParams: 
+    {}
+    # index-prefix: test
   extraEnv:
     []
     # - name: ROLLOVER
