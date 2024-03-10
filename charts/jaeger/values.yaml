@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+global:
+  imageRegistry:
+
 provisionDataStore:
   cassandra: true
   elasticsearch: false
@@ -19,9 +22,13 @@ fullnameOverride: ""
 allInOne:
   enabled: false
   replicas: 1
-  image: jaegertracing/all-in-one
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/all-in-one
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   extraEnv: []
   extraSecretMounts:
     []
@@ -208,9 +215,13 @@ kafka:
 # use by Jaeger
 schema:
   annotations: {}
-  image: jaegertracing/jaeger-cassandra-schema
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-cassandra-schema
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   resources:
     {}
     # limits:
@@ -248,9 +259,13 @@ ingester:
   podSecurityContext: {}
   securityContext: {}
   annotations: {}
-  image: jaegertracing/jaeger-ingester
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-ingester
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -307,10 +322,13 @@ agent:
   securityContext: {}
   enabled: true
   annotations: {}
-  image: jaegertracing/jaeger-agent
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-agent
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv: []
   daemonset:
@@ -386,10 +404,13 @@ collector:
   securityContext: {}
   enabled: true
   annotations: {}
-  image: jaegertracing/jaeger-collector
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-collector
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   extraEnv: []
   envFrom: []
@@ -560,8 +581,13 @@ query:
       # requests:
       #   cpu: 256m
       #   memory: 128Mi
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
-    pullPolicy: IfNotPresent
+    image:
+      registry: quay.io
+      repository: oauth2-proxy/oauth2-proxy
+      tag: v7.1.0
+      digest: ""
+      pullPolicy: IfNotPresent
+      pullSecrets: []
     containerPort: 4180
     args: []
     extraEnv: []
@@ -591,10 +617,13 @@ query:
   #        cpu: 256m
   #        memory: 128Mi
   annotations: {}
-  image: jaegertracing/jaeger-query
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-query
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   extraEnv: []
@@ -702,10 +731,13 @@ query:
 spark:
   enabled: false
   annotations: {}
-  image: jaegertracing/spark-dependencies
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/spark-dependencies
+    tag: latest
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv: []
   schedule: "49 23 * * *"
@@ -744,9 +776,13 @@ esIndexCleaner:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-index-cleaner
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-index-cleaner
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     []
@@ -788,10 +824,13 @@ esRollover:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-rollover
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-rollover
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     - name: CONDITIONS
@@ -839,10 +878,13 @@ esLookback:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-rollover
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-rollover
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     - name: UNIT
@@ -896,7 +938,10 @@ hotrod:
   #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
   #     value: http://my-otel-collector.chart.local:4318
   image:
+    registry: ""
     repository: jaegertracing/example-hotrod
+    tag: ""
+    digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
   service:

@@ -30,10 +30,7 @@ spec:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
-      {{- with .Values.allInOne.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}    
+      {{- include "allInOne.imagePullSecrets" . | nindent 6 }}  
       containers:
         - env:
           {{- if .Values.allInOne.extraEnv }}
@@ -54,8 +51,8 @@ spec:
         {{- with .Values.allInOne.envFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
         {{- end }}
-          image: {{ .Values.allInOne.image }}:{{- .Values.allInOne.tag | default (include "jaeger.image.tag" .) }}
-          imagePullPolicy: {{ .Values.allInOne.pullPolicy }}
+          image: {{ include "allInOne.image" . }}
+          imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
             {{- range $arg := .Values.allInOne.args }}

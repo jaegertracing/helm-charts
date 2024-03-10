@@ -29,14 +29,11 @@ spec:
       securityContext:
         {{- toYaml .Values.schema.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.cassandraSchema.serviceAccountName" . }}
-      {{- with .Values.schema.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "schema.imagePullSecrets" . | nindent 6 }}
       containers:
       - name: {{ include "jaeger.fullname" . }}-cassandra-schema
-        image: {{ .Values.schema.image }}:{{- include "jaeger.image.tag" . }}
-        imagePullPolicy: {{ .Values.schema.pullPolicy }}
+        image: {{ include "schema.image" . }}
+        imagePullPolicy: {{ .Values.schema.image.pullPolicy }}
         securityContext:
           {{- toYaml .Values.schema.securityContext | nindent 10 }}
         env:

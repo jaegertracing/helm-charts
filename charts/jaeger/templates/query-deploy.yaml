@@ -43,10 +43,7 @@ spec:
       securityContext:
         {{- toYaml .Values.query.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
-      {{- with .Values.query.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "query.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.query.initContainers }}
       initContainers:
       {{- toYaml .Values.query.initContainers | nindent 8 }}
@@ -55,8 +52,8 @@ spec:
       - name: {{ template "jaeger.query.name" . }}
         securityContext:
           {{- toYaml .Values.query.securityContext | nindent 10 }}
-        image: {{ .Values.query.image }}:{{- .Values.query.tag | default (include "jaeger.image.tag" .) }}
-        imagePullPolicy: {{ .Values.query.pullPolicy }}
+        image: {{ include "query.image" . }}
+        imagePullPolicy: {{ .Values.query.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.query.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
@@ -139,8 +136,8 @@ spec:
             port: admin
 {{- if .Values.query.oAuthSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar
-        image: {{ .Values.query.oAuthSidecar.image }}
-        imagePullPolicy: {{ .Values.query.oAuthSidecar.pullPolicy }}
+        image: {{ include "oAuthSidecar.image" . }}
+        imagePullPolicy: {{ .Values.query.oAuthSidecar.image.pullPolicy }}
         args:
         {{- range .Values.query.oAuthSidecar.args }}
           - {{ . }}
@@ -184,8 +181,8 @@ spec:
       - name: {{ template "jaeger.agent.name" . }}-sidecar
         securityContext:
           {{- toYaml .Values.query.securityContext | nindent 10 }}
-        image: {{ .Values.agent.image }}:{{- include "jaeger.image.tag" . }}
-        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        image: {{ include "agent.image" . }}
+        imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
         args:
           {{- range $key, $value := .Values.agent.cmdlineParams }}
           {{- if $value }}
