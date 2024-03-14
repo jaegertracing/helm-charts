@@ -32,13 +32,6 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create image tag value which defaults to .Chart.AppVersion.
-*/}}
-{{- define "jaeger.image.tag" -}}
-{{- .Values.tag | default .Chart.AppVersion }}
-{{- end -}}
-
-{{/*
 Common labels
 */}}
 {{- define "jaeger.labels" -}}
@@ -523,3 +516,175 @@ spec:
   {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.customRules "context" $) | nindent 2 }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Create image name value
+If not tag is provided, it defaults to .Chart.AppVersion.
+( dict "imageRoot" .Values.path.to.image "context" $ )
+*/}}
+{{- define "renderImage" -}}
+{{- $image := merge .imageRoot (dict "tag" .context.Chart.AppVersion) -}}
+{{- include "common.images.image" (dict "imageRoot" $image "global" .context.Values.Global) -}}
+{{- end -}}
+
+{{/*
+Create image name for all in one image
+*/}}
+{{- define "allInOne.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.allInOne.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for all in one image
+*/}}
+{{- define "allInOne.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.allInOne.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for schema image
+*/}}
+{{- define "schema.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.schema.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for schema image
+*/}}
+{{- define "schema.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.schema.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for ingester image
+*/}}
+{{- define "ingester.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.ingester.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for ingester image
+*/}}
+{{- define "ingester.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.ingester.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for agent image
+*/}}
+{{- define "agent.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.agent.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for agent image
+*/}}
+{{- define "agent.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.agent.image) "context" $) -}}
+{{- end }}
+
+
+{{/*
+Create image name for collector image
+*/}}
+{{- define "collector.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.collector.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for collector image
+*/}}
+{{- define "collector.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.collector.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for query image
+*/}}
+{{- define "query.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.query.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for query image
+*/}}
+{{- define "query.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.query.image .Values.query.oAuthSidecar.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for oAuthSidecar image
+*/}}
+{{- define "oAuthSidecar.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.query.oAuthSidecar.image "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
+Create image name for spark image
+*/}}
+{{- define "spark.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.spark.image "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for spark image
+*/}}
+{{- define "spark.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.spark.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for esIndexCleaner image
+*/}}
+{{- define "esIndexCleaner.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.esIndexCleaner.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for esIndexCleaner image
+*/}}
+{{- define "esIndexCleaner.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.esIndexCleaner.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for esRollover image
+*/}}
+{{- define "esRollover.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.esRollover.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for esRollover image
+*/}}
+{{- define "esRollover.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.esRollover.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for esLookback image
+*/}}
+{{- define "esLookback.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.esLookback.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for esLookback image
+*/}}
+{{- define "esLookback.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.esLookback.image) "context" $) -}}
+{{- end }}
+
+{{/*
+Create image name for hotrod image
+*/}}
+{{- define "hotrod.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.hotrod.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for hotrod image
+*/}}
+{{- define "hotrod.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.hotrod.image) "context" $) -}}
+{{- end }}

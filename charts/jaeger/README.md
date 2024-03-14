@@ -352,7 +352,10 @@ query:
   oAuthSidecar:
     enabled: true
     resources: {}
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
+    image:
+      registry: quay.io
+      repository: oauth2-proxy/oauth2-proxy
+      tag: v7.3.0
     pullPolicy: IfNotPresent
     containerPort: 4180
     args:

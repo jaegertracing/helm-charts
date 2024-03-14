@@ -38,10 +38,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esLookback.serviceAccountName" . }}
-          {{- with .Values.esLookback.imagePullSecrets }}
-          imagePullSecrets:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "esLookback.imagePullSecrets" . | nindent 12 }}  
           securityContext:
             {{- toYaml .Values.esLookback.podSecurityContext | nindent 12 }}
           restartPolicy: OnFailure
@@ -62,8 +59,8 @@ spec:
           - name: {{ include "jaeger.fullname" . }}-es-lookback
             securityContext:
               {{- toYaml .Values.esLookback.securityContext | nindent 14 }}
-            image: "{{ .Values.esLookback.image }}:{{- include "jaeger.image.tag" . }}"
-            imagePullPolicy: {{ .Values.esLookback.pullPolicy }}
+            image: {{ include "esLookback.image" . }}
+            imagePullPolicy: {{ .Values.esLookback.image.pullPolicy }}
             args:
               - lookback
               - {{ include "elasticsearch.client.url" . }}

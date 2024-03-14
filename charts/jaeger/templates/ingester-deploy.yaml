@@ -34,10 +34,7 @@ spec:
       serviceAccountName: {{ include "jaeger.ingester.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.ingester.podSecurityContext | nindent 8 }}
-      {{- with .Values.ingester.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "ingester.imagePullSecrets" . | nindent 6 }}
       {{- with .Values.ingester.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -58,8 +55,8 @@ spec:
       - name: {{ include "jaeger.fullname" . }}-ingester
         securityContext:
           {{- toYaml .Values.ingester.securityContext | nindent 10 }}
-        image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
-        imagePullPolicy: {{ .Values.ingester.pullPolicy }}
+        image: {{ include "ingester.image" . }}
+        imagePullPolicy: {{ .Values.ingester.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.ingester.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
