@@ -38,10 +38,7 @@ spec:
       securityContext:
         {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
-      {{- with .Values.collector.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "collector.imagePullSecrets" . | nindent 6 }} 
       {{- if .Values.collector.initContainers }}
       initContainers:
         {{- toYaml .Values.collector.initContainers | nindent 8 }}
@@ -50,8 +47,8 @@ spec:
       - name: {{ template "jaeger.collector.name" . }}
         securityContext:
           {{- toYaml .Values.collector.securityContext | nindent 10 }}
-        image: {{ .Values.collector.image }}:{{- .Values.collector.tag | default (include "jaeger.image.tag" .) }}
-        imagePullPolicy: {{ .Values.collector.pullPolicy }}
+        image: {{ include "collector.image" . }}
+        imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
           {{- if not .Values.ingester.enabled -}}

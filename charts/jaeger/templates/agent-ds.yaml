@@ -42,10 +42,7 @@ spec:
       priorityClassName: {{ . }}
       {{- end }}
       serviceAccountName: {{ template "jaeger.agent.serviceAccountName" . }}
-      {{- with .Values.agent.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "agent.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.agent.initContainers }}
       initContainers:
         {{- toYaml .Values.agent.initContainers | nindent 8 }}
@@ -54,8 +51,8 @@ spec:
       - name: {{ template "jaeger.agent.name" . }}
         securityContext:
           {{- toYaml .Values.agent.securityContext | nindent 10 }}
-        image: {{ .Values.agent.image }}:{{- .Values.agent.tag | default (include "jaeger.image.tag" .) }}
-        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        image: {{ include "agent.image" . }}
+        imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.agent.cmdlineParams ) | nindent 10  }}
         env:
