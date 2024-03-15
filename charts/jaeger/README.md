@@ -355,7 +355,7 @@ query:
     image:
       registry: quay.io
       repository: oauth2-proxy/oauth2-proxy
-      tag: v7.3.0
+      tag: v7.6.0
     pullPolicy: IfNotPresent
     containerPort: 4180
     args:
