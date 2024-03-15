@@ -584,7 +584,7 @@ query:
     image:
       registry: quay.io
       repository: oauth2-proxy/oauth2-proxy
-      tag: v7.1.0
+      tag: v7.6.0
       digest: ""
       pullPolicy: IfNotPresent
       pullSecrets: []
