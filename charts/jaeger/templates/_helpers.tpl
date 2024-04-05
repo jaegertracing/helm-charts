@@ -386,6 +386,14 @@ grpcPlugin related environment variables
 badger related environment variables
 */}}
 {{- define "badger.env" -}}
+- name: BADGER_EPHEMERAL
+  value: {{ .Values.storage.badger.ephemeral | quote }}
+{{- if not .Values.storage.badger.ephemeral }}
+- name: BADGER_DIRECTORY_VALUE
+  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/data" | quote }}
+- name: BADGER_DIRECTORY_KEY
+  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/key" | quote }}
+{{- end }}
 {{- if .Values.storage.badger.extraEnv }}
 {{- toYaml .Values.storage.badger.extraEnv }}
 {{- end }}

@@ -168,6 +168,10 @@ storage:
   grpcPlugin:
     extraEnv: []
   badger:
+    ephemeral: true
+    persistence:
+      mountPath: /mnt/data
+      useExistingPvcName: ""
     extraEnv: []
   memory:
     extraEnv: []
