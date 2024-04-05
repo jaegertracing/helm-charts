@@ -37,7 +37,8 @@ spec:
             {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
           {{- end }}
             - name: SPAN_STORAGE_TYPE
-              value: memory
+              value: {{ include "allInOne.storage.type" . | required "Invalid storage type provided. Use either badger or memory for allInOne" }}
+            {{- include "storage.env" . | nindent 12 }}
             - name: COLLECTOR_ZIPKIN_HOST_PORT
               value: :9411
             - name: JAEGER_DISABLED
