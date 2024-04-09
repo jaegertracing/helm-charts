@@ -37,7 +37,8 @@ spec:
             {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
           {{- end }}
             - name: SPAN_STORAGE_TYPE
-              value: memory
+              value: {{ include "allInOne.storage.type" . | required "Invalid storage type provided. Use either badger or memory for allInOne" }}
+            {{- include "storage.env" . | nindent 12 }}
             - name: COLLECTOR_ZIPKIN_HOST_PORT
               value: :9411
             - name: JAEGER_DISABLED
@@ -102,6 +103,10 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
+        {{- if not .Values.storage.badger.ephemeral }}
+            - name: badger-data
+              mountPath: {{ .Values.storage.badger.persistence.mountPath }}
+        {{- end }}
         {{- if .Values.allInOne.samplingConfig}}
             - name: strategies
               mountPath: /etc/conf/
@@ -112,8 +117,17 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
         {{- end }}
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
+    {{- if not .Values.storage.badger.ephemeral }}
+        - name: badger-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.storage.badger.persistence.useExistingPvcName | required "Using badger persistence it is required to set an existing PVC"  }}
+    {{- end }}
     {{- if .Values.allInOne.samplingConfig}}
         - name: strategies
           configMap:

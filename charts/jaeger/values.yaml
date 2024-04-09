@@ -88,7 +88,7 @@ allInOne:
   nodeSelector: {}
 
 storage:
-  # allowed values (cassandra, elasticsearch)
+  # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
   type: cassandra
   cassandra:
     host: cassandra
@@ -166,6 +166,14 @@ storage:
     authentication: none
     extraEnv: []
   grpcPlugin:
+    extraEnv: []
+  badger:
+    ephemeral: true
+    persistence:
+      mountPath: /mnt/data
+      useExistingPvcName: ""
+    extraEnv: []
+  memory:
     extraEnv: []
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
