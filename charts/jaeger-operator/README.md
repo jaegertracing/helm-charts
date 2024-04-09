@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `rbac.clusterRole`         | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
 | `serviceAccount.name`      | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
 | `extraEnv`                 | Additional environment variables passed to the operator. For example: name: LOG-LEVEL value: debug          | `[]`                            |
+| `replicaCount`             | Desired number of operator pods                                                                             | `1`                             |
 | `resources`                | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`             | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`              | Toleration labels for pod assignment                                                                        | `[]`                            |

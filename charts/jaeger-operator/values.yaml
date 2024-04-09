@@ -75,6 +75,9 @@ extraLabels: {}
   # Specifies extra labels for the operator deployment:
   # foo: bar
 
+# Specifies desired number of operator pods
+replicaCount: 1
+
 resources: {}
   # limits:
   #  cpu: 100m
