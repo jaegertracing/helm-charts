@@ -259,8 +259,45 @@ schema:
     #   value: "0"
 
 # For configurable values of the elasticsearch if provisioned, please see:
-# https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
+# https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
 elasticsearch: {}
+
+# Example that uses no auth:
+# elasticsearch:
+#   fullnameOverride: "elasticsearch"
+#   image:
+#     registry: ""
+#     repository: docker.io/bitnami/elasticsearch
+#     tag: ""
+#   master:
+#     masterOnly: false
+#     replicaCount: 3
+#     extraEnvVars:
+#       - name: ES_JAVA_OPTS
+#         value: "-Xmx20g -Xms20g"
+#     persistence:
+#       enabled: true
+#       storageClass: managed-premium
+#       accessModes: [ "ReadWriteOnce" ]
+#       size: 100gb
+#   extraConfig:
+#     cluster.max_shards_per_node: 3000
+#   sysctlImage:
+#     registry: ""
+#     repository: docker.io/bitnami/os-shell
+#     tag: 12-debian-12-r18
+#   volumePermissions:
+#     enabled: true
+#     image:
+#       registry: ""
+#       repository: docker.io/bitnami/os-shell
+#       tag: 12-debian-12-r18
+#   data:
+#     replicaCount: 0
+#   coordinating:
+#     replicaCount: 0
+#   ingest:
+#     replicaCount: 0
 
 ingester:
   enabled: false
