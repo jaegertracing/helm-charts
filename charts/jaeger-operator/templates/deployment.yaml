@@ -63,6 +63,13 @@ spec:
             {{- if gt $replicaCount 1 }}
             - --leader-elect
             {{- end }}
+            {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+            {{- end }}
           env:
             - name: WATCH_NAMESPACE
               {{- if .Values.rbac.clusterRole }}
