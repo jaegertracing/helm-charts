@@ -26,6 +26,8 @@ maintainers:
     email: naseem@transit.app
   - name: pavelnikolov
     email: me@pavelnikolov.net
+  - name: jkowall
+    email: jkowall@kowall.net
 dependencies:
   - name: cassandra
     version: 0.15.3
