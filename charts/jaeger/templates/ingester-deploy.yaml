@@ -36,10 +36,7 @@ spec:
       securityContext:
       {{- merge .Values.podSecurityContext .Values.ingester.podSecurityContext | toYaml | nindent 8 }}
       {{- end }}
-      {{- with .Values.ingester.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "ingester.imagePullSecrets" . | nindent 6 }}
       {{- with .Values.ingester.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -52,10 +49,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.ingester.initContainers }}
+      initContainers:
+      {{- toYaml .Values.ingester.initContainers | nindent 8 }}
+      {{- end}}
       containers:
       - name: {{ include "jaeger.fullname" . }}-ingester
-        image: {{ .Values.ingester.image }}:{{- include "jaeger.image.tag" . }}
-        imagePullPolicy: {{ .Values.ingester.pullPolicy }}
+        image: {{ include "ingester.image" . }}
+        imagePullPolicy: {{ .Values.ingester.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.ingester.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}

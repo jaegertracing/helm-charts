@@ -38,18 +38,15 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esIndexCleaner.serviceAccountName" . }}
-          {{- with .Values.esIndexCleaner.imagePullSecrets }}
-          imagePullSecrets:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "esIndexCleaner.imagePullSecrets" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.esIndexCleaner.podSecurityContext | nindent 12 }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
             securityContext:
               {{- toYaml .Values.esIndexCleaner.securityContext | nindent 14 }}
-            image: {{ .Values.esIndexCleaner.image }}:{{- .Values.esIndexCleaner.tag | default (include "jaeger.image.tag" .) }}
-            imagePullPolicy: {{ .Values.esIndexCleaner.pullPolicy }}
+            image: {{ include "esIndexCleaner.image" . }}
+            imagePullPolicy: {{ .Values.esIndexCleaner.image.pullPolicy }}
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}
               - {{ include "elasticsearch.client.url" . }}

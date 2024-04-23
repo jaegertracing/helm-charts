@@ -23,6 +23,9 @@ spec:
       {{- if .Values.query.config }}
         checksum/ui-config: {{ include (print $.Template.BasePath "/query-configmap.yaml") . | sha256sum }}
       {{- end }}
+      {{- if and .Values.query.oAuthSidecar.enabled .Values.query.oAuthSidecar.config }}
+        checksum/oauth2-config: {{ sha256sum .Values.query.oAuthSidecar.config }}
+      {{- end }}
       {{- if .Values.query.podAnnotations }}
         {{- toYaml .Values.query.podAnnotations | nindent 8 }}
       {{- end }}
@@ -38,14 +41,15 @@ spec:
       priorityClassName: {{ . }}
       {{- end }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
-      {{- with .Values.query.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "query.imagePullSecrets" . | nindent 6 }}
+      {{- if .Values.query.initContainers }}
+      initContainers:
+      {{- toYaml .Values.query.initContainers | nindent 8 }}
+      {{- end}} 
       containers:
       - name: {{ template "jaeger.query.name" . }}
-        image: {{ .Values.query.image }}:{{- .Values.query.tag | default (include "jaeger.image.tag" .) }}
-        imagePullPolicy: {{ .Values.query.pullPolicy }}
+        image: {{ include "query.image" . }}
+        imagePullPolicy: {{ .Values.query.image.pullPolicy }}
         args:
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.query.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
@@ -136,8 +140,8 @@ spec:
             port: admin
 {{- if .Values.query.oAuthSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar
-        image: {{ .Values.query.oAuthSidecar.image }}
-        imagePullPolicy: {{ .Values.query.oAuthSidecar.pullPolicy }}
+        image: {{ include "oAuthSidecar.image" . }}
+        imagePullPolicy: {{ .Values.query.oAuthSidecar.image.pullPolicy }}
         {{- if .Values.query.oAuthSidecar.args }}
         args:
         {{- range .Values.query.oAuthSidecar.args }}
@@ -189,8 +193,8 @@ spec:
 {{- end }}
 {{- if .Values.query.agentSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-sidecar
-        image: {{ .Values.agent.image }}:{{- include "jaeger.image.tag" . }}
-        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        image: {{ include "agent.image" . }}
+        imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
         {{- if .Values.agent.cmdlineParams }}
         args:
           {{- range $key, $value := .Values.agent.cmdlineParams }}

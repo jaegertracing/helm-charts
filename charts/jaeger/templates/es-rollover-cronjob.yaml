@@ -38,10 +38,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esRollover.serviceAccountName" . }}
-          {{- with .Values.esRollover.imagePullSecrets }}
-          imagePullSecrets:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "esRollover.imagePullSecrets" . | nindent 10 }}
           securityContext:
             {{- toYaml .Values.esRollover.podSecurityContext | nindent 12 }}
           restartPolicy: OnFailure
@@ -62,8 +59,8 @@ spec:
           - name: {{ include "jaeger.fullname" . }}-es-rollover
             securityContext:
               {{- toYaml .Values.esRollover.securityContext | nindent 14 }}
-            image: "{{ .Values.esRollover.image }}:{{- include "jaeger.image.tag" . }}"
-            imagePullPolicy: {{ .Values.esRollover.pullPolicy }}
+            image: {{ include "esRollover.image" . }}
+            imagePullPolicy: {{ .Values.esRollover.image.pullPolicy }}
             args:
               - rollover
               - {{ include "elasticsearch.client.url" . }}

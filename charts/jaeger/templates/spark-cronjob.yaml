@@ -37,14 +37,11 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
-          {{- with .Values.spark.imagePullSecrets }}
-          imagePullSecrets:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "spark.imagePullSecrets" . | nindent 12 }}  
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
-            image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
-            imagePullPolicy: {{ .Values.spark.pullPolicy }}
+            image: {{ include "spark.image" . }}
+            imagePullPolicy: {{ .Values.spark.image.pullPolicy }}
             args:
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.spark.cmdlineParams ) | nindent 14  }}
             env:

@@ -19,6 +19,9 @@ securityContext: {}
 #   runAsUser: 1000
 #   runAsGroup: 1000
 
+global:
+  imageRegistry:
+
 provisionDataStore:
   cassandra: true
   elasticsearch: false
@@ -36,9 +39,13 @@ fullnameOverride: ""
 allInOne:
   enabled: false
   replicas: 1
-  image: jaegertracing/all-in-one
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/all-in-one
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   extraEnv: []
   extraSecretMounts:
     []
@@ -57,6 +64,8 @@ allInOne:
   #       "param": 1
   #     }
   #   }
+  serviceAccount:
+    annotations: {}
   service:
     headless: true
     collector:
@@ -98,7 +107,7 @@ allInOne:
   securityContext: {}
 
 storage:
-  # allowed values (cassandra, elasticsearch)
+  # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
   type: cassandra
   cassandra:
     host: cassandra
@@ -177,6 +186,14 @@ storage:
     extraEnv: []
   grpcPlugin:
     extraEnv: []
+  badger:
+    ephemeral: true
+    persistence:
+      mountPath: /mnt/data
+      useExistingPvcName: ""
+    extraEnv: []
+  memory:
+    extraEnv: []
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -193,12 +210,27 @@ cassandra:
 
 # Begin: Override values on the Kafka subchart to customize for Jaeger
 kafka:
-  replicaCount: 1
-  autoCreateTopicsEnable: true
-  zookeeper:
-    replicaCount: 1
-    serviceAccount:
-      create: true
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
+    external:
+      protocol: PLAINTEXT
+  controller:
+    replicaCount: 3
+    extraConfig: |
+      auto.create.topics.enable=true
+# Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/
+# Documentation for upgrading Kafka and keeping Zookeeper: https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode
+# Documentation for migrating away from Zookeeper to Kraft Mode: https://github.com/bitnami/charts/tree/main/bitnami/kafka#migrating-from-zookeeper-early-access
+  # zookeeper:
+  #   enabled: false
+  #   replicaCount: 1
+  #   serviceAccount:
+  #     create: true
 
 # End: Override values on the Kafka subchart to customize for Jaeger
 
@@ -210,9 +242,13 @@ kafka:
 # use by Jaeger
 schema:
   annotations: {}
-  image: jaegertracing/jaeger-cassandra-schema
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-cassandra-schema
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   resources: {}
     # limits:
     #   cpu: 500m
@@ -240,17 +276,58 @@ schema:
     #   value: "0"
 
 # For configurable values of the elasticsearch if provisioned, please see:
-# https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
+# https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
 elasticsearch: {}
+
+# Example that uses no auth:
+# elasticsearch:
+#   fullnameOverride: "elasticsearch"
+#   image:
+#     registry: ""
+#     repository: docker.io/bitnami/elasticsearch
+#     tag: ""
+#   master:
+#     masterOnly: false
+#     replicaCount: 3
+#     extraEnvVars:
+#       - name: ES_JAVA_OPTS
+#         value: "-Xmx20g -Xms20g"
+#     persistence:
+#       enabled: true
+#       storageClass: managed-premium
+#       accessModes: [ "ReadWriteOnce" ]
+#       size: 100gb
+#   extraConfig:
+#     cluster.max_shards_per_node: 3000
+#   sysctlImage:
+#     registry: ""
+#     repository: docker.io/bitnami/os-shell
+#     tag: 12-debian-12-r18
+#   volumePermissions:
+#     enabled: true
+#     image:
+#       registry: ""
+#       repository: docker.io/bitnami/os-shell
+#       tag: 12-debian-12-r18
+#   data:
+#     replicaCount: 0
+#   coordinating:
+#     replicaCount: 0
+#   ingest:
+#     replicaCount: 0
 
 ingester:
   enabled: false
   podSecurityContext: {}
   securityContext: {}
   annotations: {}
-  image: jaegertracing/jaeger-ingester
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-ingester
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
@@ -277,6 +354,7 @@ ingester:
     create: true
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
+    annotations: {}
     name:
   nodeSelector: {}
   tolerations: []
@@ -289,6 +367,7 @@ ingester:
   extraConfigmapMounts: []
   extraEnv: []
   envFrom: []
+  initContainers: []
 
   serviceMonitor:
     enabled: false
@@ -302,10 +381,13 @@ ingester:
 agent:
   enabled: true
   annotations: {}
-  image: jaegertracing/jaeger-agent
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-agent
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv: []
   daemonset:
@@ -380,10 +462,13 @@ agent:
 collector:
   enabled: true
   annotations: {}
-  image: jaegertracing/jaeger-collector
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-collector
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   extraEnv: []
   envFrom: []
@@ -545,6 +630,7 @@ collector:
 query:
   enabled: true
   basePath: /
+  initContainers: []
   oAuthSidecar:
     enabled: false
     resources: {}
@@ -556,8 +642,13 @@ query:
       #   memory: 128Mi
     podSecurityContext: {}
     securityContext: {}
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
-    pullPolicy: IfNotPresent
+    image:
+      registry: quay.io
+      repository: oauth2-proxy/oauth2-proxy
+      tag: v7.6.0
+      digest: ""
+      pullPolicy: IfNotPresent
+      pullSecrets: []
     containerPort: 4180
     args: []
     extraEnv: []
@@ -597,10 +688,13 @@ query:
     podSecurityContext: {}
     securityContext: {}
   annotations: {}
-  image: jaegertracing/jaeger-query
-  # tag: 1.22
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-query
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   extraEnv: []
@@ -700,10 +794,13 @@ query:
 spark:
   enabled: false
   annotations: {}
-  image: jaegertracing/spark-dependencies
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/spark-dependencies
+    tag: latest
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv: []
   schedule: "49 23 * * *"
@@ -721,6 +818,7 @@ spark:
   securityContext: {}
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -742,9 +840,13 @@ esIndexCleaner:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-index-cleaner
-  imagePullSecrets: []
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-index-cleaner
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     []
@@ -766,6 +868,7 @@ esIndexCleaner:
   numberOfDays: 7
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -786,10 +889,13 @@ esRollover:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-rollover
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-rollover
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     - name: CONDITIONS
@@ -838,10 +944,13 @@ esLookback:
   podSecurityContext:
     runAsUser: 1000
   annotations: {}
-  image: jaegertracing/jaeger-es-rollover
-  imagePullSecrets: []
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    registry: ""
+    repository: jaegertracing/jaeger-es-rollover
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
   cmdlineParams: {}
   extraEnv:
     - name: UNIT
@@ -863,6 +972,7 @@ esLookback:
   securityContext: {}
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
@@ -893,7 +1003,10 @@ hotrod:
   #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
   #     value: http://my-otel-collector.chart.local:4318
   image:
+    registry: ""
     repository: jaegertracing/example-hotrod
+    tag: ""
+    digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
   service:
@@ -938,6 +1051,7 @@ hotrod:
     create: true
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
+    annotations: {}
     name:
   nodeSelector: {}
   tolerations: []

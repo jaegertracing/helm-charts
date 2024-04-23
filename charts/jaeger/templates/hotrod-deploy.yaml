@@ -23,13 +23,10 @@ spec:
       {{- merge .Values.podSecurityContext .Values.hotrod.podSecurityContext | toYaml | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
-      {{- with .Values.hotrod.image.pullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "hotrod.imagePullSecrets" . | nindent 6 }}  
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
-          image: {{ .Values.hotrod.image.repository }}:{{- include "jaeger.image.tag" . }}
+          image: {{ include "hotrod.image" . }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           args:
             {{- toYaml .Values.hotrod.args | nindent 12 }}
