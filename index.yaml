@@ -23,13 +23,12 @@ entries:
     description: A Jaeger Helm chart for Kubernetes
     digest: 948a87dd5cb4ac4095a5b0e2c817ccbb193709b49668104993b5642398c7e27b
     home: https://jaegertracing.io
-    icon: https://artifacthub.io/image/bffa8705-c91a-48d5-92fc-8054d9478d77@2x
+    icon: https://raw.githubusercontent.com/cncf/artwork/main/projects/jaeger/icon/color/jaeger-icon-color.png
     keywords:
     - jaeger
     - opentelemetry
     - tracing
     - observability
-    - instrumentation
     kubeVersion: '>= 1.21-0'
     maintainers:
     - email: david.vonthenen@dell.com
@@ -73,12 +72,12 @@ entries:
     description: A Jaeger Helm chart for Kubernetes
     digest: 36e378e9e7fec745521494349e4aa5e66659837251803939a015cdaaed36656b
     home: https://jaegertracing.io
-    icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+    icon: https://raw.githubusercontent.com/cncf/artwork/main/projects/jaeger/icon/color/jaeger-icon-color.png
     keywords:
     - jaeger
-    - opentracing
+    - opentelemetry
     - tracing
-    - instrumentation
+    - observability
     kubeVersion: '>= 1.21-0'
     maintainers:
     - email: david.vonthenen@dell.com
