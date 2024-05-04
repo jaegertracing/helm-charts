@@ -12,7 +12,7 @@ keywords:
   - tracing
   - instrumentation
 home: https://jaegertracing.io
-icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
 sources:
   - https://hub.docker.com/u/jaegertracing/
 maintainers:
