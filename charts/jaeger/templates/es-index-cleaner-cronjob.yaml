@@ -38,7 +38,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esIndexCleaner.serviceAccountName" . }}
-          {{- include "esIndexCleaner.imagePullSecrets" . | nindent 12 }}
+          {{- include "esIndexCleaner.imagePullSecrets" . | nindent 10 }}
           securityContext:
             {{- toYaml .Values.esIndexCleaner.podSecurityContext | nindent 12 }}
           containers:

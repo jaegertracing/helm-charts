@@ -383,7 +383,44 @@ grpcPlugin related environment variables
 {{- end -}}
 
 {{/*
-Cassandra, Elasticsearch, or grpc-plugin related environment variables depending on which is used
+badger related environment variables
+*/}}
+{{- define "badger.env" -}}
+- name: BADGER_EPHEMERAL
+  value: {{ .Values.storage.badger.ephemeral | quote }}
+{{- if not .Values.storage.badger.ephemeral }}
+- name: BADGER_DIRECTORY_VALUE
+  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/data" | quote }}
+- name: BADGER_DIRECTORY_KEY
+  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/key" | quote }}
+{{- end }}
+{{- if .Values.storage.badger.extraEnv }}
+{{- toYaml .Values.storage.badger.extraEnv }}
+{{- end }}
+{{- end -}}
+
+{{/*
+memory related environment variables
+*/}}
+{{- define "memory.env" -}}
+{{- if .Values.storage.memory.extraEnv }}
+{{- toYaml .Values.storage.memory.extraEnv }}
+{{- end }}
+{{- end -}}
+
+{{/*
+allInOne currently only supports memory/badger storage type.
+*/}}
+{{- define "allInOne.storage.type" -}}
+{{ $type := .Values.storage.type }}
+{{- if or (eq $type "memory") (eq $type "badger") -}}
+{{ .Values.storage.type }}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment variables depending on which is used
 */}}
 {{- define "storage.env" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
@@ -392,6 +429,10 @@ Cassandra, Elasticsearch, or grpc-plugin related environment variables depending
 {{ include "elasticsearch.env" . }}
 {{- else if eq .Values.storage.type "grpc-plugin" -}}
 {{ include "grpcPlugin.env" . }}
+{{- else if eq .Values.storage.type "badger" -}}
+{{ include "badger.env" . }}
+{{- else if eq .Values.storage.type "memory" -}}
+{{ include "memory.env" . }}
 {{- end -}}
 {{- end -}}
 

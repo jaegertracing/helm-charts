@@ -38,7 +38,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esLookback.serviceAccountName" . }}
-          {{- include "esLookback.imagePullSecrets" . | nindent 12 }}  
+          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}  
           securityContext:
             {{- toYaml .Values.esLookback.podSecurityContext | nindent 12 }}
           restartPolicy: OnFailure

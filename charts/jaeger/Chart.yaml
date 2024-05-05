@@ -12,7 +12,7 @@ keywords:
   - tracing
   - instrumentation
 home: https://jaegertracing.io
-icon: https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667
+icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
 sources:
   - https://hub.docker.com/u/jaegertracing/
 maintainers:
@@ -26,17 +26,19 @@ maintainers:
     email: naseem@transit.app
   - name: pavelnikolov
     email: me@pavelnikolov.net
+  - name: jkowall
+    email: jkowall@kowall.net
 dependencies:
   - name: cassandra
     version: 0.15.3
     repository: https://charts.helm.sh/incubator
     condition: provisionDataStore.cassandra
   - name: elasticsearch
-    version: ^7.11.1
-    repository: https://helm.elastic.co
+    version: 20.0.4
+    repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.elasticsearch
   - name: kafka
-    version: ^26.6.2
+    version: 26.6.2
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common

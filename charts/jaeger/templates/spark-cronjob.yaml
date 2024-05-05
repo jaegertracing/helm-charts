@@ -37,7 +37,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.spark.serviceAccountName" . }}
-          {{- include "spark.imagePullSecrets" . | nindent 12 }}  
+          {{- include "spark.imagePullSecrets" . | nindent 10 }}
           containers:
           - name: {{ include "jaeger.fullname" . }}-spark
             image: {{ include "spark.image" . }}

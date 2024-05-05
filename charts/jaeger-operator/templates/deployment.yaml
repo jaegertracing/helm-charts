@@ -9,7 +9,7 @@ metadata:
 {{ . | toYaml | indent 4 }}
 {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
 {{ include "jaeger-operator.labels" . | indent 6 }}
@@ -59,6 +59,17 @@ spec:
             - start
             - {{ printf "--metrics-port=%v" .Values.metricsPort }}
             - {{ printf "--webhook-bind-port=%v" .Values.webhooks.port }}
+            {{- $replicaCount := int .Values.replicaCount }}
+            {{- if gt $replicaCount 1 }}
+            - --leader-elect
+            {{- end }}
+            {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+            {{- end }}
           env:
             - name: WATCH_NAMESPACE
               {{- if .Values.rbac.clusterRole }}
@@ -102,5 +113,9 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
