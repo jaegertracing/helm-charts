@@ -22,7 +22,7 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.collector.ingress.hosts }}
-    - host: {{ include "jaeger.collector.ingressHost" . }}
+    - host: {{ include "jaeger.collector.ingressHost" . | quote }}
       http:
         paths:
           - path: {{ $basePath }}
