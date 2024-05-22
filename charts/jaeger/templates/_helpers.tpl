@@ -565,7 +565,7 @@ If not tag is provided, it defaults to .Chart.AppVersion.
 */}}
 {{- define "renderImage" -}}
 {{- $image := merge .imageRoot (dict "tag" .context.Chart.AppVersion) -}}
-{{- include "common.images.image" (dict "imageRoot" $image "global" .context.Values.Global) -}}
+{{- include "common.images.image" (dict "imageRoot" $image "global" .context.Values.global) -}}
 {{- end -}}
 
 {{/*
