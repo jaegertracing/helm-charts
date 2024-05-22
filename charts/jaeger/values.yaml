@@ -725,8 +725,8 @@ query:
   tolerations: []
   affinity: {}
   podAnnotations: {}
-  ## Additional pod labels
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  # Additional pod labels
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   extraConfigmapMounts: []
   # - name: jaeger-config
@@ -736,11 +736,11 @@ query:
   #   readOnly: true
   extraVolumes: []
   sidecars: []
-  ##   - name: your-image-name
-  ##     image: your-image
-  ##     ports:
-  ##       - name: portname
-  ##         containerPort: 1234
+  #   - name: your-image-name
+  #     image: your-image
+  #     ports:
+  #       - name: portname
+  #         containerPort: 1234
   priorityClassName: ""
   serviceMonitor:
     enabled: false
