@@ -302,7 +302,7 @@ provisionDataStore:
 allInOne:
   enabled: true
 storage:
-  type: none
+  type: memory
 agent:
   enabled: false
 collector:
