@@ -49,6 +49,7 @@ allInOne:
   #   }
   serviceAccount:
     annotations: {}
+    automountServiceAccountToken: true
   service:
     headless: true
     collector:
@@ -86,6 +87,13 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+  affinity: {}
+  topologySpreadContraints: []
+  podSecurityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+  securityContext: {}
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
