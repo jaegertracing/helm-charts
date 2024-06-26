@@ -87,7 +87,10 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+<<<<<<< HEAD
   tolerations: []
+=======
+>>>>>>> 1dca639 ([jaeger] add new options, improvements into allInOne (#586))
   affinity: {}
   topologySpreadContraints: []
   podSecurityContext:
