@@ -88,6 +88,7 @@ allInOne:
   #     memory: 128Mi
   nodeSelector: {}
   affinity: {}
+  topologySpreadContraints: []
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
