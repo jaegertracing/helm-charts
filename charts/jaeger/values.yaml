@@ -87,6 +87,7 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+  affinity: {}
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)

@@ -138,6 +138,10 @@ spec:
           secret:
             secretName: {{ .secretName }}
     {{- end }}
+    {{- with .Values.allInOne.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     {{- with .Values.allInOne.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
