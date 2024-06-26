@@ -49,6 +49,7 @@ allInOne:
   #   }
   serviceAccount:
     annotations: {}
+    automountServiceAccountToken: true
   service:
     headless: true
     collector:
