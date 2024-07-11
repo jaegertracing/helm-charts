@@ -87,6 +87,7 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+  tolerations: []
   affinity: {}
   topologySpreadContraints: []
   podSecurityContext:
