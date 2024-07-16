@@ -784,6 +784,8 @@ query:
 
 spark:
   enabled: false
+  securityContext: {}
+  podSecurityContext: {}
   annotations: {}
   image:
     registry: ""
