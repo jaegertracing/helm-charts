@@ -23,10 +23,10 @@ spec:
     port: 16685
     protocol: TCP
     targetPort: grpc
-  - name: admin
+  - name: {{ .Values.query.service.portName | default "admin" }}
     port: 16687
     protocol: TCP
-    targetPort: admin
+    targetPort: {{ .Values.query.service.targetPortName | default "admin" }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query
