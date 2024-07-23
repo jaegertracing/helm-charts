@@ -60,9 +60,9 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.collector.service.otlp.http.name }}
 {{- end }}
-  - name: admin
+  - name: {{ .Values.collector.service.portName | default "admin" }}
     port: 14269
-    targetPort: admin
+    targetPort: {{ .Values.collector.service.targetPortName | default "admin" }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector
