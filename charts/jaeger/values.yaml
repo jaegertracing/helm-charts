@@ -510,6 +510,9 @@ collector:
         # name: otlp-http
         # port: 4318
         # nodePort:
+    admin:
+      name: admin
+      targetPort: admin
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -693,6 +696,9 @@ query:
     # targetPort: 8080
     # Specify a specific node port when type is NodePort
     # nodePort: 32500
+    admin:
+      name: admin
+      targetPort: admin
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
