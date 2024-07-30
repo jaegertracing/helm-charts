@@ -130,6 +130,7 @@ rules:
   - extensions
   resources:
   - ingresses
+  - ingressclasses
   verbs:
   - create
   - delete
