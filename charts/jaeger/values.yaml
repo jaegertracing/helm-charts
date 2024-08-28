@@ -49,6 +49,7 @@ allInOne:
   #   }
   serviceAccount:
     annotations: {}
+    automountServiceAccountToken: true
   service:
     headless: true
     collector:
@@ -86,6 +87,14 @@ allInOne:
   #     cpu: 256m
   #     memory: 128Mi
   nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  topologySpreadContraints: []
+  podSecurityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+  securityContext: {}
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
@@ -502,6 +511,9 @@ collector:
         # name: otlp-http
         # port: 4318
         # nodePort:
+    admin:
+      name: admin
+      targetPort: admin
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -685,6 +697,9 @@ query:
     # targetPort: 8080
     # Specify a specific node port when type is NodePort
     # nodePort: 32500
+    admin:
+      name: admin
+      targetPort: admin
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -776,6 +791,8 @@ query:
 
 spark:
   enabled: false
+  securityContext: {}
+  podSecurityContext: {}
   annotations: {}
   image:
     registry: ""

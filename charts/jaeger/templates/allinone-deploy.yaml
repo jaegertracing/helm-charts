@@ -30,7 +30,7 @@ spec:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
-      {{- include "allInOne.imagePullSecrets" . | nindent 6 }}  
+      {{- include "allInOne.imagePullSecrets" . | nindent 6 }}
       containers:
         - env:
           {{- if .Values.allInOne.extraEnv }}
@@ -52,6 +52,8 @@ spec:
         {{- with .Values.allInOne.envFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
         {{- end }}
+          securityContext:
+            {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
           image: {{ include "allInOne.image" . }}
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
@@ -118,9 +120,7 @@ spec:
               readOnly: {{ .readOnly }}
         {{- end }}
       securityContext:
-        runAsUser: 10001
-        runAsGroup: 10001
-        fsGroup: 10001
+        {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
     {{- if not .Values.storage.badger.ephemeral }}
@@ -138,8 +138,20 @@ spec:
           secret:
             secretName: {{ .secretName }}
     {{- end }}
+    {{- with .Values.allInOne.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.allInOne.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
     {{- with .Values.allInOne.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.allInOne.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
 {{- end -}}

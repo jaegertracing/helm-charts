@@ -18,6 +18,10 @@ $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 
 You can then run `helm search repo jaegertracing` to see the charts.
 
+See additional documentation:
+  * [Jaeger chart](./charts/jaeger)
+  * [Jaeger Operator chart](./charts/jaeger-operator)
+
 ## Contributing
 
 We'd love to have you contribute! Please refer to our [contribution guidelines](CONTRIBUTING.md) for details.
