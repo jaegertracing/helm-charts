@@ -232,6 +232,7 @@ kafka:
 # use by Jaeger
 schema:
   annotations: {}
+  tolerations: []
   image:
     registry: ""
     repository: jaegertracing/jaeger-cassandra-schema
