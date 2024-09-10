@@ -7,6 +7,7 @@ apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
   name: {{ include "jaeger.fullname" . }}-hotrod
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: hotrod

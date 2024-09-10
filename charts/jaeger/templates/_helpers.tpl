@@ -235,6 +235,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/*
+Determine Namespace based on the inputs
+*/}}
+{{- define "jaeger.namespace" -}}
+{{- if .Values.namespaceOverride }}
+{{- .Values.namespaceOverride -}}
+{{- else -}}
+{{- .Release.Namespace -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "cassandra.host" -}}
 {{- if .Values.provisionDataStore.cassandra -}}
 {{- if .Values.storage.cassandra.nameOverride }}

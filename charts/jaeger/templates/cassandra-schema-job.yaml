@@ -5,6 +5,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "jaeger.fullname" . }}-cassandra-schema
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: cassandra-schema

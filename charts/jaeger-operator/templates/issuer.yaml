@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: {{ default "selfsigned-issuer" .Values.certs.issuer.name }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jaeger-operator.namespace" . }}
 spec:
   selfSigned: {}
 {{- end }}

@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.collector.name" . }}
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: collector
@@ -38,7 +39,7 @@ spec:
       securityContext:
         {{- toYaml .Values.collector.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.collector.serviceAccountName" . }}
-      {{- include "collector.imagePullSecrets" . | nindent 6 }} 
+      {{- include "collector.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.collector.initContainers }}
       initContainers:
         {{- toYaml .Values.collector.initContainers | nindent 8 }}

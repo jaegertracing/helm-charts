@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}-operator-psp
+  namespace: {{ include "jaeger-operator.namespace" . }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
 spec:

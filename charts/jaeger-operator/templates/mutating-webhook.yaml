@@ -13,7 +13,7 @@ webhooks:
   clientConfig:
     service:
       name: {{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}
-      namespace: {{ .Release.Namespace }}
+      namespace: {{ include "jaeger-operator.namespace" . }}
       path: /mutate-v1-deployment
   failurePolicy: Ignore
   name: deployment.sidecar-injector.jaegertracing.io
@@ -39,7 +39,7 @@ webhooks:
   clientConfig:
     service:
       name: {{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}
-      namespace: {{ .Release.Namespace }}
+      namespace: {{ include "jaeger-operator.namespace" . }}
       path: /mutate-jaegertracing-io-v1-jaeger
   failurePolicy: Fail
   name: mjaeger.kb.io

@@ -6,6 +6,7 @@ apiVersion: {{ include "common.capabilities.ingress.apiVersion" $ }}
 kind: Ingress
 metadata:
   name: {{ template "jaeger.query.name" . }}
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     {{- if .Values.query.ingress.labels }}

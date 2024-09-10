@@ -3,7 +3,7 @@ apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}-jaeger
-  namespace: {{ default .Release.Namespace .Values.jaeger.namespace }}
+  namespace: {{ default .Values.jaeger.namespace (include "jaeger-operator.namespace" .) }}
 {{- with .Values.jaeger.spec }}
 spec:
 {{ toYaml . | indent 2}}
