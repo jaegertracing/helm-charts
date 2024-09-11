@@ -136,6 +136,8 @@ spec:
             port: admin
 {{- if .Values.query.oAuthSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar
+        securityContext:
+          {{- toYaml .Values.query.securityContext | nindent 10 }}
         image: {{ include "oAuthSidecar.image" . }}
         imagePullPolicy: {{ .Values.query.oAuthSidecar.image.pullPolicy }}
         args:
