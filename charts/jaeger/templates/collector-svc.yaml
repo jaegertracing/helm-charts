@@ -70,5 +70,8 @@ spec:
   clusterIP: {{ .Values.collector.service.clusterIP }}
   {{- end }}
   type: {{ .Values.collector.service.type }}
+  {{- if and (eq .Values.collector.service.type "LoadBalancer") .Values.collector.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.collector.service.loadBalancerIP }}
+  {{- end -}}
 {{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}
