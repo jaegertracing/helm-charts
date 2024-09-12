@@ -3,6 +3,55 @@ entries:
   jaeger:
   - apiVersion: v2
     appVersion: 1.53.0
+    created: "2024-09-12T14:16:28.222410888Z"
+    dependencies:
+    - condition: provisionDataStore.cassandra
+      name: cassandra
+      repository: https://charts.helm.sh/incubator
+      version: 0.15.3
+    - condition: provisionDataStore.elasticsearch
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.0.4
+    - condition: provisionDataStore.kafka
+      name: kafka
+      repository: https://charts.bitnami.com/bitnami
+      version: 26.6.2
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: A Jaeger Helm chart for Kubernetes
+    digest: 90c3b08d3f2f127110cc55ddf551bc295407f7f5d6658d835ce6c2c6d65c863c
+    home: https://jaegertracing.io
+    icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
+    keywords:
+    - jaeger
+    - opentracing
+    - tracing
+    - instrumentation
+    kubeVersion: '>= 1.21-0'
+    maintainers:
+    - email: david.vonthenen@dell.com
+      name: dvonthenen
+    - email: ankit.mehta@appian.com
+      name: mehta-ankit
+    - email: michael.lorant@fairfaxmedia.com.au
+      name: mikelorant
+    - email: naseem@transit.app
+      name: naseemkullah
+    - email: me@pavelnikolov.net
+      name: pavelnikolov
+    - email: jkowall@kowall.net
+      name: jkowall
+    name: jaeger
+    sources:
+    - https://hub.docker.com/u/jaegertracing/
+    type: application
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-3.3.0/jaeger-3.3.0.tgz
+    version: 3.3.0
+  - apiVersion: v2
+    appVersion: 1.53.0
     created: "2024-09-11T14:16:40.633443272Z"
     dependencies:
     - condition: provisionDataStore.cassandra
