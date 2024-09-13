@@ -6,7 +6,7 @@ metadata:
   {{- if .Values.agent.serviceMonitor.namespace }}
   namespace: {{ .Values.agent.serviceMonitor.namespace }}
   {{- else }}
-    {{- include "jaeger.labels" . | nindent 4 }}
+  namespace: {{ include "jaeger.namespace" . }}
   {{- end }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
