@@ -7,6 +7,7 @@ metadata:
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
   name: jaeger-operator-mutating-webhook-configuration
+  namespace: {{ include "jaeger-operator.namespace" . }}
 webhooks:
 - admissionReviewVersions:
   - v1
