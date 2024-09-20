@@ -37,7 +37,7 @@ spec:
             {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
           {{- end }}
             - name: SPAN_STORAGE_TYPE
-              value: {{ include "allInOne.storage.type" . | required "Invalid storage type provided. Use either badger or memory for allInOne" }}
+              value: {{ .Values.storage.type }}
             {{- include "storage.env" . | nindent 12 }}
             - name: COLLECTOR_ZIPKIN_HOST_PORT
               value: :9411
@@ -54,13 +54,22 @@ spec:
         {{- end }}
           securityContext:
             {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
+          {{- if .Values.v2.enabled }}
+          image: {{ .Values.v2.image }}
+          {{- else }}
           image: {{ include "allInOne.image" . }}
+          {{- end }}
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
+          {{- if .Values.v2.enabled }}
+            - "--config"
+            - "/etc/jaeger/config.yaml"
+          {{- else }}
             {{- range $arg := .Values.allInOne.args }}
             - "{{ tpl $arg $ }}"
             {{- end }}
+          {{- end }}
           ports:
             - containerPort: 5775
               protocol: UDP
@@ -83,9 +92,14 @@ spec:
           livenessProbe:
             failureThreshold: 5
             httpGet:
+              scheme: HTTP
+              {{- if .Values.v2.enabled }}
+              path: /status
+              port: 13133
+              {{- else }}
               path: /
               port: 14269
-              scheme: HTTP
+              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 15
             successThreshold: 1
@@ -93,9 +107,14 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
+              scheme: HTTP
+              {{- if .Values.v2.enabled }}
+              path: /status
+              port: 13133
+              {{- else }}
               path: /
               port: 14269
-              scheme: HTTP
+              {{- end }}
             initialDelaySeconds: 1
             periodSeconds: 10
             successThreshold: 1
@@ -105,6 +124,10 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
+          {{- if .Values.v2.enabled }}
+            - name: jaeger-v2-config
+              mountPath: /etc/jaeger
+          {{- end }}
         {{- if not .Values.storage.badger.ephemeral }}
             - name: badger-data
               mountPath: {{ .Values.storage.badger.persistence.mountPath }}
@@ -123,6 +146,11 @@ spec:
         {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
+    {{- if .Values.v2.enabled }}
+        - name: jaeger-v2-config
+          configMap:
+            name: jaeger-v2-configmap
+    {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:

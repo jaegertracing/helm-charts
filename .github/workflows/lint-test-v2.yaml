@@ -1,0 +1,72 @@
+name: Lint and Test Charts v2
+
+on: pull_request
+
+jobs:
+  lint-test-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
+      # yamllint (https://github.com/adrienverge/yamllint) which require Python
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.6.1
+        with:
+          version: v3.10.1
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --config ct.yaml)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Run chart-testing (lint)
+        run: ct lint --config ct.yaml
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.9.0
+        if: steps.list-changed.outputs.changed == 'true'
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4.0.0
+        with:
+          version: 'v1.28.8'
+        id: install
+
+      - name: Set up cert-manager
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml --namespace ingress-nginx
+          kubectl label node --all ingress-ready=true
+          kubectl describe pod --selector=app.kubernetes.io/component=controller -n ingress-nginx
+          kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=5m
+          kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
+
+      - name: Set up cmctl
+        run: |
+          curl -sSL -o cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/download/v1.6.1/cmctl-linux-amd64.tar.gz
+          tar xzf cmctl.tar.gz
+          sudo mv cmctl /usr/local/bin
+          cmctl version
+
+      - name: Check if cert-manager is up
+        run: |
+          cmctl check api --wait=5m
+
+      - name: Run chart-testing (install)
+        run: ct install --debug --config ct.yaml --helm-extra-set-args "--set v2.enabled=true --set provisionDataStore.cassandra=false --set storage.type=memory --set allInOne.enabled=true --set agent.enabled=false --set collector.enabled=false --set query.enabled=false" --helm-extra-args "--debug"
