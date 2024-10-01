@@ -51,7 +51,6 @@ receivers:
 
 processors:
   batch: {}
-  adaptive_sampling: {}
 
 exporters:
   jaeger_storage_exporter: {}
