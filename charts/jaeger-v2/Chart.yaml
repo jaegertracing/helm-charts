@@ -10,7 +10,6 @@ keywords:
   - jaeger
   - opentracing
   - tracing
-  - instrumentation
 home: https://jaegertracing.io
 icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
 sources:
