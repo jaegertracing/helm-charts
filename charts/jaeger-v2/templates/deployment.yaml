@@ -4,6 +4,7 @@ metadata:
   name: jaeger
   labels:
     app: jaeger
+    namespace: default
 spec: 
   replicas: 1
   selector:
