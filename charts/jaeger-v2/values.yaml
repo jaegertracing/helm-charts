@@ -61,4 +61,3 @@ provisionDataStore:
   cassandra: false
   elasticsearch: false
   kafka: false
-
