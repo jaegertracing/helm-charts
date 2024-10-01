@@ -1,68 +1,62 @@
+service:
+  extensions: [jaeger_storage, jaeger_query, remote_sampling, healthcheckv2]
+  pipelines:
+    traces:
+      receivers: [otlp, jaeger, zipkin]
+      processors: [batch, adaptive_sampling]
+      exporters: [jaeger_storage_exporter]
 
-  service:
-    extensions: [jaeger_storage, jaeger_query, remote_sampling, healthcheckv2]
-    pipelines:
-      traces:
-        receivers: [otlp, jaeger, zipkin]
-        processors: [batch, adaptive_sampling]
-        exporters: [jaeger_storage_exporter]
+extensions:
+  healthcheckv2:
+    use_v2: true
+    http: {}
 
-  extensions:
-    healthcheckv2:
-      use_v2: true
-      http: {}
+  jaeger_query:
+    storage:
+      traces: some_store
+      traces_archive: another_store
+    ui:
+      config_file: ./cmd/jaeger/config-ui.json
 
-    jaeger_query:
-      storage:
-        traces: some_store
-        traces_archive: another_store
-      ui:
-        config_file: ./cmd/jaeger/config-ui.json
+  jaeger_storage:
+    backends:
+      some_store:
+        memory:
+          max_traces: 100000
+      another_store:
+        memory:
+          max_traces: 100000
 
-    jaeger_storage:
-      backends:
-        some_store:
-          memory:
-            max_traces: 100000
-        another_store:
-          memory:
-            max_traces: 100000
+  remote_sampling:
+    adaptive:
+      sampling_store: some_store
+      initial_sampling_probability: 0.1
+    http: {}
+    grpc: {}
 
-    remote_sampling:
-      adaptive:
-        sampling_store: some_store
-        initial_sampling_probability: 0.1
-      http: {}
+receivers:
+  otlp:
+    protocols:
       grpc: {}
+      http: {}
 
-  receivers:
-    otlp:
-      protocols:
-        grpc: {}
-        http: {}
+  jaeger:
+    protocols:
+      grpc: {}
+      thrift_binary: {}
+      thrift_compact: {}
+      thrift_http: {}
 
-    jaeger:
-      protocols:
-        grpc: {}
-        thrift_binary: {}
-        thrift_compact: {}
-        thrift_http: {}
+  zipkin: {}
 
-    zipkin: {}
+processors:
+  batch: {}
+  adaptive_sampling: {}
 
-  processors:
-    batch: {}
-    adaptive_sampling: {}
-
-  exporters:
-    jaeger_storage_exporter: {}
+exporters:
+  jaeger_storage_exporter: {}
 
 image: "jaegertracing/jaeger:latest"
-ports:
-  - name: http
-    port: 4317
-  - name: grpc
-    port: 4318
 
 provisionDataStore:
   cassandra: false
