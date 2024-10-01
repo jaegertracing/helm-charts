@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  labels:
+    app: jaeger
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/jaeger:latest
+
+          ports:
+            - containerPort: 16686
+              name: ui
+            - containerPort: 14268
+              name: collector
+            - containerPort: 14250
+              name: grpc
+            - containerPort: 9411
+              name: zipkin
+          env:
+            - name: COLLECTOR_ZIPKIN_HOST_PORT
+              value: ":9411"
+          resources:   # Corrected the typo here
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/jaeger
+      volumes:
+        - name: config-volume
+          configMap:
+            name: my-config
