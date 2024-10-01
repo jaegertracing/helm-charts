@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: my-config
   namespace: default
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation  # Optional: Deletes the hook before the next installation
 data:
   config.yaml: |
     service:
@@ -29,7 +32,6 @@ data:
 
     processors:
       batch: {{ toYaml .Values.processors.batch | indent 6 }}
-      
 
     exporters:
       jaeger_storage_exporter: {{ toYaml .Values.exporters.jaeger_storage_exporter | indent 6 }}
