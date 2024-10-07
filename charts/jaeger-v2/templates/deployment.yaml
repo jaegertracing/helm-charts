@@ -5,7 +5,7 @@ metadata:
   labels:
     app: jaeger
     namespace: default
-spec: 
+spec:
   replicas: 1
   selector:
     matchLabels:
@@ -18,7 +18,9 @@ spec:
       containers:
         - name: jaeger
           image: jaegertracing/jaeger:latest
-
+          args: 
+            - "--config"
+            - "/etc/jaeger/config.yaml"
           ports:
             - containerPort: 16686
               name: ui
@@ -31,7 +33,7 @@ spec:
           env:
             - name: COLLECTOR_ZIPKIN_HOST_PORT
               value: ":9411"
-          resources:   # Corrected the typo here
+          resources:
             limits:
               cpu: 500m
               memory: 512Mi
