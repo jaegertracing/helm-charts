@@ -419,16 +419,6 @@ memory related environment variables
 {{- end }}
 {{- end -}}
 
-{{/*
-allInOne currently only supports memory/badger storage type.
-*/}}
-{{- define "allInOne.storage.type" -}}
-{{ $type := .Values.storage.type }}
-{{- if or (eq $type "memory") (eq $type "badger") -}}
-{{ .Values.storage.type }}
-{{- end -}}
-{{- end -}}
-
 
 {{/*
 Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment variables depending on which is used
