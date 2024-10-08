@@ -7,14 +7,13 @@ metadata:
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
   name: jaeger-operator-mutating-webhook-configuration
-  namespace: {{ include "jaeger-operator.namespace" . }}
 webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
     service:
       name: {{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}
-      namespace: {{ include "jaeger-operator.namespace" . }}
+      namespace: {{ .Release.Namespace }}
       path: /mutate-v1-deployment
   failurePolicy: Ignore
   name: deployment.sidecar-injector.jaegertracing.io
@@ -40,7 +39,7 @@ webhooks:
   clientConfig:
     service:
       name: {{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}
-      namespace: {{ include "jaeger-operator.namespace" . }}
+      namespace: {{ .Release.Namespace }}
       path: /mutate-jaegertracing-io-v1-jaeger
   failurePolicy: Fail
   name: mjaeger.kb.io

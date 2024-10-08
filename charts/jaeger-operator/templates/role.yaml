@@ -3,7 +3,7 @@ kind: {{ if .Values.rbac.clusterRole }}Cluster{{ end }}Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}
-  namespace: {{ include "jaeger-operator.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ include "jaeger-operator.labels" . | indent 4 }}
 rules:

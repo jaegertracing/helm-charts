@@ -3,11 +3,11 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ default "jaeger-operator-service-cert" .Values.certs.certificate.secretName }}
-  namespace: {{ include "jaeger-operator.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-  - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ include "jaeger-operator.namespace" . }}.svc"
-  - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ include "jaeger-operator.namespace" . }}.svc.cluster.local"
+  - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ .Release.Namespace }}.svc"
+  - "{{ default "jaeger-operator-webhook-service" .Values.webhooks.service.name }}.{{ .Release.Namespace }}.svc.cluster.local"
   issuerRef:
     {{- if .Values.certs.issuer.create }}
     kind: Issuer

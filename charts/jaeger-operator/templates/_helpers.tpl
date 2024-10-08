@@ -47,14 +47,3 @@ Create chart name and version as used by the chart label.
 app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Determine Namespace based on the inputs
-*/}}
-{{- define "jaeger-operator.namespace" -}}
-{{- if .Values.namespaceOverride }}
-{{- .Values.namespaceOverride -}}
-{{- else -}}
-{{- .Release.Namespace -}}
-{{- end -}}
-{{- end -}}
