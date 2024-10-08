@@ -3,6 +3,7 @@ apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
   name: {{ include "jaeger.fullname" . }}-es-lookback
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: es-lookback
@@ -38,7 +39,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esLookback.serviceAccountName" . }}
-          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}  
+          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}
           securityContext:
             {{- toYaml .Values.esLookback.podSecurityContext | nindent 12 }}
           restartPolicy: OnFailure

@@ -5,6 +5,8 @@ metadata:
   name: {{ template "jaeger.ingester.name" . }}
   {{- if .Values.ingester.serviceMonitor.namespace }}
   namespace: {{ .Values.ingester.serviceMonitor.namespace }}
+  {{- else }}
+  namespace: {{ include "jaeger.namespace" . }}
   {{- end }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}

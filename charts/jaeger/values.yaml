@@ -17,6 +17,7 @@ networkPolicy:
 tag: ""
 
 nameOverride: ""
+namespaceOverride: ""
 fullnameOverride: ""
 
 allInOne:

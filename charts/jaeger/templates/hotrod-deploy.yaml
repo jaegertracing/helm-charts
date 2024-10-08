@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "jaeger.fullname" . }}-hotrod
+  namespace: {{ include "jaeger.namespace" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: hotrod
@@ -21,7 +22,7 @@ spec:
       securityContext:
         {{- toYaml .Values.hotrod.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.hotrod.serviceAccountName" . }}
-      {{- include "hotrod.imagePullSecrets" . | nindent 6 }}  
+      {{- include "hotrod.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: {{ include "jaeger.fullname" . }}-hotrod
           securityContext:
