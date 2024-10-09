@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-config
-  namespace: default
+  namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-delete-policy": before-hook-creation  # Optional: Deletes the hook before the next installation
