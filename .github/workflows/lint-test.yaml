@@ -67,6 +67,10 @@ jobs:
       - name: Check if cert-manager is up
         run: |
           cmctl check api --wait=5m
+      - name: Create ns and install 
+        run: |
+          kubectl --request-timeout=30s create namespace jaeger-v2-y
+          helm install  jaeger-v2-y charts/jaeger-v2 --namespace jaeger-v2-y --wait --timeout=600s
 
       - name: Run chart-testing (install)
         run: ct install --config ct.yaml
