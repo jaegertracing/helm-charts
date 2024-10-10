@@ -71,5 +71,3 @@ jobs:
       - name: Run chart-testing (install)
         run: ct install --config ct.yaml
 
-      - name: configmap
-        run: kubectl get configmap -A
