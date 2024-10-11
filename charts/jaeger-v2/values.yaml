@@ -1,3 +1,8 @@
+nameOverride: ""
+fullnameOverride: ""
+# Specify which namespace should be used to deploy the resources into
+namespaceOverride: ""
+
 service:
   extensions: [jaeger_storage, jaeger_query, healthcheckv2]
   pipelines:

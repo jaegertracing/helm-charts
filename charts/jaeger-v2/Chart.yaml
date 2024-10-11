@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: 1.53.0
 description: A Jaeger Helm chart for Kubernetes
-name: jaeger
+name: jaeger-v2
 type: application
 version: 3.3.1
 # CronJobs require v1.21

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: my-config
-  namespace: {{ .Release.Namespace }}
-  annotations:
-    "helm.sh/hook": pre-install
+  name: {{ include "jaeger-v2.fullname" . }}
+  namespace: {{ template "jaeger-v2.namespace" . }}
+  labels:
+        {{- include "jaeger-v2.labels" . | nindent 4 }}
 data:
   config.yaml: |
         service:

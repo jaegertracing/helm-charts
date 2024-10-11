@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jaeger
+  name: {{ include "jaeger-v2.fullname" . }}
+  namespace: {{ template "jaeger-v2.namespace" . }}
   labels:
-    app: jaeger
-    namespace: {{ .Release.Namespace }}
+    {{- include "jaeger-v2.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jaeger
-          image: jaegertracing/jaeger:latest
+          image: jaegertracing/jaeger:2.0.0-rc2
           args: 
             - "--config"
             - "/etc/jaeger/config.yaml"
@@ -30,9 +30,7 @@ spec:
               name: grpc
             - containerPort: 9411
               name: zipkin
-          env:
-            - name: COLLECTOR_ZIPKIN_HOST_PORT
-              value: ":9411"
+
           resources:
             limits:
               cpu: 500m
@@ -41,9 +39,9 @@ spec:
               cpu: 100m
               memory: 256Mi
           volumeMounts:
-            - name: config-volume
+            - name: jaeger-v2-config
               mountPath: /etc/jaeger
       volumes:
-        - name: config-volume
+        - name: jaeger-v2-config
           configMap:
-            name: my-config
+            name: {{ include "jaeger-v2.fullname" . }}
