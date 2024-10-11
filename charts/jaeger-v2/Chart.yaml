@@ -1,0 +1,45 @@
+apiVersion: v2
+appVersion: 1.53.0
+description: A Jaeger Helm chart for Kubernetes
+name: jaeger
+type: application
+version: 3.3.1
+# CronJobs require v1.21
+kubeVersion: ">= 1.21-0"
+keywords:
+  - jaeger
+  - opentelemetry
+  - tracing
+home: https://jaegertracing.io
+icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
+sources:
+  - https://hub.docker.com/u/jaegertracing/
+maintainers:
+  - name: dvonthenen
+    email: david.vonthenen@dell.com
+  - name: mehta-ankit
+    email: ankit.mehta@appian.com
+  - name: mikelorant
+    email: michael.lorant@fairfaxmedia.com.au
+  - name: naseemkullah
+    email: naseem@transit.app
+  - name: pavelnikolov
+    email: me@pavelnikolov.net
+  - name: jkowall
+    email: jkowall@kowall.net
+dependencies:
+  - name: cassandra
+    version: 0.15.3
+    repository: https://charts.helm.sh/incubator
+    condition: provisionDataStore.cassandra
+  - name: elasticsearch
+    version: 20.0.4
+    repository: https://charts.bitnami.com/bitnami
+    condition: provisionDataStore.elasticsearch
+  - name: kafka
+    version: 26.6.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: provisionDataStore.kafka
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 2.x.x

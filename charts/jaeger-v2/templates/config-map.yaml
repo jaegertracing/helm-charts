@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+data:
+  config.yaml: |
+        service:
+          extensions:  [{{ join ", " .Values.service.extensions }}]
+          pipelines:
+            traces:
+              receivers: [{{ join ", " .Values.service.pipelines.traces.receivers }}]
+              processors: [{{ join ", " .Values.service.pipelines.traces.processors }}]
+              exporters: [{{ join ", " .Values.service.pipelines.traces.exporters }}]
+
+        extensions:
+{{ toYaml .Values.extensions | indent 10 }}
+
+        receivers:
+{{ toYaml .Values.receivers | indent 10 }}
+
+        processors:
+{{ toYaml .Values.processors | indent 10 }}
+
+        exporters:
+{{ toYaml .Values.exporters | indent 10 }}
+
+
