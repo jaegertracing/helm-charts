@@ -31,8 +31,6 @@ extensions:
         memory:
           max_traces: 100000
 
-
-
 receivers:
   otlp:
     protocols:
