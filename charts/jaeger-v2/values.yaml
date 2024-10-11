@@ -9,14 +9,18 @@ service:
 extensions:
   healthcheckv2:
     use_v2: true
-    http: {}
+    http:
+
+  # pprof:
+  #   endpoint: 0.0.0.0:1777
+  # zpages:
+  #   endpoint: 0.0.0.0:55679
 
   jaeger_query:
     storage:
       traces: some_store
       traces_archive: another_store
-    ui:
-      config_file: ./cmd/jaeger/config-ui.json
+
 
   jaeger_storage:
     backends:
@@ -28,32 +32,40 @@ extensions:
           max_traces: 100000
 
   remote_sampling:
+    # You can either use file or adaptive sampling strategy in remote_sampling
+    # file:
+    #   path: ./cmd/jaeger/sampling-strategies.json
     adaptive:
       sampling_store: some_store
       initial_sampling_probability: 0.1
-    http: {}
-    grpc: {}
+    http:
+    grpc:
 
 receivers:
   otlp:
     protocols:
-      grpc: {}
-      http: {}
+      grpc:
+      http:
 
   jaeger:
     protocols:
-      grpc: {}
-      thrift_binary: {}
-      thrift_compact: {}
-      thrift_http: {}
+      grpc:
+      thrift_binary:
+      thrift_compact:
+      thrift_http:
 
-  zipkin: {}
+  zipkin:
 
 processors:
-  batch: {}
+  batch:
+  # Adaptive Sampling Processor is required to support adaptive sampling.
+  # It expects remote_sampling extension with `adaptive:` config to be enabled.
+  adaptive_sampling:
 
 exporters:
-  jaeger_storage_exporter: {}
+  jaeger_storage_exporter:
+    trace_storage: some_store
+
 
 image: "jaegertracing/jaeger:latest"
 

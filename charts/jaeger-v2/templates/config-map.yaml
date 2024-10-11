@@ -5,75 +5,26 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-install
-    "helm.sh/hook-delete-policy": before-hook-creation  # Optional: Deletes the hook before the next installation
 data:
   config.yaml: |
         service:
-          extensions: [jaeger_storage, jaeger_query, remote_sampling, healthcheckv2]
+          extensions:  [{{ join ", " .Values.service.extensions }}]
           pipelines:
             traces:
-              receivers: [otlp, jaeger, zipkin]
-              processors: [batch, adaptive_sampling]
-              exporters: [jaeger_storage_exporter]
+              receivers: [{{ join ", " .Values.service.pipelines.traces.receivers }}]
+              processors: [{{ join ", " .Values.service.pipelines.traces.processors }}]
+              exporters: [{{ join ", " .Values.service.pipelines.traces.exporters }}]
 
         extensions:
-          healthcheckv2:
-            use_v2: true
-            http:
-
-          # pprof:
-          #   endpoint: 0.0.0.0:1777
-          # zpages:
-          #   endpoint: 0.0.0.0:55679
-
-          jaeger_query:
-            storage:
-              traces: some_store
-              traces_archive: another_store
-
-
-          jaeger_storage:
-            backends:
-              some_store:
-                memory:
-                  max_traces: 100000
-              another_store:
-                memory:
-                  max_traces: 100000
-
-          remote_sampling:
-            # You can either use file or adaptive sampling strategy in remote_sampling
-            # file:
-            #   path: ./cmd/jaeger/sampling-strategies.json
-            adaptive:
-              sampling_store: some_store
-              initial_sampling_probability: 0.1
-            http:
-            grpc:
+{{ toYaml .Values.extensions | indent 10 }}
 
         receivers:
-          otlp:
-            protocols:
-              grpc:
-              http:
-
-          jaeger:
-            protocols:
-              grpc:
-              thrift_binary:
-              thrift_compact:
-              thrift_http:
-
-          zipkin:
+{{ toYaml .Values.receivers | indent 10 }}
 
         processors:
-          batch:
-          # Adaptive Sampling Processor is required to support adaptive sampling.
-          # It expects remote_sampling extension with `adaptive:` config to be enabled.
-          adaptive_sampling:
+{{ toYaml .Values.processors | indent 10 }}
 
         exporters:
-          jaeger_storage_exporter:
-            trace_storage: some_store
+{{ toYaml .Values.exporters | indent 10 }}
 
 
