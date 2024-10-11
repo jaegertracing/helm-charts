@@ -1,5 +1,5 @@
 service:
-  extensions: [jaeger_storage, jaeger_query, remote_sampling, healthcheckv2]
+  extensions: [jaeger_storage, jaeger_query, healthcheckv2]
   pipelines:
     traces:
       receivers: [otlp, jaeger, zipkin]
@@ -31,15 +31,7 @@ extensions:
         memory:
           max_traces: 100000
 
-  remote_sampling:
-    # You can either use file or adaptive sampling strategy in remote_sampling
-    # file:
-    #   path: ./cmd/jaeger/sampling-strategies.json
-    adaptive:
-      sampling_store: some_store
-      initial_sampling_probability: 0.1
-    http:
-    grpc:
+
 
 receivers:
   otlp:
