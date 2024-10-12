@@ -6,18 +6,21 @@ metadata:
   labels:
     {{- include "jaeger-v2.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app: jaeger
+      {{- include "jaeger-v2.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: jaeger
+        {{- include "jaeger-v2.selectorLabels" . | nindent 8 }}
+        {{- include "jaeger-v2.podLabels" . | nindent 8}}
     spec:
       containers:
-        - name: jaeger
-          image: jaegertracing/jaeger:2.0.0-rc2
+        - name: jaeger-v2
+          image: {{ .Values.image }}
           args: 
             - "--config"
             - "/etc/jaeger/config.yaml"

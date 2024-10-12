@@ -3,6 +3,11 @@ fullnameOverride: ""
 # Specify which namespace should be used to deploy the resources into
 namespaceOverride: ""
 
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+  kafka: false
+
 service:
   extensions: [jaeger_storage, jaeger_query, healthcheckv2]
   pipelines:
@@ -59,9 +64,19 @@ exporters:
     trace_storage: some_store
 
 
-image: "jaegertracing/jaeger:latest"
 
-provisionDataStore:
-  cassandra: false
-  elasticsearch: false
-  kafka: false
+image: "jaegertracing/jaeger:2.0.0-rc2"
+
+
+# autoscaling is used only if mode is "deployment" or "statefulset"
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  behavior: {}
+  targetCPUUtilizationPercentage: 80
+
+# only used with deployment mode
+replicaCount: 1
+#labels for pods 
+podLabels: {}

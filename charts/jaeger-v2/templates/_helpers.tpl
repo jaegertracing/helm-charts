@@ -69,18 +69,24 @@ Create the name of the service account to use
   {{- end -}}
 {{- end -}}
 
-{{- define "jaeger.extensionsConfig" -}}
+{{- define "jaeger-v2.extensionsConfig" -}}
 {{ toYaml .Values.extensions | nindent 6 }}
 {{- end }}
 
-{{- define "jaeger.receiversConfig" -}}
+{{- define "jaeger-v2.receiversConfig" -}}
 {{ toYaml .Values.receivers | nindent 6 }}
 {{- end }}
 
-{{- define "jaeger.processorsConfig" -}}
+{{- define "jaeger-v2.processorsConfig" -}}
 {{ toYaml .Values.processors | nindent 6 }}
 {{- end }}
 
-{{- define "jaeger.exportersConfig" -}}
+{{- define "jaeger-v2.exportersConfig" -}}
 {{ toYaml .Values.exporters | nindent 6 }}
+{{- end }}
+
+{{- define "jaeger-v2.podLabels" -}}
+{{- if .Values.podLabels }}
+{{- tpl (.Values.podLabels | toYaml) . }}
+{{- end }}
 {{- end }}

@@ -16,10 +16,10 @@ data:
               exporters: [{{ join ", " .Values.service.pipelines.traces.exporters }}]
 
         extensions:
-          {{- include "jaeger.extensionsConfig" . | nindent 6 }}
+          {{- include "jaeger-v2.extensionsConfig" . | nindent 6 }}
         receivers:
-          {{- include "jaeger.receiversConfig" . | nindent 6 }}
+          {{- include "jaeger-v2.receiversConfig" . | nindent 6 }}
         processors:
-          {{- include "jaeger.processorsConfig" . | nindent 6 }}
+          {{- include "jaeger-v2.processorsConfig" . | nindent 6 }}
         exporters:
-          {{- include "jaeger.exportersConfig" . | nindent 6 }}
+          {{- include "jaeger-v2.exportersConfig" . | nindent 6 }}
