@@ -69,3 +69,18 @@ Create the name of the service account to use
   {{- end -}}
 {{- end -}}
 
+{{- define "jaeger.extensionsConfig" -}}
+{{ toYaml .Values.extensions | nindent 6 }}
+{{- end }}
+
+{{- define "jaeger.receiversConfig" -}}
+{{ toYaml .Values.receivers | nindent 6 }}
+{{- end }}
+
+{{- define "jaeger.processorsConfig" -}}
+{{ toYaml .Values.processors | nindent 6 }}
+{{- end }}
+
+{{- define "jaeger.exportersConfig" -}}
+{{ toYaml .Values.exporters | nindent 6 }}
+{{- end }}

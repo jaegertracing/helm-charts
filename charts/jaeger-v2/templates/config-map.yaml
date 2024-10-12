@@ -16,15 +16,10 @@ data:
               exporters: [{{ join ", " .Values.service.pipelines.traces.exporters }}]
 
         extensions:
-{{ toYaml .Values.extensions | indent 10 }}
-
+          {{- include "jaeger.extensionsConfig" . | nindent 6 }}
         receivers:
-{{ toYaml .Values.receivers | indent 10 }}
-
+          {{- include "jaeger.receiversConfig" . | nindent 6 }}
         processors:
-{{ toYaml .Values.processors | indent 10 }}
-
+          {{- include "jaeger.processorsConfig" . | nindent 6 }}
         exporters:
-{{ toYaml .Values.exporters | indent 10 }}
-
-
+          {{- include "jaeger.exportersConfig" . | nindent 6 }}
