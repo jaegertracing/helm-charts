@@ -63,10 +63,7 @@ exporters:
   jaeger_storage_exporter:
     trace_storage: some_store
 
-
-
 image: "jaegertracing/jaeger:2.0.0-rc2"
-
 
 # autoscaling is used only if mode is "deployment" or "statefulset"
 autoscaling:
@@ -78,5 +75,5 @@ autoscaling:
 
 # only used with deployment mode
 replicaCount: 1
-#labels for pods 
+# labels for pods
 podLabels: {}
