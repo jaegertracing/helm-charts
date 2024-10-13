@@ -28,13 +28,13 @@ extensions:
 
   jaeger_query:
     storage:
-      traces: some_store
+      traces: primary_store
       traces_archive: another_store
 
 
   jaeger_storage:
     backends:
-      some_store:
+      primary_store:
         memory:
           max_traces: 100000
       another_store:
@@ -50,9 +50,7 @@ receivers:
   jaeger:
     protocols:
       grpc:
-      thrift_binary:
-      thrift_compact:
-      thrift_http:
+
 
   zipkin:
 
@@ -61,7 +59,7 @@ processors:
 
 exporters:
   jaeger_storage_exporter:
-    trace_storage: some_store
+    trace_storage: primary_store
 
 image: "jaegertracing/jaeger:2.0.0-rc2"
 
