@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: jaeger-v2
-          image: {{ .Values.image }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
           args: 
             - "--config"
             - "/etc/jaeger/config.yaml"
@@ -33,14 +33,18 @@ spec:
               name: grpc
             - containerPort: 9411
               name: zipkin
+            - containerPort: 4317
+              name: otlp-grpc
+            - containerPort: 4318
+              name: otlp-http
 
           resources:
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
           volumeMounts:
             - name: jaeger-v2-config
               mountPath: /etc/jaeger

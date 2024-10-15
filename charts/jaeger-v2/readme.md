@@ -14,10 +14,10 @@ kali@PC:~/LFX/helm-charts/charts/jaeger-v2$ tree
 ├── Chart.lock
 ├── Chart.yaml
 ├── charts
-│   ├── cassandra-0.15.3.tgz
-│   ├── common-2.23.0.tgz
-│   ├── elasticsearch-20.0.4.tgz
-│   └── kafka-26.6.2.tgz
+│   ├── cassandra.tgz
+│   ├── common.tgz
+│   ├── elasticsearch.tgz
+│   └── kafka.tgz
 ├── readme.md
 ├── templates
 │   ├── _helpers.tpl
@@ -144,10 +144,10 @@ When deploying Jaeger using a custom values file, any configuration set in the f
 ## Dependencies
 
 This Helm chart comes with pre-packaged dependencies for data stores:
-- **Cassandra**: Version `0.15.3`
-- **Elasticsearch**: Version `20.0.4`
-- **Kafka**: Version `26.6.2`
-- **Common**: Version `2.23.0`
+- **Cassandra**: Version
+- **Elasticsearch**: Version
+- **Kafka**: Version
+- **Common**: Version
 
 These dependencies can be managed through the `charts/` directory, and they are installed as part of the Jaeger deployment.
 

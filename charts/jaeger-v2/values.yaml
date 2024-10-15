@@ -29,7 +29,7 @@ extensions:
   jaeger_query:
     storage:
       traces: primary_store
-      traces_archive: another_store
+      traces_archive: archive_store
 
 
   jaeger_storage:
@@ -37,7 +37,7 @@ extensions:
       primary_store:
         memory:
           max_traces: 100000
-      another_store:
+      archive_store:
         memory:
           max_traces: 100000
 
@@ -51,7 +51,6 @@ receivers:
     protocols:
       grpc:
 
-
   zipkin:
 
 processors:
@@ -61,7 +60,12 @@ exporters:
   jaeger_storage_exporter:
     trace_storage: primary_store
 
-image: "jaegertracing/jaeger:2.0.0-rc2"
+image:
+  registry: "docker.io"
+  repository: "jaegertracing"
+  name: "jaeger"
+  tag: "2.0.0-rc2"
+
 
 # autoscaling is used only if mode is "deployment" or "statefulset"
 autoscaling:
@@ -75,3 +79,11 @@ autoscaling:
 replicaCount: 1
 # labels for pods
 podLabels: {}
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
