@@ -1,4 +1,5 @@
 {{- if .Values.allInOne.enabled -}}
+{{- if not .Values.v2.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -18,4 +19,5 @@ spec:
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
+{{- end -}}
 {{- end -}}
