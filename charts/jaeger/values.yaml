@@ -4,7 +4,7 @@
 
 v2:
   enabled: false
-  image: 
+  image:
     registry: ""
     repository: jaegertracing/jaeger
     tag: "2.0.0-rc2"
