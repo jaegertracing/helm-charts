@@ -146,11 +146,11 @@ spec:
         {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
-    {{- if .Values.v2.enabled }}
+     {{- if .Values.v2.enabled }}
         - name: jaeger-v2-config
           configMap:
             name: jaeger-v2-configmap
-    {{- end }}
+     {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:

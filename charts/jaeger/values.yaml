@@ -29,7 +29,6 @@ extensions:
       traces: primary_store
       traces_archive: archive_store
 
-
   jaeger_storage:
     backends:
       primary_store:
@@ -44,7 +43,6 @@ receivers:
     protocols:
       grpc:
       http:
-
   jaeger:
     protocols:
       grpc:
@@ -56,7 +54,7 @@ processors:
 exporters:
   jaeger_storage_exporter:
     trace_storage: primary_store
-
+# The following settings apply to Jaeger v1 and partially to Jaeger v2
 
 global:
   imageRegistry:
