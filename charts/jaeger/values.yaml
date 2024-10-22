@@ -4,7 +4,13 @@
 
 v2:
   enabled: false
-  image: jaegertracing/jaeger:2.0.0-rc2
+  image: 
+    registry: ""
+    repository: jaegertracing/jaeger
+    tag: "2.0.0-rc2"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
 service:
   extensions: [jaeger_storage, jaeger_query, healthcheckv2]
   pipelines:

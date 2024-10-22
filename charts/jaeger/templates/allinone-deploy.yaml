@@ -55,7 +55,7 @@ spec:
           securityContext:
             {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
           {{- if .Values.v2.enabled }}
-          image: {{ .Values.v2.image }}
+          image: {{ include "v2.image" . }}
           {{- else }}
           image: {{ include "allInOne.image" . }}
           {{- end }}

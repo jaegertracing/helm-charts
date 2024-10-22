@@ -573,6 +573,20 @@ Create pull secrets for all in one image
 {{- end }}
 
 {{/*
+Create image name for v2 image
+*/}}
+{{- define "v2.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.v2.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Create pull secrets for all in one image
+*/}}
+{{- define "v2.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.v2.image) "context" $) -}}
+{{- end }}
+
+{{/*
 Create image name for schema image
 */}}
 {{- define "schema.image" -}}
