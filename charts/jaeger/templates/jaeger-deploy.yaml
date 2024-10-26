@@ -1,40 +1,40 @@
-{{- if .Values.allInOne.enabled -}}
+{{- if .Values.jaeger.storage.memory.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.fullname" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
-    app.kubernetes.io/component: all-in-one
+    app.kubernetes.io/component: jaeger-v2
     prometheus.io/port: "14269"
     prometheus.io/scrape: "true"
 spec:
-  {{- if hasKey .Values.allInOne "replicas" }}
-  replicas: {{ .Values.allInOne.replicas }}
+  {{- if hasKey .Values.jaeger "replicas" }}
+  replicas: {{ .Values.jaeger.replicas }}
   {{- end }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: all-in-one
+      app.kubernetes.io/component: jaeger-v2
   template:
     metadata:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: all-in-one
-{{- if .Values.allInOne.podLabels }}
-        {{- toYaml .Values.allInOne.podLabels | nindent 8 }}
+        app.kubernetes.io/component: jaeger-v2
+{{- if .Values.jaeger.podLabels }}
+        {{- toYaml .Values.jaeger.podLabels | nindent 8 }}
 {{- end }}
       annotations:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
-      {{- include "allInOne.imagePullSecrets" . | nindent 6 }}
+      {{- include "jaeger.imagePullSecrets" . | nindent 6 }}
       containers:
         - env:
-          {{- if .Values.allInOne.extraEnv }}
-            {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
+          {{- if .Values.jaeger.extraEnv }}
+            {{- toYaml .Values.jaeger.extraEnv | nindent 12 }}
           {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: {{ .Values.storage.type }}
@@ -45,31 +45,21 @@ spec:
               value: "false"
             - name: COLLECTOR_OTLP_ENABLED
               value: "true"
-            {{- if .Values.allInOne.samplingConfig }}
+            {{- if .Values.jaeger.samplingConfig }}
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
             {{- end }}
-        {{- with .Values.allInOne.envFrom }}
+        {{- with .Values.jaeger.envFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
         {{- end }}
           securityContext:
-            {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
-          {{- if .Values.v2.enabled }}
-          image: {{ include "v2.image" . }}
-          {{- else }}
-          image: {{ include "allInOne.image" . }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
+            {{- toYaml .Values.jaeger.securityContext | nindent 12 }}
+          image: {{ include "jaeger.image" . }}
+          imagePullPolicy: {{ .Values.jaeger.image.pullPolicy }}
           name: jaeger
           args:
-          {{- if .Values.v2.enabled }}
             - "--config"
             - "/etc/jaeger/config.yaml"
-          {{- else }}
-            {{- range $arg := .Values.allInOne.args }}
-            - "{{ tpl $arg $ }}"
-            {{- end }}
-          {{- end }}
           ports:
             - containerPort: 5775
               protocol: UDP
@@ -93,13 +83,8 @@ spec:
             failureThreshold: 5
             httpGet:
               scheme: HTTP
-              {{- if .Values.v2.enabled }}
               path: /status
               port: 13133
-              {{- else }}
-              path: /
-              port: 14269
-              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 15
             successThreshold: 1
@@ -108,77 +93,68 @@ spec:
             failureThreshold: 3
             httpGet:
               scheme: HTTP
-              {{- if .Values.v2.enabled }}
               path: /status
               port: 13133
-              {{- else }}
-              path: /
-              port: 14269
-              {{- end }}
             initialDelaySeconds: 1
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
-      {{- with .Values.allInOne.resources }}
+      {{- with .Values.jaeger.resources }}
           resources:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
-          {{- if .Values.v2.enabled }}
             - name: jaeger-v2-config
               mountPath: /etc/jaeger
-          {{- end }}
         {{- if not .Values.storage.badger.ephemeral }}
             - name: badger-data
               mountPath: {{ .Values.storage.badger.persistence.mountPath }}
         {{- end }}
-        {{- if .Values.allInOne.samplingConfig}}
+        {{- if .Values.jaeger.samplingConfig}}
             - name: strategies
               mountPath: /etc/conf/
         {{- end }}
-        {{- range .Values.allInOne.extraSecretMounts }}
+        {{- range .Values.jaeger.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
         {{- end }}
       securityContext:
-        {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
-     {{- if .Values.v2.enabled }}
         - name: jaeger-v2-config
           configMap:
             name: jaeger-v2-configmap
-     {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:
             claimName: {{ .Values.storage.badger.persistence.useExistingPvcName | required "Using badger persistence it is required to set an existing PVC"  }}
     {{- end }}
-    {{- if .Values.allInOne.samplingConfig}}
+    {{- if .Values.jaeger.samplingConfig}}
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
     {{- end }}
-    {{- range .Values.allInOne.extraSecretMounts }}
+    {{- range .Values.jaeger.extraSecretMounts }}
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
     {{- end }}
-    {{- with .Values.allInOne.affinity }}
+    {{- with .Values.jaeger.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.topologySpreadConstraints }}
+    {{- with .Values.jaeger.topologySpreadConstraints }}
       topologySpreadConstraints:
       {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.nodeSelector }}
+    {{- with .Values.jaeger.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.tolerations }}
+    {{- with .Values.jaeger.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

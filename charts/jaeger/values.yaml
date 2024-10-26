@@ -2,90 +2,15 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
-v2:
-  enabled: false
+jaeger:
+  storage:
+    memory:
+      enabled: true
+  replicas: 1
   image:
     registry: ""
     repository: jaegertracing/jaeger
     tag: "2.0.0-rc2"
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-service:
-  extensions: [jaeger_storage, jaeger_query, healthcheckv2]
-  pipelines:
-    traces:
-      receivers: [otlp, jaeger, zipkin]
-      processors: [batch]
-      exporters: [jaeger_storage_exporter]
-
-extensions:
-  healthcheckv2:
-    use_v2: true
-    http:
-      endpoint: 0.0.0.0:13133
-
-  # pprof:
-  #   endpoint: 0.0.0.0:1777
-  # zpages:
-  #   endpoint: 0.0.0.0:55679
-
-  jaeger_query:
-    storage:
-      traces: primary_store
-      traces_archive: archive_store
-
-  jaeger_storage:
-    backends:
-      primary_store:
-        memory:
-          max_traces: 100000
-      archive_store:
-        memory:
-          max_traces: 100000
-
-receivers:
-  otlp:
-    protocols:
-      grpc:
-      http:
-  jaeger:
-    protocols:
-      grpc:
-  zipkin:
-
-processors:
-  batch:
-
-exporters:
-  jaeger_storage_exporter:
-    trace_storage: primary_store
-# The following settings apply to Jaeger v1 and partially to Jaeger v2
-
-global:
-  imageRegistry:
-
-provisionDataStore:
-  cassandra: true
-  elasticsearch: false
-  kafka: false
-
-networkPolicy:
-  enabled: false
-
-# Overrides the image tag where default is the chart appVersion.
-tag: ""
-
-nameOverride: ""
-fullnameOverride: ""
-
-allInOne:
-  enabled: false
-  replicas: 1
-  image:
-    registry: ""
-    repository: jaegertracing/all-in-one
-    tag: ""
     digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
@@ -155,6 +80,75 @@ allInOne:
     runAsGroup: 10001
     fsGroup: 10001
   securityContext: {}
+
+service:
+  extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+  pipelines:
+    traces:
+      receivers: [otlp, jaeger, zipkin]
+      processors: [batch]
+      exporters: [jaeger_storage_exporter]
+
+extensions:
+  healthcheckv2:
+    use_v2: true
+    http:
+      endpoint: 0.0.0.0:13133
+
+  # pprof:
+  #   endpoint: 0.0.0.0:1777
+  # zpages:
+  #   endpoint: 0.0.0.0:55679
+
+  jaeger_query:
+    storage:
+      traces: primary_store
+      traces_archive: archive_store
+
+  jaeger_storage:
+    backends:
+      primary_store:
+        memory:
+          max_traces: 100000
+      archive_store:
+        memory:
+          max_traces: 100000
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+  jaeger:
+    protocols:
+      grpc:
+  zipkin:
+
+processors:
+  batch:
+
+exporters:
+  jaeger_storage_exporter:
+    trace_storage: primary_store
+# The following settings apply to Jaeger v1 and partially to Jaeger v2
+
+global:
+  imageRegistry:
+
+provisionDataStore:
+  cassandra: true
+  elasticsearch: false
+  kafka: false
+
+networkPolicy:
+  enabled: false
+
+# Overrides the image tag where default is the chart appVersion.
+tag: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)

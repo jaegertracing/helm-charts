@@ -5,10 +5,6 @@ on: pull_request
 jobs:
   lint-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [v1, v2]  # Define the matrix with v1 and v2 versions
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -74,8 +70,4 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
-          if [ "${{ matrix.version }}" == "v1" ]; then
-            ct install --config ct.yaml
-          elif [ "${{ matrix.version }}" == "v2" ]; then
             ct install --config ct.yaml --helm-extra-set-args "--set v2.enabled=true --set provisionDataStore.cassandra=false --set storage.type=memory --set allInOne.enabled=true --set agent.enabled=false --set collector.enabled=false --set query.enabled=false" 
-          fi
