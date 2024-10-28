@@ -1,0 +1,27 @@
+{{- if .Values.jaeger.storage.memory.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-configmap
+  namespace: {{ include "jaeger.namespace" . }}
+  labels:
+        {{- include "jaeger.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+        service:
+          extensions:  [{{ join ", " .Values.config.service.extensions }}]
+          pipelines:
+            traces:
+              receivers: [{{ join ", " .Values.config.service.pipelines.traces.receivers }}]
+              processors: [{{ join ", " .Values.config.service.pipelines.traces.processors }}]
+              exporters: [{{ join ", " .Values.config.service.pipelines.traces.exporters }}]
+
+        extensions:
+          {{- include "jaeger.extensionsConfig" . | nindent 6 }}
+        receivers:
+          {{- include "jaeger.receiversConfig" . | nindent 6 }}
+        processors:
+          {{- include "jaeger.processorsConfig" . | nindent 6 }}
+        exporters:
+          {{- include "jaeger.exportersConfig" . | nindent 6 }}
+{{- end }}

@@ -5,7 +5,7 @@ metadata:
   name: {{ include "jaeger.fullname" . }}-sampling-strategies
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
-    app.kubernetes.io/component: jeager-v2
+    app.kubernetes.io/component: jeager
 data:
   strategies.json: |-
 {{ tpl .Values.jaeger.samplingConfig . | indent 4 }}

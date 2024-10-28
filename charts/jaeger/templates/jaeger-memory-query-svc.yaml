@@ -17,5 +17,5 @@ spec:
       targetPort: 16685
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: jaeger-v2
+    app.kubernetes.io/component: jaeger
 {{- end -}}

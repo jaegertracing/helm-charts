@@ -5,7 +5,7 @@ metadata:
   name: {{ template "jaeger.fullname" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
-    app.kubernetes.io/component: jaeger-v2
+    app.kubernetes.io/component: jaeger
     prometheus.io/port: "14269"
     prometheus.io/scrape: "true"
 spec:
@@ -17,12 +17,12 @@ spec:
   selector:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: jaeger-v2
+      app.kubernetes.io/component: jaeger
   template:
     metadata:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: jaeger-v2
+        app.kubernetes.io/component: jaeger
 {{- if .Values.jaeger.podLabels }}
         {{- toYaml .Values.jaeger.podLabels | nindent 8 }}
 {{- end }}
@@ -104,7 +104,7 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
-            - name: jaeger-v2-config
+            - name: jaeger-config
               mountPath: /etc/jaeger
         {{- if not .Values.storage.badger.ephemeral }}
             - name: badger-data
@@ -124,9 +124,9 @@ spec:
         {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
-        - name: jaeger-v2-config
+        - name: jaeger-config
           configMap:
-            name: jaeger-v2-configmap
+            name: jaeger-configmap
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:
