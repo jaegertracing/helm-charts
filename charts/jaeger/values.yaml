@@ -149,6 +149,82 @@ tag: ""
 nameOverride: ""
 fullnameOverride: ""
 
+allInOne:
+  enabled: false
+  replicas: 1
+  image:
+    registry: ""
+    repository: jaegertracing/all-in-one
+    tag: ""
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  extraEnv: []
+  extraSecretMounts:
+    []
+    # - name: jaeger-tls
+    #   mountPath: /tls
+    #   subPath: ""
+    #   secretName: jaeger-tls
+    #   readOnly: true
+  # command line arguments / CLI flags
+  # See https://www.jaegertracing.io/docs/cli/
+  args: []
+  # samplingConfig: |-
+  #   {
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
+  serviceAccount:
+    annotations: {}
+    automountServiceAccountToken: true
+  service:
+    headless: true
+    collector:
+      otlp:
+        grpc:
+          name: otlp-grpc
+        http:
+          name: otlp-http
+  ingress:
+    enabled: false
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    # ingressClassName: nginx
+    annotations: {}
+    labels: {}
+    # Used to create an Ingress record.
+    # hosts:
+    #   - chart-example.local
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # labels:
+    #   app: jaeger
+    # tls:
+    #   # Secrets must be manually created in the namespace.
+    #   - secretName: chart-example-tls
+    #     hosts:
+    #       - chart-example.local
+    pathType:
+  # resources:
+  #   limits:
+  #     cpu: 500m
+  #     memory: 512Mi
+  #   requests:
+  #     cpu: 256m
+  #     memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  topologySpreadContraints: []
+  podSecurityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+  securityContext: {}
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)

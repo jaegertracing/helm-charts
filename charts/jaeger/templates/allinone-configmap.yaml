@@ -1,12 +1,12 @@
-{{- if .Values.jaeger.samplingConfig }}
+{{- if .Values.allInOne.samplingConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "jaeger.fullname" . }}-sampling-strategies
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
-    app.kubernetes.io/component: jeager
+    app.kubernetes.io/component: all-in-one
 data:
   strategies.json: |-
-{{ tpl .Values.jaeger.samplingConfig . | indent 4 }}
+{{ tpl .Values.allInOne.samplingConfig . | indent 4 }}
 {{- end }}

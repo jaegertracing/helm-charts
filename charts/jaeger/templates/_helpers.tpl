@@ -559,17 +559,17 @@ If not tag is provided, it defaults to .Chart.AppVersion.
 {{- end -}}
 
 {{/*
-Create image name for jaeger-v2 image
+Create image name for all-in-one image
 */}}
-{{- define "jaeger.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.jaeger.image "context" $ ) -}}
+{{- define "allInOne.image" -}}
+{{- include "renderImage" ( dict "imageRoot" .Values.allInOne.image "context" $ ) -}}
 {{- end -}}
 
 {{/*
-Create pull secrets for jaeger-v2 image
+Create pull secrets for all-in-one image
 */}}
-{{- define "jaeger.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.jaeger.image) "context" $) -}}
+{{- define "allInOne.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.allInOne.image) "context" $) -}}
 {{- end }}
 
 {{/*
