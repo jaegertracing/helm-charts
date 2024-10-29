@@ -1,4 +1,4 @@
-{{- if .Values.jaeger.storage.memory.enabled -}}
+{{- if .Values.allInOne.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

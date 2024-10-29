@@ -54,7 +54,7 @@ spec:
         {{- end }}
           securityContext:
             {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
-          image: jaegertracing/jaeger:2.0.0-rc2
+          image: {{ include "allInOne.image" . }}
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
