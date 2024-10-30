@@ -20,6 +20,7 @@ runs:
         version: v3.10.1
 
     - name: Run chart-testing (list-changed)
+      shell: bash
       id: list-changed
       run: |
         changed=$(ct list-changed --config ct.yaml)
@@ -28,6 +29,7 @@ runs:
         fi
 
     - name: Run chart-testing (lint)
+      shell: bash
       run: ct lint --config ct.yaml
 
     - name: Create kind cluster
@@ -41,6 +43,7 @@ runs:
       id: install
 
     - name: Set up cert-manager
+      shell: bash
       run: |
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml --namespace ingress-nginx
         kubectl label node --all ingress-ready=true
@@ -49,6 +52,7 @@ runs:
         kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 
     - name: Set up cmctl
+      shell: bash
       run: |
         curl -sSL -o cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/download/v1.6.1/cmctl-linux-amd64.tar.gz
         tar xzf cmctl.tar.gz
@@ -56,5 +60,6 @@ runs:
         cmctl version
 
     - name: Check if cert-manager is up
+      shell: bash
       run: |
         cmctl check api --wait=5m
