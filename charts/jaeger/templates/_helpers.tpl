@@ -722,19 +722,69 @@ Create pull secrets for hotrod image
 
 
 {{- define "jaeger.extensionsConfig" -}}
+{{- if .Values.extensions }}
+{{ toYaml .Values.extensions | nindent 6 }}
+{{- else }}
 {{ toYaml .Values.config.extensions | nindent 6 }}
+{{- end }}
 {{- end }}
 
 {{- define "jaeger.receiversConfig" -}}
+{{- if .Values.receivers }}
+{{ toYaml .Values.receivers | nindent 6 }}
+{{- else }}
 {{ toYaml .Values.config.receivers | nindent 6 }}
+{{- end }}
 {{- end }}
 
 {{- define "jaeger.processorsConfig" -}}
+{{- if .Values.processors }}
+{{ toYaml .Values.processors | nindent 6 }}
+{{- else }}
 {{ toYaml .Values.config.processors | nindent 6 }}
+{{- end }}
 {{- end }}
 
 {{- define "jaeger.exportersConfig" -}}
+{{- if .Values.exporters }}
+{{ toYaml .Values.exporters | nindent 6 }}
+{{- else }}
 {{ toYaml .Values.config.exporters | nindent 6 }}
+{{- end }}
+{{- end }}
+
+
+
+{{- define "jaeger.serviceExtensions" -}}
+{{- if .Values.service.extensions -}}
+[{{ join ", " .Values.service.extensions }}]
+{{- else -}}
+[{{ join ", " .Values.config.service.extensions }}]
+{{- end -}}
+{{- end }}
+
+{{- define "jaeger.serviceReceivers" -}}
+{{- if .Values.service.pipelines.traces.receivers -}}
+[{{ join ", " .Values.service.pipelines.traces.receivers }}]
+{{- else -}}
+[{{ join ", " .Values.config.service.pipelines.traces.receivers }}]
+{{- end -}}
+{{- end }}
+
+{{- define "jaeger.serviceProcessors" -}}
+{{- if .Values.service.pipelines.traces.processors -}}
+[{{ join ", " .Values.service.pipelines.traces.processors }}]
+{{- else -}}
+[{{ join ", " .Values.config.service.pipelines.traces.processors }}]
+{{- end -}}
+{{- end }}
+
+{{- define "jaeger.serviceExporters" -}}
+{{- if .Values.service.pipelines.traces.exporters -}}
+[{{ join ", " .Values.service.pipelines.traces.exporters }}]
+{{- else -}}
+[{{ join ", " .Values.config.service.pipelines.traces.exporters }}]
+{{- end -}}
 {{- end }}
 
 {{- define "jaeger.namespace" -}}

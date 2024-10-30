@@ -5,16 +5,16 @@ metadata:
   name: jaeger-configmap
   namespace: {{ include "jaeger.namespace" . }}
   labels:
-        {{- include "jaeger.labels" . | nindent 4 }}
+    {{- include "jaeger.labels" . | nindent 4 }}
 data:
   config.yaml: |
         service:
-          extensions:  [{{ join ", " .Values.config.service.extensions }}]
+          extensions: {{ include "jaeger.serviceExtensions" . }}
           pipelines:
             traces:
-              receivers: [{{ join ", " .Values.config.service.pipelines.traces.receivers }}]
-              processors: [{{ join ", " .Values.config.service.pipelines.traces.processors }}]
-              exporters: [{{ join ", " .Values.config.service.pipelines.traces.exporters }}]
+              receivers: {{ include "jaeger.serviceReceivers" . }}
+              processors: {{ include "jaeger.serviceProcessors" . }}
+              exporters: {{ include "jaeger.serviceExporters" . }}
 
         extensions:
           {{- include "jaeger.extensionsConfig" . | nindent 6 }}
