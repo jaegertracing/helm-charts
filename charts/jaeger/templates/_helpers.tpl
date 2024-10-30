@@ -756,7 +756,7 @@ Create pull secrets for hotrod image
 
 
 {{- define "jaeger.serviceExtensions" -}}
-{{- if .Values.service.extensions -}}
+{{- if and .Values.service .Values.service.extensions -}}
 [{{ join ", " .Values.service.extensions }}]
 {{- else -}}
 [{{ join ", " .Values.config.service.extensions }}]
@@ -764,7 +764,7 @@ Create pull secrets for hotrod image
 {{- end }}
 
 {{- define "jaeger.serviceReceivers" -}}
-{{- if .Values.service.pipelines.traces.receivers -}}
+{{- if and .Values.service .Values.service.pipelines .Values.service.pipelines.traces .Values.service.pipelines.traces.receivers -}}
 [{{ join ", " .Values.service.pipelines.traces.receivers }}]
 {{- else -}}
 [{{ join ", " .Values.config.service.pipelines.traces.receivers }}]
@@ -772,7 +772,7 @@ Create pull secrets for hotrod image
 {{- end }}
 
 {{- define "jaeger.serviceProcessors" -}}
-{{- if .Values.service.pipelines.traces.processors -}}
+{{- if and .Values.service .Values.service.pipelines .Values.service.pipelines.traces .Values.service.pipelines.traces.processors -}}
 [{{ join ", " .Values.service.pipelines.traces.processors }}]
 {{- else -}}
 [{{ join ", " .Values.config.service.pipelines.traces.processors }}]
@@ -780,7 +780,7 @@ Create pull secrets for hotrod image
 {{- end }}
 
 {{- define "jaeger.serviceExporters" -}}
-{{- if .Values.service.pipelines.traces.exporters -}}
+{{- if and .Values.service .Values.service.pipelines .Values.service.pipelines.traces .Values.service.pipelines.traces.exporters -}}
 [{{ join ", " .Values.service.pipelines.traces.exporters }}]
 {{- else -}}
 [{{ join ", " .Values.config.service.pipelines.traces.exporters }}]
