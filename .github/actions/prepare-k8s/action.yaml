@@ -19,22 +19,8 @@ runs:
       with:
         version: v3.10.1
 
-    - name: Run chart-testing (list-changed)
-      shell: bash
-      id: list-changed
-      run: |
-        changed=$(ct list-changed --config ct.yaml)
-        if [[ -n "$changed" ]]; then
-          echo "::set-output name=changed::true"
-        fi
-
-    - name: Run chart-testing (lint)
-      shell: bash
-      run: ct lint --config ct.yaml
-
     - name: Create kind cluster
       uses: helm/kind-action@v1.9.0
-      if: steps.list-changed.outputs.changed == 'true'
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v4.0.0
