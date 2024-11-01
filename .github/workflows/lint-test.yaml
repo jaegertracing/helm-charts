@@ -49,6 +49,14 @@ jobs:
 
       - name: Run cassandra-chart-testing (install)
         run: ct install --config ct.yaml
+  test-with-allInOne:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/prepare-k8s
 
       - name: Run allInOne-chart-testing (install)
         run: |
@@ -59,8 +67,17 @@ jobs:
             --set agent.enabled=false
             --set collector.enabled=false
             --set query.enabled=false"
+    
+    test-with-elasticsearch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Run elastic-search-chart-testing (install)
+      - uses: ./.github/actions/prepare-k8s
+  
+      - name: Run elasticsearch-chart-testing (install)
         run: |
           ct install --config ct.yaml --helm-extra-set-args "
             --set provisionDataStore.cassandra=false
