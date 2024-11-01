@@ -2,6 +2,61 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+# Will use for user provided config
+userconfig:
+
+config:
+  service:
+    extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+    pipelines:
+      traces:
+        receivers: [otlp, jaeger, zipkin]
+        processors: [batch]
+        exporters: [jaeger_storage_exporter]
+
+  extensions:
+    healthcheckv2:
+      use_v2: true
+      http:
+        endpoint: 0.0.0.0:13133
+
+    # pprof:
+    #   endpoint: 0.0.0.0:1777
+    # zpages:
+    #   endpoint: 0.0.0.0:55679
+
+    jaeger_query:
+      storage:
+        traces: primary_store
+        traces_archive: archive_store
+
+    jaeger_storage:
+      backends:
+        primary_store:
+          memory:
+            max_traces: 100000
+        archive_store:
+          memory:
+            max_traces: 100000
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+    jaeger:
+      protocols:
+        grpc:
+    zipkin:
+
+  processors:
+    batch:
+
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store
+# The following settings apply to Jaeger v1 and partially to Jaeger v2
+
 global:
   imageRegistry:
 
@@ -24,7 +79,7 @@ allInOne:
   replicas: 1
   image:
     registry: ""
-    repository: jaegertracing/all-in-one
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent

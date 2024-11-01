@@ -69,4 +69,5 @@ jobs:
           cmctl check api --wait=5m
 
       - name: Run chart-testing (install)
-        run: ct install --config ct.yaml
+        run: |
+            ct install --config ct.yaml --helm-extra-set-args "--set provisionDataStore.cassandra=false --set storage.type=memory --set allInOne.enabled=true --set agent.enabled=false --set collector.enabled=false --set query.enabled=false" 
