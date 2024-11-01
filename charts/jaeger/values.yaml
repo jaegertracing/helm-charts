@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+# Will use for user provided config
+userconfig:
+
 config:
   service:
     extensions: [jaeger_storage, jaeger_query, healthcheckv2]

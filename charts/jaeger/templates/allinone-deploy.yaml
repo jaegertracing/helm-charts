@@ -58,8 +58,10 @@ spec:
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
+            {{ if .Values.userconfig }}
              - "--config"
              - "/etc/jaeger/config.yaml"
+            {{- end }}
             {{- range $arg := .Values.allInOne.args }}
             - "{{ tpl $arg $ }}"
             {{- end }}
@@ -109,8 +111,10 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
+        {{ if .Values.userconfig }}  
             - name: jaeger-config
               mountPath: /etc/jaeger
+        {{- end }}
         {{- if not .Values.storage.badger.ephemeral }}
             - name: badger-data
               mountPath: {{ .Values.storage.badger.persistence.mountPath }}
@@ -129,9 +133,11 @@ spec:
         {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
+      {{ if .Values.userconfig }}
          - name: jaeger-config
            configMap:
             name: jaeger-configmap
+      {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:

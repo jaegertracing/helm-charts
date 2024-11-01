@@ -1,4 +1,4 @@
-{{- if .Values.allInOne.enabled -}}
+{{ if .Values.userconfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,20 +8,5 @@ metadata:
     {{- include "jaeger.labels" . | nindent 4 }}
 data:
   config.yaml: |
-        service:
-          extensions: {{ include "jaeger.serviceExtensions" . }}
-          pipelines:
-            traces:
-              receivers: {{ include "jaeger.serviceReceivers" . }}
-              processors: {{ include "jaeger.serviceProcessors" . }}
-              exporters: {{ include "jaeger.serviceExporters" . }}
-
-        extensions:
-          {{- include "jaeger.extensionsConfig" . | nindent 6 }}
-        receivers:
-          {{- include "jaeger.receiversConfig" . | nindent 6 }}
-        processors:
-          {{- include "jaeger.processorsConfig" . | nindent 6 }}
-        exporters:
-          {{- include "jaeger.exportersConfig" . | nindent 6 }}
+        {{ .Values.userconfig | nindent 8 }}
 {{- end }}
