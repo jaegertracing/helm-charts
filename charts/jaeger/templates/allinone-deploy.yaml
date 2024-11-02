@@ -60,7 +60,7 @@ spec:
           args:
             {{ if .Values.userconfig }}
              - "--config"
-             - "/etc/jaeger/config.yaml"
+             - "/etc/jaeger/user-config.yaml"
             {{- end }}
             {{- range $arg := .Values.allInOne.args }}
             - "{{ tpl $arg $ }}"
@@ -112,7 +112,7 @@ spec:
       {{- end }}
           volumeMounts:
         {{ if .Values.userconfig }}  
-            - name: jaeger-config
+            - name: user-config
               mountPath: /etc/jaeger
         {{- end }}
         {{- if not .Values.storage.badger.ephemeral }}
@@ -134,9 +134,9 @@ spec:
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
       {{ if .Values.userconfig }}
-         - name: jaeger-config
+         - name: user-config
            configMap:
-            name: jaeger-configmap
+            name: user-config
       {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
