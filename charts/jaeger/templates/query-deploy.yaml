@@ -44,10 +44,25 @@ spec:
         {{- toYaml .Values.query.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.query.serviceAccountName" . }}
       {{- include "query.imagePullSecrets" . | nindent 6 }}
-      {{- if .Values.query.initContainers }}
+      {{- if or .Values.query.initContainers .Values.provisionDataStore.elasticsearch }}
       initContainers:
-      {{- toYaml .Values.query.initContainers | nindent 8 }}
-      {{- end}} 
+       {{- if .Values.query.initContainers }}
+        {{- toYaml .Values.query.initContainers | nindent 8 }}
+        {{- end }}
+        {{- if .Values.provisionDataStore.elasticsearch }}
+        - name: elasticsearch-checker
+          image: curlimages/curl
+          command: 
+          - sh
+          - "-c"
+          - |
+            url="{{ include "elasticsearch.client.url" . }}"
+            until [ "$(curl -s -o /dev/null -w '%{http_code}' "$url/_cluster/health")" = "200" ]; do
+              echo "waiting for Elasticsearch at $url"
+              sleep 5
+            done
+        {{- end }}
+      {{- end }}  
       containers:
       - name: {{ template "jaeger.query.name" . }}
         securityContext:
