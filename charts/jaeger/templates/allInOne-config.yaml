@@ -8,5 +8,5 @@ metadata:
     {{- include "jaeger.labels" . | nindent 4 }}
 data:
   config.yaml: |
-        {{ .Values.userconfig | nindent 8 }}
+        {{- .Values.userconfig | nindent 4 }}
 {{- end }}
