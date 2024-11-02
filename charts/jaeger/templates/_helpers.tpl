@@ -272,6 +272,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- if .Values.provisionDataStore.elasticsearch }}
 {{- $host = printf "%s-elasticsearch" .Release.Name }}
 {{- end }}
+{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- end -}}
 
 {{- define "jaeger.hotrod.tracing.host" -}}
