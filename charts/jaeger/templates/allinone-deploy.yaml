@@ -58,6 +58,10 @@ spec:
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
+            {{ if .Values.userconfig }}
+             - "--config"
+             - "/etc/jaeger/user-config.yaml"
+            {{- end }}
             {{- range $arg := .Values.allInOne.args }}
             - "{{ tpl $arg $ }}"
             {{- end }}
@@ -80,11 +84,13 @@ spec:
               protocol: TCP
             - containerPort: 4318
               protocol: TCP
+            - containerPort: 13133
+              protocol: TCP
           livenessProbe:
             failureThreshold: 5
             httpGet:
-              path: /
-              port: 14269
+              path: /status
+              port: 13133
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 15
@@ -93,8 +99,8 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /
-              port: 14269
+              path: /status
+              port: 13133
               scheme: HTTP
             initialDelaySeconds: 1
             periodSeconds: 10
@@ -105,6 +111,10 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
+        {{ if .Values.userconfig }}  
+            - name: user-config
+              mountPath: /etc/jaeger
+        {{- end }}
         {{- if not .Values.storage.badger.ephemeral }}
             - name: badger-data
               mountPath: {{ .Values.storage.badger.persistence.mountPath }}
@@ -123,6 +133,11 @@ spec:
         {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
+      {{ if .Values.userconfig }}
+         - name: user-config
+           configMap:
+            name: user-config
+      {{- end }}
     {{- if not .Values.storage.badger.ephemeral }}
         - name: badger-data
           persistentVolumeClaim:

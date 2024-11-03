@@ -1,0 +1,12 @@
+{{ if .Values.userconfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-config
+  namespace: {{ include "jaeger.namespace" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+data:
+  user-config.yaml: |
+    {{- .Values.userconfig | nindent 4 }}
+{{- end }}
