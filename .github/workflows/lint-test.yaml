@@ -38,7 +38,7 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config ct.yaml
 
-  test-with-allInOne:
+  test-with-all-in-one:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,5 +49,12 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
-            ct install --config ct.yaml --helm-extra-set-args "--set provisionDataStore.cassandra=false --set storage.type=memory --set allInOne.enabled=true --set agent.enabled=false --set collector.enabled=false --set query.enabled=false" 
+          ct install --config ct.yaml \
+            --helm-extra-set-args "
+              --set provisionDataStore.cassandra=false \
+              --set storage.type=memory \
+              --set allInOne.enabled=true \
+              --set agent.enabled=false \
+              --set collector.enabled=false \
+              --set query.enabled=false "
 
