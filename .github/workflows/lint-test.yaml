@@ -57,7 +57,7 @@ jobs:
               --set agent.enabled=false \
               --set collector.enabled=false \
               --set query.enabled=false "
-    test-with-elasticsearch:
+  test-with-elasticsearch:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
