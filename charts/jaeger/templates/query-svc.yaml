@@ -24,7 +24,7 @@ spec:
     protocol: TCP
     targetPort: grpc
   - name: {{ .Values.query.service.admin.name }}
-    port: 16687
+    port: 13133
     protocol: TCP
     targetPort: {{ .Values.query.service.admin.targetPort }}
   selector:

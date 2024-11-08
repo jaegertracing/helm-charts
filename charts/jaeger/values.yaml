@@ -195,6 +195,8 @@ storage:
     user: elastic
     usePassword: true
     password: changeme
+    index_prefix: jaeger-main
+    index_prefix_archive: jaeger-archive
     # indexPrefix: test
     ## Use existing secret (ignores previous password)
     # existingSecret:
@@ -516,7 +518,7 @@ collector:
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-collector
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -732,7 +734,7 @@ query:
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-query
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent

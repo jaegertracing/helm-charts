@@ -1,0 +1,45 @@
+service:
+  extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger_storage_exporter]
+
+extensions:
+  healthcheckv2:
+    use_v2: true
+    http:
+        endpoint: 0.0.0.0:13133
+
+  jaeger_query:
+    storage:
+      traces: some_storage
+      traces_archive: another_storage
+
+
+  jaeger_storage:
+    backends:
+      some_storage:
+        elasticsearch:
+          index_prefix: "jaeger-main"
+          server_urls: ["http://es-elasticsearch:9200"]
+          
+      another_storage:
+        elasticsearch:
+          index_prefix: "jaeger-archive"
+          server_urls: ["http://es-elasticsearch:9200"]
+          username: {{- .Values.storage.elasticsearch.username | quote }}
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  jaeger_storage_exporter:
+    trace_storage: some_storage

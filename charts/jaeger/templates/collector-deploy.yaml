@@ -43,6 +43,7 @@ spec:
             url="{{ include "elasticsearch.client.url" . }}"
             until [ "$(curl -s -o /dev/null -w '%{http_code}' "$url/_cluster/health")" = "200" ]; do
               echo "Waiting for Elasticsearch at $url"
+              echo  "$(curl -s "$url/_cluster/health")"
               sleep 5
             done
       {{- end}}
@@ -64,6 +65,8 @@ spec:
         image: {{ include "collector.image" . }}
         imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
         args:
+          - "--config"
+          - "/etc/jaeger/user-config.yaml"
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
           {{- if not .Values.ingester.enabled -}}
           {{- include "storage.cmdArgs" . | nindent 10 }}
@@ -123,7 +126,7 @@ spec:
         - containerPort: {{ .Values.collector.service.http.port }}
           name: http
           protocol: TCP
-        - containerPort: 14269
+        - containerPort: 13133
           name: admin
           protocol: TCP
         {{- if .Values.collector.service.zipkin }}
@@ -141,15 +144,19 @@ spec:
         {{- end }}
         readinessProbe:
           httpGet:
-            path: /
+            path: /status
             port: admin
+            scheme: HTTP
         livenessProbe:
           httpGet:
-            path: /
+            path: /status
             port: admin
+            scheme: HTTP
         resources:
           {{- toYaml .Values.collector.resources | nindent 10 }}
         volumeMounts:
+          - name: user-config
+            mountPath: /etc/jaeger
         {{- range .Values.collector.extraConfigmapMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
@@ -189,6 +196,9 @@ spec:
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
       volumes:
+        - name: user-config
+          configMap:
+            name: user-config
       {{- range .Values.collector.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:

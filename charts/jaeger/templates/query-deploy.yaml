@@ -70,6 +70,8 @@ spec:
         image: {{ include "query.image" . }}
         imagePullPolicy: {{ .Values.query.image.pullPolicy }}
         args:
+          - "--config"
+          - "/etc/jaeger/user-config.yaml"
           {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.query.cmdlineParams ) | nindent 10  }}
           {{- include "storage.cmdArgs" . | nindent 10 }}
         env:
@@ -100,11 +102,13 @@ spec:
           containerPort: 16685
           protocol: TCP
         - name: admin
-          containerPort: 16687
+          containerPort: 13133
           protocol: TCP
         resources:
           {{- toYaml .Values.query.resources | nindent 10 }}
         volumeMounts:
+          - name: user-config
+            mountPath: /etc/jaeger
         {{- range .Values.query.extraSecretMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
@@ -143,12 +147,14 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
-            path: /
+            path: /status
             port: admin
+            scheme: HTTP
         readinessProbe:
           httpGet:
-            path: /
+            path: /status
             port: admin
+            scheme: HTTP
 {{- if .Values.query.oAuthSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar
         securityContext:
@@ -247,6 +253,9 @@ spec:
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
       volumes:
+        - name: user-config
+          configMap:
+            name: user-config
       {{- range .Values.query.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
