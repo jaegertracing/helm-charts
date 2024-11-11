@@ -32,7 +32,7 @@ data:
         backends:
           some_storage:
             elasticsearch:
-              index_prefix: {{- .Values.storage.elasticsearch.index_prefix | quote | indent 2 }}
+              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.index_prefix | quote | indent 2 }}
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
               username: {{- .Values.storage.elasticsearch.user | quote | indent 2 }}
               {{- if .Values.storage.elasticsearch.password }}
@@ -40,11 +40,11 @@ data:
               {{- end }}
           another_storage:
             elasticsearch:
-              index_prefix: {{- .Values.storage.elasticsearch.index_prefix_archive | quote | indent 2 }}
+              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.index_prefix_archive | quote | indent 2 }}
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
-              username: {{- .Values.storage.elasticsearch.user | quote | indent 2 }}
-              {{- if .Values.storage.elasticsearch.password }}
-              password: {{- .Values.storage.elasticsearch.password | quote | indent 2 }}
+              username: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.user | quote | indent 2 }}
+              {{- if .Values.config.extensions.jaeger_storage.backends.elasticsearch.password }}
+              password: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.password | quote | indent 2 }}
               {{- end }}
 
     receivers:

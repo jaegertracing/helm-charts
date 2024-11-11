@@ -29,7 +29,6 @@ extensions:
         elasticsearch:
           index_prefix: "jaeger-archive"
           server_urls: ["http://es-elasticsearch:9200"]
-          username: {{- .Values.storage.elasticsearch.username | quote }}
 
 receivers:
   otlp:

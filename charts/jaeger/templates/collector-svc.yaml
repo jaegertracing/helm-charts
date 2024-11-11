@@ -60,9 +60,9 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.collector.service.otlp.http.name }}
 {{- end }}
-  - name: {{ .Values.collector.service.admin.name }}
+  - name: {{ .Values.collector.service.healthCheck.name }}
     port: 13133
-    targetPort: {{ .Values.collector.service.admin.targetPort }}
+    targetPort: {{ .Values.collector.service.healthCheck.targetPort }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: collector

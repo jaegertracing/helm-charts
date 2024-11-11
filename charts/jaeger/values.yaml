@@ -32,6 +32,12 @@ config:
 
     jaeger_storage:
       backends:
+        elasticsearch:
+          index_prefix: jaeger
+          index_prefix_archive: jaeger-archive
+          server_urls: ["http://elasticsearch-master:9200"]
+          username: elastic
+          password: changeme
         primary_store:
           memory:
             max_traces: 100000
@@ -195,8 +201,6 @@ storage:
     user: elastic
     usePassword: true
     password: changeme
-    index_prefix: jaeger-main
-    index_prefix_archive: jaeger-archive
     # indexPrefix: test
     ## Use existing secret (ignores previous password)
     # existingSecret:
@@ -568,7 +572,7 @@ collector:
         # name: otlp-http
         # port: 4318
         # nodePort:
-    admin:
+    healthCheck:
       name: admin
       targetPort: admin
   ingress:

@@ -5,7 +5,7 @@ name: jaeger
 type: application
 version: 4.0.0
 annotations:
-  Jaegerv1Version: "1.53.0"
+  Jaegerv1Version: "1.62.0"
 # CronJobs require v1.21
 kubeVersion: ">= 1.21-0"
 keywords:

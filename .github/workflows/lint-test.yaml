@@ -50,7 +50,7 @@ jobs:
       - name: Run chart-testing (install)
         run: |
           ct install --config ct.yaml \
-              --helm-extra-set-args "
+              --helm-extra-set-args "  \
               --set provisionDataStore.cassandra=false \
               --set storage.type=memory \
               --set allInOne.enabled=true \
@@ -69,7 +69,7 @@ jobs:
         - name: Run chart-testing (install)
           run: |
             ct install --config ct.yaml \
-                --helm-extra-set-args "
+                --helm-extra-set-args " \
                 --set provisionDataStore.cassandra=false \
                 --set provisionDataStore.elasticsearch=true \
                 --set storage.type=elasticsearch \
