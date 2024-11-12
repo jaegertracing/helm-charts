@@ -32,16 +32,20 @@ config:
 
     jaeger_storage:
       backends:
-        elasticsearch:
-          index_prefix: jaeger
-          index_prefix_archive: jaeger-archive
-          server_urls: ["http://elasticsearch-master:9200"]
-          username: elastic
-          password: changeme
         primary_store:
+          elasticsearch:
+            index_prefix: jaeger
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
           memory:
             max_traces: 100000
         archive_store:
+          elasticsearch:
+            index_prefix: jaeger-archive
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
           memory:
             max_traces: 100000
 

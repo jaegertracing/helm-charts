@@ -24,27 +24,27 @@ data:
 
       jaeger_query:
         storage:
-          traces: some_storage
-          traces_archive: another_storage
+          traces: primary_store
+          traces_archive: archive_store
 
 
       jaeger_storage:
         backends:
-          some_storage:
+          primary_store:
             elasticsearch:
-              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.index_prefix | quote | indent 2 }}
+              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.index_prefix | quote | indent 2 }}
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
-              username: {{- .Values.storage.elasticsearch.user | quote | indent 2 }}
-              {{- if .Values.storage.elasticsearch.password }}
-              password: {{- .Values.storage.elasticsearch.password | quote | indent 2 }}
+              username: {{- .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.user | quote | indent 2 }}
+              {{- if .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.password }}
+              password: {{- .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.password | quote | indent 2 }}
               {{- end }}
-          another_storage:
+          archive_store:
             elasticsearch:
-              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.index_prefix_archive | quote | indent 2 }}
+              index_prefix: {{- .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.index_prefix | quote | indent 2 }}
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
-              username: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.user | quote | indent 2 }}
-              {{- if .Values.config.extensions.jaeger_storage.backends.elasticsearch.password }}
-              password: {{- .Values.config.extensions.jaeger_storage.backends.elasticsearch.password | quote | indent 2 }}
+              username: {{- .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.user | quote | indent 2 }}
+              {{- if .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.password }}
+              password: {{- .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.password | quote | indent 2 }}
               {{- end }}
 
     receivers:
@@ -58,5 +58,5 @@ data:
 
     exporters:
       jaeger_storage_exporter:
-        trace_storage: some_storage
+        trace_storage: primary_store
 {{- end }}
