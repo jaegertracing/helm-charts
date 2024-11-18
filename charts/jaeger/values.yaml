@@ -52,8 +52,8 @@ config:
   receivers:
     otlp:
       protocols:
-        grpc:
-        http:
+        grpc: 0.0.0.0:4317
+        http: 0.0.0.0:4318
     jaeger:
       protocols:
         grpc:

@@ -50,8 +50,8 @@ data:
     receivers:
       otlp:
         protocols:
-          grpc:
-          http:
+          grpc: {{ .Values.config.receivers.otlp.protocols.grpc | indent 4 }}
+          http: {{ .Values.config.receivers.otlp.protocols.http | indent 4 }}
 
     processors:
       batch:
