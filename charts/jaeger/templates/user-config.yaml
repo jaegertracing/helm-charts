@@ -1,4 +1,4 @@
-# this is a user-provided config file that will be mounted into the all-in-one deployments
+# Generates a config map from a file provided by user via `--set-file userconfig=`
 {{ if .Values.userconfig }}
 apiVersion: v1
 kind: ConfigMap

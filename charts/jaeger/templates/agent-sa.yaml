@@ -1,4 +1,4 @@
-{{- if and .Values.agent.enabled (not .Values.allInOne.enabled) .Values.agent.serviceAccount.create -}}
+{{- if and .Values.agent.enabled .Values.agent.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

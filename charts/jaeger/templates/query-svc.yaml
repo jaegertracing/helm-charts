@@ -1,4 +1,4 @@
-{{- if and .Values.query.enabled (not .Values.allInOne.enabled)  -}}
+{{- if .Values.query.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -23,10 +23,10 @@ spec:
     port: 16685
     protocol: TCP
     targetPort: grpc
-  - name: {{ .Values.query.service.admin.name }}
+  - name: {{ .Values.query.service.healthCheck.name }}
     port: 13133
     protocol: TCP
-    targetPort: {{ .Values.query.service.admin.targetPort }}
+    targetPort: {{ .Values.query.service.healthCheck.targetPort }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query
