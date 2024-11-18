@@ -1,4 +1,4 @@
-{{- if .Values.agent.enabled -}}
+{{- if and .Values.agent.enabled (not .Values.allInOne.enabled)  -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

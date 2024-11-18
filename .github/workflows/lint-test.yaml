@@ -49,14 +49,7 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
-          ct install --config ct.yaml \
-              --helm-extra-set-args "  \
-              --set provisionDataStore.cassandra=false \
-              --set storage.type=memory \
-              --set allInOne.enabled=true \
-              --set agent.enabled=false \
-              --set collector.enabled=false \
-              --set query.enabled=false "
+          ct install --config ct.yaml 
   test-with-elasticsearch:
       runs-on: ubuntu-latest
       steps:
@@ -70,7 +63,6 @@ jobs:
           run: |
             ct install --config ct.yaml \
                 --helm-extra-set-args " \
-                --set provisionDataStore.cassandra=false \
                 --set provisionDataStore.elasticsearch=true \
                 --set storage.type=elasticsearch \
                 --set elasticsearch.master.masterOnly=false \

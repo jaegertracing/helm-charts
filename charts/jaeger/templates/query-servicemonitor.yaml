@@ -1,4 +1,4 @@
-{{- if and (.Values.query.enabled) (.Values.query.serviceMonitor.enabled)}}
+{{- if and (.Values.query.enabled) (not .Values.allInOne.enabled) (.Values.query.serviceMonitor.enabled)}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

@@ -1,4 +1,4 @@
-{{- if and .Values.collector.enabled .Values.collector.autoscaling.enabled }}
+{{- if and .Values.collector.enabled (not .Values.allInOne.enabled) .Values.collector.autoscaling.enabled }}
 apiVersion: {{ include "common.capabilities.hpa.apiVersion" ( dict "context" $ ) }}
 kind: HorizontalPodAutoscaler
 metadata:

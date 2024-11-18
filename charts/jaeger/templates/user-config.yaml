@@ -1,3 +1,4 @@
+# this is a user-provided config file that will be mounted into the all-in-one deployments
 {{ if .Values.userconfig }}
 apiVersion: v1
 kind: ConfigMap

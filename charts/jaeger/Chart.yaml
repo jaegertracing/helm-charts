@@ -18,8 +18,6 @@ icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
 sources:
   - https://hub.docker.com/u/jaegertracing/
 maintainers:
-  - name: dvonthenen
-    email: david.vonthenen@dell.com
   - name: mehta-ankit
     email: ankit.mehta@appian.com
   - name: mikelorant
