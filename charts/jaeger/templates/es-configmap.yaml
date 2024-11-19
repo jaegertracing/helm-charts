@@ -51,9 +51,9 @@ data:
       otlp:
         protocols:
           grpc:
-            endpoint:{{ .Values.config.receivers.otlp.protocols.endpoints.grpc | indent 1 }}
+            endpoint:{{ .Values.config.receivers.otlp.protocols.endpoint.grpc | indent 1 }}
           http: 
-            endpoint:{{ .Values.config.receivers.otlp.protocols.endpoints.http | indent 1 }}
+            endpoint:{{ .Values.config.receivers.otlp.protocols.endpoint.http | indent 1 }}
 
     processors:
       batch:
