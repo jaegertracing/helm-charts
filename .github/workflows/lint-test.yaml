@@ -49,12 +49,29 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
-          ct install --config ct.yaml \
-            --helm-extra-set-args "
-              --set provisionDataStore.cassandra=false \
-              --set storage.type=memory \
-              --set allInOne.enabled=true \
-              --set agent.enabled=false \
-              --set collector.enabled=false \
-              --set query.enabled=false "
+          ct install --config ct.yaml 
+  test-with-elasticsearch:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+
+        - uses: ./.github/actions/prepare-k8s
+
+        - name: Run chart-testing (install)
+          run: |
+            ct install --config ct.yaml \
+                --helm-extra-set-args " \
+                --set provisionDataStore.elasticsearch=true \
+                --set allInOne.enabled=false \
+                --set storage.type=elasticsearch \
+                --set elasticsearch.master.masterOnly=false \
+                --set elasticsearch.master.replicaCount=1 \
+                --set elasticsearch.data.replicaCount=0 \
+                --set elasticsearch.coordinating.replicaCount=0 \
+                --set elasticsearch.ingest.replicaCount=0
+                --set agent.enabled=true \
+                --set collector.enabled=true \
+                --set query.enabled=true"
 

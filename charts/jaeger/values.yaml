@@ -33,9 +33,19 @@ config:
     jaeger_storage:
       backends:
         primary_store:
+          elasticsearch:
+            index_prefix: jaeger
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
           memory:
             max_traces: 100000
         archive_store:
+          elasticsearch:
+            index_prefix: jaeger-archive
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
           memory:
             max_traces: 100000
 
@@ -43,7 +53,9 @@ config:
     otlp:
       protocols:
         grpc:
+          endpoint: 0.0.0.0:4317
         http:
+          endpoint: 0.0.0.0:4318
     jaeger:
       protocols:
         grpc:
@@ -61,7 +73,7 @@ global:
   imageRegistry:
 
 provisionDataStore:
-  cassandra: true
+  cassandra: false
   elasticsearch: false
   kafka: false
 
@@ -75,7 +87,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 allInOne:
-  enabled: false
+  enabled: true
   replicas: 1
   image:
     registry: ""
@@ -153,7 +165,7 @@ allInOne:
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
-  type: cassandra
+  type: memory
   cassandra:
     host: cassandra
     port: 9042
@@ -430,7 +442,7 @@ ingester:
 agent:
   podSecurityContext: {}
   securityContext: {}
-  enabled: true
+  enabled: false
   annotations: {}
   image:
     registry: ""
@@ -512,11 +524,11 @@ agent:
 collector:
   podSecurityContext: {}
   securityContext: {}
-  enabled: true
+  enabled: false
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-collector
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -566,9 +578,9 @@ collector:
         # name: otlp-http
         # port: 4318
         # nodePort:
-    admin:
-      name: admin
-      targetPort: admin
+    healthCheck:
+      name: healthcheck
+      targetPort: healthcheck
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -681,7 +693,7 @@ collector:
     #   customRules: []
 
 query:
-  enabled: true
+  enabled: false
   basePath: /
   initContainers: []
   oAuthSidecar:
@@ -732,7 +744,7 @@ query:
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-query
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -752,9 +764,9 @@ query:
     # targetPort: 8080
     # Specify a specific node port when type is NodePort
     # nodePort: 32500
-    admin:
-      name: admin
-      targetPort: admin
+    healthCheck:
+      name: healthcheck
+      targetPort: healthcheck
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName

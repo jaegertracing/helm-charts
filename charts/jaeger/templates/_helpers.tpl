@@ -608,7 +608,8 @@ Create pull secrets for ingester image
 Create image name for agent image
 */}}
 {{- define "agent.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.agent.image "context" $ ) -}}
+{{- $image := merge .Values.agent.image (dict "tag" .Chart.Annotations.Jaegerv1Version) -}}
+{{- include "renderImage" ( dict "imageRoot" $image "context" $ ) -}}
 {{- end -}}
 
 {{/*
