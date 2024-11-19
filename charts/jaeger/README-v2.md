@@ -16,12 +16,6 @@ Jaeger’s all-in-one mode combines the Jaeger Agent, Collector, and Query into 
 
 ```bash
 helm install <chart_name> charts/jaeger \
-    --set provisionDataStore.cassandra=false \
-    --set storage.type=memory \
-    --set allInOne.enabled=true \
-    --set agent.enabled=false \
-    --set collector.enabled=false \
-    --set query.enabled=false \
     --set-file userconfig=path/to/configfile.yaml # Optional: user-specific config
 ```
 
@@ -46,14 +40,17 @@ This mode configures Jaeger to store trace data in an Elasticsearch backend, sui
 
    ```bash
    helm install <chart_name> charts/jaeger \
-       --set provisionDataStore.cassandra=false \
        --set provisionDataStore.elasticsearch=true \
+       --set allInOne.enabled=false \
        --set storage.type=elasticsearch \
        --set elasticsearch.master.masterOnly=false \
        --set elasticsearch.master.replicaCount=1 \
        --set elasticsearch.data.replicaCount=0 \
        --set elasticsearch.coordinating.replicaCount=0 \
-       --set elasticsearch.ingest.replicaCount=0 \
+       --set elasticsearch.ingest.replicaCount=0
+       --set agent.enabled=true \
+       --set collector.enabled=true \
+       --set query.enabled=true
        --set-file userconfig=path/to/configfile.yaml # Optional: user-specific config
    ```
 
@@ -62,9 +59,12 @@ This mode configures Jaeger to store trace data in an Elasticsearch backend, sui
 
    ```bash
    helm install <chart_name> charts/jaeger \
-       --set provisionDataStore.cassandra=false \
        --set provisionDataStore.elasticsearch=true \
+       --set allInOne.enabled=false \
        --set storage.type=elasticsearch \
+       --set agent.enabled=true \
+       --set collector.enabled=true \
+       --set query.enabled=true
        --set-file userconfig=path/to/configfile.yaml # Optional: user-specific config
    ```
 
