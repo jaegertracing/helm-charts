@@ -101,7 +101,7 @@ spec:
         - name: grpc
           containerPort: 16685
           protocol: TCP
-        - name: admin
+        - name: healthcheck
           containerPort: 13133
           protocol: TCP
         resources:
@@ -148,12 +148,12 @@ spec:
         livenessProbe:
           httpGet:
             path: /status
-            port: admin
+            port: healthcheck
             scheme: HTTP
         readinessProbe:
           httpGet:
             path: /status
-            port: admin
+            port: healthcheck
             scheme: HTTP
 {{- if .Values.query.oAuthSidecar.enabled }}
       - name: {{ template "jaeger.agent.name" . }}-oauth2-sidecar

@@ -127,7 +127,7 @@ spec:
           name: http
           protocol: TCP
         - containerPort: 13133
-          name: admin
+          name: healthcheck
           protocol: TCP
         {{- if .Values.collector.service.zipkin }}
         - containerPort: {{ .Values.collector.service.zipkin.port }}
@@ -145,12 +145,12 @@ spec:
         readinessProbe:
           httpGet:
             path: /status
-            port: admin
+            port: healthcheck
             scheme: HTTP
         livenessProbe:
           httpGet:
             path: /status
-            port: admin
+            port: healthcheck
             scheme: HTTP
         resources:
           {{- toYaml .Values.collector.resources | nindent 10 }}
