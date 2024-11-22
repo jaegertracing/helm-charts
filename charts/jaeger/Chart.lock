@@ -1,7 +1,7 @@
 dependencies:
 - name: cassandra
-  repository: https://charts.helm.sh/incubator
-  version: 0.15.3
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.0.4
 - name: elasticsearch
   repository: https://charts.bitnami.com/bitnami
   version: 20.0.4
@@ -10,6 +10,6 @@ dependencies:
   version: 26.6.2
 - name: common
   repository: https://charts.bitnami.com/bitnami
-  version: 2.19.1
-digest: sha256:16dad4387f2b392d5034731f997518ff05b77909220ce45ee6dd69664942f2df
-generated: "2024-04-11T08:42:48.824851-04:00"
+  version: 2.27.0
+digest: sha256:4c588cadf15870e63ec57671a61522514073041294860b0d696a4f32c97d622e
+generated: "2024-11-21T23:42:24.535194222+05:30"

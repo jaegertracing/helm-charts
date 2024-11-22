@@ -187,15 +187,25 @@ storage:
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
+  replicaCount: 1
+
+  resources:
+    type: "small"
+
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
-  config:
-    cluster_name: jaeger
-    seed_size: 1
-    dc_name: dc1
-    rack_name: rack1
-    endpoint_snitch: GossipingPropertyFileSnitch
+
+  cluster:
+    name: jaeger
+    datacentre: dc1
+    rack: rack1
+    endpointSnitch: GossipingPropertyFileSnitch
+    numTokens: 16
+    seedCount: 1
+  # jvm:
+  #   maxHeapSize: 512M
+  #   heapNewSize: 128M
 # End: Override values on the Cassandra subchart to customize for Jaeger
 
 # Begin: Override values on the Kafka subchart to customize for Jaeger
