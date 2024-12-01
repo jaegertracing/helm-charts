@@ -718,6 +718,18 @@ Create image name for hotrod image
 {{- end -}}
 
 {{/*
+Define curl image declaration
+*/}}
+{{- define "curl.image" -}}
+{{- $image := "curlimages/curl" -}}
+{{- if .Values.global.imageRegistry -}}
+{{ .Values.global.imageRegistry }}/{{ $image }}
+{{- else -}}
+{{ $image }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create pull secrets for hotrod image
 */}}
 {{- define "hotrod.imagePullSecrets" -}}
