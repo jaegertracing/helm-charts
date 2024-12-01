@@ -35,7 +35,7 @@ spec:
        {{- if .Values.provisionDataStore.elasticsearch }}
       initContainers:
         - name: elasticsearch-checker
-          image: curlimages/curl
+          image: {{ include "curl.image" . }}
           command: 
           - sh
           - "-c"

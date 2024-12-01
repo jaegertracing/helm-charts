@@ -51,7 +51,7 @@ spec:
         {{- end }}
         {{- if .Values.provisionDataStore.elasticsearch }}
         - name: elasticsearch-checker
-          image: curlimages/curl
+          image: {{ include "curl.image" . }}
           command: 
           - sh
           - "-c"
