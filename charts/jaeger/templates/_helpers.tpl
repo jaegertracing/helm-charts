@@ -268,7 +268,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "elasticsearch.client.url" -}}
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
-{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
+{{- $host := .Values.storage.elasticsearch.host }}
+{{- if .Values.provisionDataStore.elasticsearch }}
+{{- $host = printf "%s-elasticsearch" .Release.Name }}
+{{- end }}
+{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- end -}}
 
 {{- define "jaeger.hotrod.tracing.host" -}}
@@ -711,6 +715,18 @@ Create image name for hotrod image
 */}}
 {{- define "hotrod.image" -}}
 {{- include "renderImage" ( dict "imageRoot" .Values.hotrod.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Define curl image declaration
+*/}}
+{{- define "curl.image" -}}
+{{- $image := "curlimages/curl" -}}
+{{- if .Values.global.imageRegistry -}}
+{{ .Values.global.imageRegistry }}/{{ $image }}
+{{- else -}}
+{{ $image }}
+{{- end -}}
 {{- end -}}
 
 {{/*

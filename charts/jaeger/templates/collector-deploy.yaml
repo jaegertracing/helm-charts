@@ -32,6 +32,20 @@ spec:
         {{- toYaml .Values.collector.podLabels | nindent 8 }}
 {{- end }}
     spec:
+       {{- if .Values.provisionDataStore.elasticsearch }}
+      initContainers:
+        - name: elasticsearch-checker
+          image: {{ include "curl.image" . }}
+          command: 
+          - sh
+          - "-c"
+          - |
+            url="{{ include "elasticsearch.client.url" . }}"
+            until [ "$(curl -s -o /dev/null -w '%{http_code}' "$url/_cluster/health")" = "200" ]; do
+              echo "Waiting for Elasticsearch at $url"
+              sleep 5
+            done
+      {{- end}}
       {{- with .Values.collector.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
