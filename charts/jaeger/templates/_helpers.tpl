@@ -421,7 +421,7 @@ Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment var
 {{ include "cassandra.env" . }}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{ include "elasticsearch.env" . }}
-{{- else if eq .Values.storage.type "grpc-plugin" -}}
+{{- else if or (eq .Values.storage.type "grpc-plugin") (eq .Values.storage.type "grpc") -}}
 {{ include "grpcPlugin.env" . }}
 {{- else if eq .Values.storage.type "badger" -}}
 {{ include "badger.env" . }}
