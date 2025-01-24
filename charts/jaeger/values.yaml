@@ -257,6 +257,7 @@ schema:
   podLabels: {}
   securityContext: {}
   podSecurityContext: {}
+  nodeSelector: {}
   ## Deadline for cassandra schema creation job
   activeDeadlineSeconds: 300
   extraEnv:
