@@ -721,7 +721,7 @@ Create image name for hotrod image
 Define curl image declaration
 */}}
 {{- define "curl.image" -}}
-{{- $image := "curlimages/curl" -}}
+{{- $image := .Values.images.curl -}}
 {{- if .Values.global.imageRegistry -}}
 {{ .Values.global.imageRegistry }}/{{ $image }}
 {{- else -}}
