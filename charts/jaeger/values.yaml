@@ -19,6 +19,9 @@ tag: ""
 nameOverride: ""
 fullnameOverride: ""
 
+images:
+  curl: "curlimages/curl:8.11.1"
+
 allInOne:
   enabled: false
   replicas: 1
