@@ -312,6 +312,10 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- with .Values.query.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
     {{- with .Values.query.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
