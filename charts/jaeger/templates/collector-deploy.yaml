@@ -116,6 +116,7 @@ spec:
       {{- with .Values.collector.envFrom }}
         envFrom: {{- toYaml . | nindent 10 }}
       {{- end }}
+    {{- end }
         ports:
         - containerPort: {{ .Values.collector.service.grpc.port }}
           name: grpc
@@ -221,6 +222,10 @@ spec:
     {{- with .Values.collector.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.collector.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.collector.tolerations }}
       tolerations:

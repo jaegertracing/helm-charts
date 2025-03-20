@@ -354,6 +354,7 @@ ingester:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadContraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -558,6 +559,7 @@ collector:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadContraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -741,6 +743,7 @@ query:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadContraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
