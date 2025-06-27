@@ -6,6 +6,9 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: query
+{{- if .Values.query.service.labels }}
+    {{- toYaml .Values.query.service.labels | nindent 4 }}
+{{- end }}
 {{- if .Values.query.service.annotations }}
   annotations:
     {{- toYaml .Values.query.service.annotations | nindent 4 }}
