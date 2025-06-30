@@ -558,7 +558,8 @@ If not tag is provided, it defaults to .Chart.AppVersion.
 ( dict "imageRoot" .Values.path.to.image "context" $ )
 */}}
 {{- define "renderImage" -}}
-{{- $image := merge .imageRoot (dict "tag" .context.Chart.AppVersion) -}}
+{{- $tag := default .context.Chart.AppVersion .Values.tag }}
+{{- $image := merge .imageRoot (dict "tag" $tag) }}
 {{- include "common.images.image" (dict "imageRoot" $image "global" .context.Values.global) -}}
 {{- end -}}
 
