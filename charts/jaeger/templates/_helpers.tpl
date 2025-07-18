@@ -332,6 +332,8 @@ Cassandra related environment variables
     secretKeyRef:
       name: {{ if .Values.storage.cassandra.existingSecret }}{{ .Values.storage.cassandra.existingSecret }}{{- else }}{{ include "jaeger.fullname" . }}-cassandra{{- end }}
       key: password
+- name: CASSANDRA_BASIC_ALLOWED_AUTHENTICATORS
+  value: org.apache.cassandra.auth.PasswordAuthenticator
 {{- range $key, $value := .Values.storage.cassandra.env }}
 - name: {{ $key | quote }}
   value: {{ $value | quote }}
