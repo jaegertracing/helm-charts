@@ -89,7 +89,7 @@ allInOne:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  topologySpreadContraints: []
+  topologySpreadConstraints: []
   podSecurityContext:
     runAsUser: 10001
     runAsGroup: 10001
@@ -354,7 +354,7 @@ ingester:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  topologySpreadContraints: []
+  topologySpreadConstraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -559,7 +559,7 @@ collector:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  topologySpreadContraints: []
+  topologySpreadConstraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -743,7 +743,7 @@ query:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  topologySpreadContraints: []
+  topologySpreadConstraints: []
   podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
