@@ -47,11 +47,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.hotrod.livenessProbe.path | default "/" | quote }}
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.hotrod.readinessProbe.path | default "/" | quote }}
               port: http
           resources:
             {{- toYaml .Values.hotrod.resources | nindent 12 }}
