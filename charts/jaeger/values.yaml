@@ -1126,6 +1126,6 @@ hotrod:
   livenessProbe:
     path: /
   readinessProbe:
-    path: / 
+    path: /
 # Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
 extraObjects: []
