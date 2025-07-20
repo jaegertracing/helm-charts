@@ -1123,6 +1123,9 @@ hotrod:
   tracing:
     host: null
     port: 6831
-
+  livenessProbe:
+    path: /
+  readinessProbe:
+    path: /
 # Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
 extraObjects: []
