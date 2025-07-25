@@ -30,8 +30,8 @@ maintainers:
     email: jkowall@kowall.net
 dependencies:
   - name: cassandra
-    version: 0.15.3
-    repository: https://charts.helm.sh/incubator
+    version: 12.0.4
+    repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.cassandra
   - name: elasticsearch
     version: 20.0.4
