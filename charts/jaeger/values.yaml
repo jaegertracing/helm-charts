@@ -334,6 +334,7 @@ ingester:
     # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
+    labels: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
@@ -397,6 +398,7 @@ agent:
       #   maxUnavailable: 1
   service:
     annotations: {}
+    labels: {}
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
@@ -483,6 +485,7 @@ collector:
     # targetMemoryUtilizationPercentage: 80
   service:
     annotations: {}
+    labels: {}
     # The IP to be used by the load balancer (if supported)
     loadBalancerIP: ""
     # List of IP ranges that are allowed to access the load balancer (if supported)
@@ -692,6 +695,7 @@ query:
   replicaCount: 1
   service:
     annotations: {}
+    labels: {}
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
@@ -1013,6 +1017,7 @@ hotrod:
     pullSecrets: []
   service:
     annotations: {}
+    labels: {}
     name: hotrod
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
