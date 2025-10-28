@@ -5,10 +5,9 @@
 
 This functionality is in beta and is subject to change. The code is provided as-is with no warranties. Beta features are not subject to the support SLA of official GA features.
 
-# 🛑 If you are looking for Helm Chart for Jaeger-v2
+# ℹ️ Jaeger Helm Chart v2 is now the default on `main`
 
-it is located in the [v2 branch](https://github.com/jaegertracing/helm-charts/blob/v2/charts/jaeger/README-v2.md).
-
+Looking for the legacy (v1) chart documentation? It has been preserved on the [`v1` branch](https://github.com/jaegertracing/helm-charts/tree/v1). All new development targets v2.
 
 ## Usage
 
