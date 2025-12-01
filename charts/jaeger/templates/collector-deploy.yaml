@@ -35,7 +35,7 @@ spec:
        {{- if .Values.provisionDataStore.elasticsearch }}
       initContainers:
         - name: elasticsearch-checker
-          image: curlimages/curl
+          image: {{ include "curl.image" . }}
           command: 
           - sh
           - "-c"
@@ -231,6 +231,10 @@ spec:
     {{- with .Values.collector.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.collector.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.collector.tolerations }}
       tolerations:

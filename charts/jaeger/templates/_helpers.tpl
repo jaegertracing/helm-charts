@@ -421,7 +421,7 @@ Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment var
 {{ include "cassandra.env" . }}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{ include "elasticsearch.env" . }}
-{{- else if eq .Values.storage.type "grpc-plugin" -}}
+{{- else if or (eq .Values.storage.type "grpc-plugin") (eq .Values.storage.type "grpc") -}}
 {{ include "grpcPlugin.env" . }}
 {{- else if eq .Values.storage.type "badger" -}}
 {{ include "badger.env" . }}
@@ -716,6 +716,18 @@ Create image name for hotrod image
 */}}
 {{- define "hotrod.image" -}}
 {{- include "renderImage" ( dict "imageRoot" .Values.hotrod.image "context" $ ) -}}
+{{- end -}}
+
+{{/*
+Define curl image declaration
+*/}}
+{{- define "curl.image" -}}
+{{- $image := "curlimages/curl" -}}
+{{- if .Values.global.imageRegistry -}}
+{{ .Values.global.imageRegistry }}/{{ $image }}
+{{- else -}}
+{{ $image }}
+{{- end -}}
 {{- end -}}
 
 {{/*
