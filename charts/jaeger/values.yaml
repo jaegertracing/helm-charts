@@ -2,11 +2,78 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
+# Will use for user provided config
+userconfig:
+
+config:
+  service:
+    extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+    pipelines:
+      traces:
+        receivers: [otlp, jaeger, zipkin]
+        processors: [batch]
+        exporters: [jaeger_storage_exporter]
+
+  extensions:
+    healthcheckv2:
+      use_v2: true
+      http:
+        endpoint: 0.0.0.0:13133
+
+    # pprof:
+    #   endpoint: 0.0.0.0:1777
+    # zpages:
+    #   endpoint: 0.0.0.0:55679
+
+    jaeger_query:
+      storage:
+        traces: primary_store
+        traces_archive: archive_store
+
+    jaeger_storage:
+      backends:
+        primary_store:
+          elasticsearch:
+            index_prefix: jaeger
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
+          memory:
+            max_traces: 100000
+        archive_store:
+          elasticsearch:
+            index_prefix: jaeger-archive
+            server_urls: ["http://elasticsearch-master:9200"]
+            username: elastic
+            password: changeme
+          memory:
+            max_traces: 100000
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+    jaeger:
+      protocols:
+        grpc:
+    zipkin:
+
+  processors:
+    batch:
+
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store
+# The following settings apply to Jaeger v1 and partially to Jaeger v2
+
 global:
   imageRegistry:
 
 provisionDataStore:
-  cassandra: true
+  cassandra: false
   elasticsearch: false
   kafka: false
 
@@ -20,11 +87,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 allInOne:
-  enabled: false
+  enabled: true
   replicas: 1
   image:
     registry: ""
-    repository: jaegertracing/all-in-one
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -98,7 +165,7 @@ allInOne:
 
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
-  type: cassandra
+  type: memory
   cassandra:
     host: cassandra
     port: 9042
@@ -271,9 +338,38 @@ schema:
 
 # For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
-elasticsearch: {}
+# NOTE: The original Bitnami images under docker.io/bitnami/elasticsearch and docker.io/bitnami/os-shell used by chart version 20.0.4 are no longer available. The settings below override the subchart to use images that have been verified to work in testing.
+elasticsearch:
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/elasticsearch
+    tag: 8.13.2-debian-12-r0
 
-# Example that uses no auth:
+  master:
+    masterOnly: false
+
+  data:
+    replicaCount: 0
+
+  coordinating:
+    replicaCount: 0
+
+  ingest:
+    replicaCount: 0
+
+  sysctlImage:
+    registry: docker.io
+    repository: bitnami/os-shell
+    tag: latest
+
+  volumePermissions:
+    enabled: true
+    image:
+      registry: docker.io
+      repository: bitnami/os-shell
+      tag: latest
+
+# Original Bitnami example kept for reference:
 # elasticsearch:
 #   fullnameOverride: "elasticsearch"
 #   image:
@@ -377,7 +473,7 @@ ingester:
 agent:
   podSecurityContext: {}
   securityContext: {}
-  enabled: true
+  enabled: false
   annotations: {}
   image:
     registry: ""
@@ -459,11 +555,11 @@ agent:
 collector:
   podSecurityContext: {}
   securityContext: {}
-  enabled: true
+  enabled: false
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-collector
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -513,9 +609,9 @@ collector:
         # name: otlp-http
         # port: 4318
         # nodePort:
-    admin:
-      name: admin
-      targetPort: admin
+    healthCheck:
+      name: healthcheck
+      targetPort: healthcheck
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -629,7 +725,7 @@ collector:
     #   customRules: []
 
 query:
-  enabled: true
+  enabled: false
   basePath: /
   initContainers: []
   oAuthSidecar:
@@ -680,7 +776,7 @@ query:
   annotations: {}
   image:
     registry: ""
-    repository: jaegertracing/jaeger-query
+    repository: jaegertracing/jaeger
     tag: ""
     digest: ""
     pullPolicy: IfNotPresent
@@ -700,9 +796,9 @@ query:
     # targetPort: 8080
     # Specify a specific node port when type is NodePort
     # nodePort: 32500
-    admin:
-      name: admin
-      targetPort: admin
+    healthCheck:
+      name: healthcheck
+      targetPort: healthcheck
   ingress:
     enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
@@ -1060,6 +1156,9 @@ hotrod:
   tracing:
     host: null
     port: 6831
-
+  livenessProbe:
+    path: /
+  readinessProbe:
+    path: /
 # Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
 extraObjects: []

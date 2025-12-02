@@ -23,10 +23,10 @@ spec:
     port: 16685
     protocol: TCP
     targetPort: grpc
-  - name: {{ .Values.query.service.admin.name }}
-    port: 16687
+  - name: {{ .Values.query.service.healthCheck.name }}
+    port: 13133
     protocol: TCP
-    targetPort: {{ .Values.query.service.admin.targetPort }}
+    targetPort: {{ .Values.query.service.healthCheck.targetPort }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: query
