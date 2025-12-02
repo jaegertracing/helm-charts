@@ -6,7 +6,7 @@
 
 This chart deploys Jaeger v2, which uses a unified binary built on the OpenTelemetry Collector framework. The chart supports multiple deployment modes and storage backends including in-memory, Elasticsearch, and Cassandra.
 
-By default, the chart deploys Jaeger in **all-in-one mode** with **in-memory storage**, which is suitable for testing and development. For production deployments, it is recommended to use Elasticsearch or Cassandra as the storage backend.
+By default, the chart deploys Jaeger in **all-in-one mode** with **in-memory storage**, which is suitable for testing and development. For production deployments, it is recommended to use Elasticsearch as the storage backend.
 
 ## Installing the Chart
 
@@ -119,7 +119,7 @@ chart, i.e. `elasticsearch`, `cassandra` and/or `kafka`.
 
 Jaeger v2 supports multiple storage backends. For production deployments, the Jaeger team [recommends Elasticsearch backend over Cassandra](https://www.jaegertracing.io/docs/latest/faq/#what-is-the-recommended-storage-backend).
 
-The storage backend is configured via the `jaeger_storage` extension in the `config` section:
+The storage backend is configured via the `jaeger_storage` extension in the `config` section.
 
 ### Storage Configuration Options
 
@@ -166,7 +166,7 @@ allInOne:
       memory: 128Mi
 ```
 
-### Elasticsearch configuration
+### Elasticsearch Configuration
 
 #### Installing the Chart with Elasticsearch (Provisioned)
 
@@ -262,7 +262,7 @@ kubectl create secret generic es-tls-secret --from-file=ca-cert.pem=es.pem
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
 
-### Cassandra configuration
+### Cassandra Configuration
 
 > **Note:** Cassandra support is available for backward compatibility. For new deployments, Elasticsearch is recommended.
 
@@ -429,6 +429,7 @@ storage:
 ```
 
 ## oAuth2 Sidecar
+
 If extra protection of the Jaeger UI is needed, then the oAuth2 sidecar can be enabled in the Jaeger Query. The oAuth2
 sidecar acts as a security proxy in front of the Jaeger Query service and enforces user authentication before reaching
 the Jaeger UI. This method can work with any valid provider including Keycloak, Azure, Google, GitHub, and more.
@@ -528,7 +529,7 @@ hotrod:
       value: http://my-otel-collector-opentelemetry-collector:4318
 ```
 
-## Updating to Kafka to Kraft Mode
+## Updating Kafka to Kraft Mode
 
 In the Kafka Helm Chart version 24.0.0 major refactors were done to support Kraft mode. More information can be found [here](https://github.com/bitnami/charts/tree/main/bitnami/kafka#to-2400).
 
