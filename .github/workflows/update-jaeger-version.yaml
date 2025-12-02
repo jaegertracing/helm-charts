@@ -40,7 +40,7 @@ jobs:
         id: commit
         run: |
           CHART_PATH="charts/jaeger/Chart.yaml"
-          
+
           # Check if any changes exist before committing
           if git diff --exit-code "$CHART_PATH"; then
             echo "No changes to commit. Exiting."
@@ -48,11 +48,11 @@ jobs:
           else
             git add "$CHART_PATH"
             git commit -m "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
-            
+
             # Create and switch to a new topic branch for the PR
             NEW_BRANCH="bot/update-jaeger-${{ steps.check_version.outputs.latest_tag }}"
             git checkout -b "$NEW_BRANCH"
-            
+
             echo "pr_needed=true" >> $GITHUB_OUTPUT
             echo "branch_name=${NEW_BRANCH}" >> $GITHUB_OUTPUT
           fi
@@ -60,12 +60,12 @@ jobs:
       - name: 🚀 Push new branch
         if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
         run: |
-          git push https://${{ secrets.BOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
+          git push https://${{ secrets.JAEGERTRACINGBOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
 
       - name: ✨ Create Pull Request
         if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          GH_TOKEN: ${{ secrets.JAEGERTRACINGBOT_PAT }}
         run: |
           gh pr create \
             --title "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}" \
