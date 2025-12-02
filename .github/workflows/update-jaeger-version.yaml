@@ -1,0 +1,176 @@
+name: Update Jaeger Version
+
+on:
+  schedule:
+    # Runs once a week on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode - skip PR creation and only print status'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  update-jaeger-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔍 Check for new Jaeger version
+        id: check_version
+        run: |
+          set -eo pipefail
+
+          DOCKER_IMAGE="jaegertracing/jaeger"
+          CHART_PATH="charts/jaeger/Chart.yaml"
+
+          echo "1. Checking latest Docker tag for ${DOCKER_IMAGE}..."
+
+          # --- 1. Get the latest semantic version tag by checking the digest of the 'latest' tag ---
+          echo "   -> Fetching image digest for 'latest' tag..."
+          LATEST_DIGEST=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags/latest" | \
+            jq -r '.images[0].digest')
+
+          if [[ -z "$LATEST_DIGEST" || "$LATEST_DIGEST" == "null" ]]; then
+            echo "Error: Could not retrieve a valid digest for the 'latest' tag. Exiting."
+            exit 1
+          fi
+          echo "   -> Latest digest found: ${LATEST_DIGEST}"
+
+          # Fetch a list of tags and filter to find the one that:
+          # 1. Has the exact same digest as 'latest'.
+          # 2. Matches the semantic version pattern (e.g., 2.39.0).
+          echo "   -> Searching through tags for a semantic version matching this digest..."
+          LATEST_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags?page_size=100" | \
+            jq -r --arg digest "$LATEST_DIGEST" '
+              .results[] | 
+              select(.images[0].digest == $digest) | 
+              .name' | \
+            grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | \
+            head -n 1)
+
+          if [[ -z "$LATEST_TAG" ]]; then
+            echo "Error: Could not find a matching semantic version tag (${LATEST_DIGEST}) in the first 100 results. Exiting."
+            exit 1
+          fi
+
+          echo "   -> Latest available version is: ${LATEST_TAG}"
+
+          # --- 2. Get the current appVersion and version from Chart.yaml using yq ---
+          CURRENT_APP_VERSION=$(yq '.appVersion' "$CHART_PATH")
+          CURRENT_CHART_VERSION=$(yq '.version' "$CHART_PATH")
+
+          echo "   -> Current appVersion in ${CHART_PATH} is: ${CURRENT_APP_VERSION}"
+          echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
+
+          # --- 3. Compare and determine if update is needed ---
+          if [[ "$LATEST_TAG" == "$CURRENT_APP_VERSION" ]]; then
+            echo "Versions match. No update needed."
+            echo "update_needed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Update needed: appVersion change from ${CURRENT_APP_VERSION} to ${LATEST_TAG}."
+          
+          # --- 4. Calculate new chart version (bump minor version) ---
+          # Parse the current chart version (e.g., 4.0.0 -> major=4, minor=0, patch=0)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_CHART_VERSION"
+          NEW_MINOR=$((MINOR + 1))
+          NEW_CHART_VERSION="${MAJOR}.${NEW_MINOR}.0"
+          
+          echo "   -> New chart version will be: ${NEW_CHART_VERSION}"
+
+          # Set outputs for subsequent steps
+          echo "update_needed=true" >> $GITHUB_OUTPUT
+          echo "latest_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
+          echo "current_app_version=${CURRENT_APP_VERSION}" >> $GITHUB_OUTPUT
+          echo "current_chart_version=${CURRENT_CHART_VERSION}" >> $GITHUB_OUTPUT
+          echo "new_chart_version=${NEW_CHART_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: 📋 Dry run summary
+        if: ${{ inputs.dry_run == true && steps.check_version.outputs.update_needed == 'true' }}
+        run: |
+          echo "=============================================="
+          echo "DRY RUN MODE - No changes will be made"
+          echo "=============================================="
+          echo "Update IS needed:"
+          echo "  - appVersion: ${{ steps.check_version.outputs.current_app_version }} -> ${{ steps.check_version.outputs.latest_tag }}"
+          echo "  - version: ${{ steps.check_version.outputs.current_chart_version }} -> ${{ steps.check_version.outputs.new_chart_version }}"
+          echo "=============================================="
+
+      - name: 📋 Dry run summary (no update)
+        if: ${{ inputs.dry_run == true && steps.check_version.outputs.update_needed != 'true' }}
+        run: |
+          echo "=============================================="
+          echo "DRY RUN MODE - No changes will be made"
+          echo "=============================================="
+          echo "No update needed - versions already match"
+          echo "=============================================="
+
+      - name: 🛠️ Update Chart.yaml
+        if: ${{ steps.check_version.outputs.update_needed == 'true' && inputs.dry_run != true }}
+        run: |
+          CHART_PATH="charts/jaeger/Chart.yaml"
+          
+          # Update appVersion
+          yq -i ".appVersion = \"${{ steps.check_version.outputs.latest_tag }}\"" "$CHART_PATH"
+          
+          # Update chart version (bump minor)
+          yq -i ".version = \"${{ steps.check_version.outputs.new_chart_version }}\"" "$CHART_PATH"
+          
+          echo "Updated ${CHART_PATH}:"
+          cat "$CHART_PATH"
+
+      - name: ⚙️ Configure Git
+        if: ${{ steps.check_version.outputs.update_needed == 'true' && inputs.dry_run != true }}
+        run: |
+          git config user.name "jaegertracingbot"
+          git config user.email "jaegertracingbot+jaeger-tracing@googlegroups.com"
+
+      - name: 📝 Commit changes
+        if: ${{ steps.check_version.outputs.update_needed == 'true' && inputs.dry_run != true }}
+        id: commit
+        run: |
+          CHART_PATH="charts/jaeger/Chart.yaml"
+          
+          # Check if any changes exist before committing
+          if git diff --exit-code "$CHART_PATH"; then
+            echo "No changes to commit. Exiting."
+            echo "pr_needed=false" >> $GITHUB_OUTPUT
+          else
+            git add "$CHART_PATH"
+            git commit -m "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
+            
+            # Create and switch to a new topic branch for the PR
+            NEW_BRANCH="bot/update-jaeger-${{ steps.check_version.outputs.latest_tag }}"
+            git checkout -b "$NEW_BRANCH"
+            
+            echo "pr_needed=true" >> $GITHUB_OUTPUT
+            echo "branch_name=${NEW_BRANCH}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🚀 Push new branch
+        if: ${{ steps.commit.outputs.pr_needed == 'true' && inputs.dry_run != true }}
+        run: |
+          git push https://${{ secrets.BOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
+
+      - name: ✨ Create Pull Request
+        if: ${{ steps.commit.outputs.pr_needed == 'true' && inputs.dry_run != true }}
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+        run: |
+          gh pr create \
+            --title "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}" \
+            --body "This PR was automatically generated to update the Jaeger Helm chart.
+
+          ## Changes
+          - **appVersion**: \`${{ steps.check_version.outputs.current_app_version }}\` → \`${{ steps.check_version.outputs.latest_tag }}\`
+          - **version**: \`${{ steps.check_version.outputs.current_chart_version }}\` → \`${{ steps.check_version.outputs.new_chart_version }}\`
+
+          ## Source
+          Docker Hub image: [jaegertracing/jaeger](https://hub.docker.com/r/jaegertracing/jaeger)" \
+            --base main \
+            --head ${{ steps.commit.outputs.branch_name }}
