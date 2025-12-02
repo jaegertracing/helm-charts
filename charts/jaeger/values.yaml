@@ -337,12 +337,7 @@ schema:
 
 # For configurable values of the elasticsearch if provisioned, please see:
 # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
-#
-# NOTE: The original Bitnami images under docker.io/bitnami/elasticsearch and
-# docker.io/bitnami/os-shell used by chart version 20.0.4 are no longer
-# available. The settings below override the subchart to use images that have
-# been verified to work in testing.
-
+# NOTE: The original Bitnami images under docker.io/bitnami/elasticsearch and docker.io/bitnami/os-shell used by chart version 20.0.4 are no longer available. The settings below override the subchart to use images that have been verified to work in testing.
 elasticsearch:
   image:
     registry: docker.io
