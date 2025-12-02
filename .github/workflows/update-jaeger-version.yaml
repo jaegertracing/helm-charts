@@ -19,6 +19,9 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
+      - name: 🔧 Install yq
+        uses: mikefarah/yq@v4
+
       - name: 🔍 Check for new Jaeger version
         id: check_version
         run: |
@@ -31,29 +34,36 @@ jobs:
 
           # --- 1. Get the latest semantic version tag by checking the digest of the 'latest' tag ---
           echo "   -> Fetching image digest for 'latest' tag..."
-          LATEST_DIGEST=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags/latest" | \
-            jq -r '.images[0].digest')
+          # Get all digests from the 'latest' tag (multi-platform images have multiple digests)
+          LATEST_DIGESTS=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags/latest" | \
+            jq -r '.images[].digest | select(. != null)')
 
-          if [[ -z "$LATEST_DIGEST" || "$LATEST_DIGEST" == "null" ]]; then
-            echo "Error: Could not retrieve a valid digest for the 'latest' tag. Exiting."
+          if [[ -z "$LATEST_DIGESTS" ]]; then
+            echo "Error: Could not retrieve valid digests for the 'latest' tag. Exiting."
             exit 1
           fi
-          echo "   -> Latest digest found: ${LATEST_DIGEST}"
+          echo "   -> Latest digests found:"
+          echo "$LATEST_DIGESTS" | head -3
 
           # Fetch a list of tags and filter to find the one that:
-          # 1. Has the exact same digest as 'latest'.
+          # 1. Has any digest matching the 'latest' tag digests.
           # 2. Matches the semantic version pattern (e.g., 2.39.0).
-          echo "   -> Searching through tags for a semantic version matching this digest..."
-          LATEST_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags?page_size=100" | \
-            jq -r --arg digest "$LATEST_DIGEST" '
+          echo "   -> Searching through tags for a semantic version matching these digests..."
+          TAGS_JSON=$(curl -s "https://registry.hub.docker.com/v2/repositories/${DOCKER_IMAGE}/tags?page_size=100")
+          
+          # Convert digests to a JSON array for jq comparison
+          DIGESTS_ARRAY=$(echo "$LATEST_DIGESTS" | jq -R -s 'split("\n") | map(select(length > 0))')
+          
+          LATEST_TAG=$(echo "$TAGS_JSON" | \
+            jq -r --argjson digests "$DIGESTS_ARRAY" '
               .results[] | 
-              select(.images[0].digest == $digest) | 
+              select(.images | map(.digest) | any(. as $d | $digests | index($d))) | 
               .name' | \
             grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | \
             head -n 1)
 
           if [[ -z "$LATEST_TAG" ]]; then
-            echo "Error: Could not find a matching semantic version tag (${LATEST_DIGEST}) in the first 100 results. Exiting."
+            echo "Error: Could not find a matching semantic version tag in the first 100 results. Exiting."
             exit 1
           fi
 
@@ -76,6 +86,12 @@ jobs:
           echo "Update needed: appVersion change from ${CURRENT_APP_VERSION} to ${LATEST_TAG}."
           
           # --- 4. Calculate new chart version (bump minor version) ---
+          # Validate that the current chart version follows semantic versioning (X.Y.Z)
+          if ! [[ "$CURRENT_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Current chart version '${CURRENT_CHART_VERSION}' does not match expected format X.Y.Z. Exiting."
+            exit 1
+          fi
+          
           # Parse the current chart version (e.g., 4.0.0 -> major=4, minor=0, patch=0)
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_CHART_VERSION"
           NEW_MINOR=$((MINOR + 1))
