@@ -1,0 +1,81 @@
+name: Update Jaeger Version
+
+on:
+  schedule:
+    # Runs once a week on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode - skip PR creation and only print status'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  update-jaeger-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # Use the dry_run input if it exists (workflow_dispatch).
+      # Otherwise, if the event is 'schedule' (or anything else), default to 'false'.
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔍 Check for new Jaeger version
+        id: check_version
+        run: bash ./.github/scripts/update-jaeger-version.sh
+
+      - name: ⚙️ Configure Git
+        if: ${{ steps.check_version.outputs.update_needed == 'true' && env.DRY_RUN != 'true' }}
+        run: |
+          git config user.name "jaegertracingbot"
+          git config user.email "jaegertracingbot+jaeger-tracing@googlegroups.com"
+
+      - name: 📝 Commit changes
+        if: ${{ steps.check_version.outputs.update_needed == 'true' && env.DRY_RUN != 'true' }}
+        id: commit
+        run: |
+          CHART_PATH="charts/jaeger/Chart.yaml"
+
+          # Check if any changes exist before committing
+          if git diff --exit-code "$CHART_PATH"; then
+            echo "No changes to commit. Exiting."
+            echo "pr_needed=false" >> $GITHUB_OUTPUT
+          else
+            git add "$CHART_PATH"
+            git commit -m "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
+
+            # Create and switch to a new topic branch for the PR
+            NEW_BRANCH="bot/update-jaeger-${{ steps.check_version.outputs.latest_tag }}"
+            git checkout -b "$NEW_BRANCH"
+
+            echo "pr_needed=true" >> $GITHUB_OUTPUT
+            echo "branch_name=${NEW_BRANCH}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🚀 Push new branch
+        if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
+        run: |
+          git push https://${{ secrets.JAEGERTRACINGBOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
+
+      - name: ✨ Create Pull Request
+        if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.JAEGERTRACINGBOT_PAT }}
+        run: |
+          gh pr create \
+            --title "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}" \
+            --body "This PR was automatically generated to update the Jaeger Helm chart.
+
+          ## Changes
+          - **appVersion**: \`${{ steps.check_version.outputs.current_app_version }}\` → \`${{ steps.check_version.outputs.latest_tag }}\`
+          - **version**: \`${{ steps.check_version.outputs.current_chart_version }}\` → \`${{ steps.check_version.outputs.new_chart_version }}\`
+
+          ## Source
+          Docker Hub image: [jaegertracing/jaeger](https://hub.docker.com/r/jaegertracing/jaeger)" \
+            --base main \
+            --head ${{ steps.commit.outputs.branch_name }}
