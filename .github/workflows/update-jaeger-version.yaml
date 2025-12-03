@@ -24,7 +24,11 @@ jobs:
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
-
+        with:
+          # Use the bot's PAT instead of the default GITHUB_TOKEN
+          token: ${{ secrets.JAEGERTRACINGBOT_PAT }}
+          ref: main
+          
       - name: 🔍 Check for new Jaeger version
         id: check_version
         run: bash ./.github/scripts/update-jaeger-version.sh
@@ -34,10 +38,6 @@ jobs:
         run: |
           git config user.name "jaegertracingbot"
           git config user.email "jaegertracingbot+jaeger-tracing@googlegroups.com"
-
-          # Overwrite the 'origin' remote URL to include the PAT and use the x-access-token placeholder.
-          # This ensures the authentication is persistent for the runner's session.
-          git remote set-url origin https://x-access-token:${{ secrets.JAEGERTRACINGBOT_PAT }}@github.com/${{ github.repository }}
     
       - name: 📝 Commit changes
         if: ${{ steps.check_version.outputs.update_needed == 'true' && env.DRY_RUN != 'true' }}
