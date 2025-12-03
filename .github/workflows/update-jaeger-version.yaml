@@ -51,7 +51,7 @@ jobs:
             echo "pr_needed=false" >> $GITHUB_OUTPUT
           else
             git add "$CHART_PATH"
-            git commit -m "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
+            git commit -sm "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
 
             # Create and switch to a new topic branch for the PR
             NEW_BRANCH="bot/update-jaeger-${{ steps.check_version.outputs.latest_tag }}"
