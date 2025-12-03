@@ -60,7 +60,7 @@ jobs:
       - name: 🚀 Push new branch
         if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
         run: |
-          git push https://${{ secrets.JAEGERTRACINGBOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
+          git push https://x-access-token:${{ secrets.JAEGERTRACINGBOT_PAT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch_name }}
 
       - name: ✨ Create Pull Request
         if: ${{ steps.commit.outputs.pr_needed == 'true' && env.DRY_RUN != 'true' }}
