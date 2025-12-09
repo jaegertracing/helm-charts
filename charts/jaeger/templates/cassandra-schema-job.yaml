@@ -1,4 +1,4 @@
-{{- if .Values.collector.enabled -}}
+
 {{- if eq .Values.storage.type "cassandra" -}}
 {{- if .Values.storage.cassandra.schemaJobEnabled -}}
 apiVersion: batch/v1
@@ -106,4 +106,4 @@ spec:
     {{- end }}
 {{- end -}}
 {{- end -}}
-{{- end -}}
+

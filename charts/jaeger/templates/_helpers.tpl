@@ -117,123 +117,9 @@ Create the name of the hotrod service account to use
 {{- end -}}
 {{- end -}}
 
-{{/*
-Create the name of the query service account to use
-*/}}
-{{- define "jaeger.query.serviceAccountName" -}}
-{{- if .Values.query.serviceAccount.create -}}
-  {{ default (include "jaeger.query.name" .) .Values.query.serviceAccount.name }}
-{{- else -}}
-  {{ default "default" .Values.query.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
 
-{{/*
-Create the name of the agent service account to use
-*/}}
-{{- define "jaeger.agent.serviceAccountName" -}}
-{{- if .Values.agent.serviceAccount.create -}}
-  {{ default (include "jaeger.agent.name" .) .Values.agent.serviceAccount.name }}
-{{- else -}}
-  {{ default "default" .Values.agent.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
 
-{{/*
-Create the name of the collector service account to use
-*/}}
-{{- define "jaeger.collector.serviceAccountName" -}}
-{{- if .Values.collector.serviceAccount.create -}}
-  {{ default (include "jaeger.collector.name" .) .Values.collector.serviceAccount.name }}
-{{- else -}}
-  {{ default "default" .Values.collector.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
 
-{{/*
-Create the collector ingress host
-*/}}
-{{- define "jaeger.collector.ingressHost" -}}
-{{- if (kindIs "string" .) }}
-  {{- . }}
-{{- else }}
-  {{- .host }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Create the collector ingress servicePort
-*/}}
-{{- define "jaeger.collector.ingressServicePort" -}}
-{{- if (kindIs "string" .context) }}
-  {{- .defaultServicePort }}
-{{- else }}
-  {{- .context.servicePort }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Create the name of the ingester service account to use
-*/}}
-{{- define "jaeger.ingester.serviceAccountName" -}}
-{{- if .Values.ingester.serviceAccount.create -}}
-  {{ default (include "jaeger.ingester.name" .) .Values.ingester.serviceAccount.name }}
-{{- else -}}
-  {{ default "default" .Values.ingester.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Create a fully qualified query name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "jaeger.query.name" -}}
-{{- $nameGlobalOverride := printf "%s-query" (include "jaeger.fullname" .) -}}
-{{- if .Values.query.fullnameOverride -}}
-{{- printf "%s" .Values.query.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Create a fully qualified agent name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "jaeger.agent.name" -}}
-{{- $nameGlobalOverride := printf "%s-agent" (include "jaeger.fullname" .) -}}
-{{- if .Values.agent.fullnameOverride -}}
-{{- printf "%s" .Values.agent.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Create a fully qualified collector name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "jaeger.collector.name" -}}
-{{- $nameGlobalOverride := printf "%s-collector" (include "jaeger.fullname" .) -}}
-{{- if .Values.collector.fullnameOverride -}}
-{{- printf "%s" .Values.collector.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Create a fully qualified ingester name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "jaeger.ingester.name" -}}
-{{- $nameGlobalOverride := printf "%s-ingester" (include "jaeger.fullname" .) -}}
-{{- if .Values.ingester.fullnameOverride -}}
-{{- printf "%s" .Values.ingester.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
 
 {{- define "cassandra.host" -}}
 {{- if .Values.provisionDataStore.cassandra -}}
@@ -467,20 +353,6 @@ Cassandra or Elasticsearch related command line options depending on which is us
 {{- end -}}
 {{- end -}}
 
-{{/*
-Add extra argument to the command line options
-Usage:
-    {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.collector.cmdlineParams ) | nindent 10  }}
-*/}}
-{{- define "extra.cmdArgs" -}}
-{{- range $key, $value := .cmdlineParams -}}
-{{- if $value }}
-- --{{ $key }}={{ $value }}
-{{- else }}
-- --{{ $key }}
-{{- end }}
-{{- end -}}
-{{- end -}}
 
 {{/*
 Provides a basic ingress network policy
@@ -590,70 +462,6 @@ Create pull secrets for schema image
 {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.schema.image) "context" $) -}}
 {{- end }}
 
-{{/*
-Create image name for ingester image
-*/}}
-{{- define "ingester.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.ingester.image "context" $ ) -}}
-{{- end -}}
-
-{{/*
-Create pull secrets for ingester image
-*/}}
-{{- define "ingester.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.ingester.image) "context" $) -}}
-{{- end }}
-
-{{/*
-Create image name for agent image
-*/}}
-{{- define "agent.image" -}}
-{{- $image := merge .Values.agent.image (dict "tag" .Chart.Annotations.Jaegerv1Version) -}}
-{{- include "renderImage" ( dict "imageRoot" $image "context" $ ) -}}
-{{- end -}}
-
-{{/*
-Create pull secrets for agent image
-*/}}
-{{- define "agent.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.agent.image) "context" $) -}}
-{{- end }}
-
-
-{{/*
-Create image name for collector image
-*/}}
-{{- define "collector.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.collector.image "context" $ ) -}}
-{{- end -}}
-
-{{/*
-Create pull secrets for collector image
-*/}}
-{{- define "collector.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.collector.image) "context" $) -}}
-{{- end }}
-
-{{/*
-Create image name for query image
-*/}}
-{{- define "query.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.query.image "context" $ ) -}}
-{{- end -}}
-
-{{/*
-Create pull secrets for query image
-*/}}
-{{- define "query.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.query.image .Values.query.oAuthSidecar.image) "context" $) -}}
-{{- end }}
-
-{{/*
-Create image name for oAuthSidecar image
-*/}}
-{{- define "oAuthSidecar.image" -}}
-{{- include "common.images.image" (dict "imageRoot" .Values.query.oAuthSidecar.image "global" .Values.global) -}}
-{{- end -}}
 
 {{/*
 Create image name for spark image

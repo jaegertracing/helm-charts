@@ -183,9 +183,7 @@ helm install jaeger jaegertracing/jaeger \
     --set elasticsearch.master.replicaCount=1 \
     --set elasticsearch.data.replicaCount=0 \
     --set elasticsearch.coordinating.replicaCount=0 \
-    --set elasticsearch.ingest.replicaCount=0 \
-    --set collector.enabled=true \
-    --set query.enabled=true
+    --set elasticsearch.ingest.replicaCount=0
 ```
 
 **Default Configuration** (with default Elasticsearch settings):
@@ -194,9 +192,7 @@ helm install jaeger jaegertracing/jaeger \
 helm install jaeger jaegertracing/jaeger \
     --set provisionDataStore.elasticsearch=true \
     --set allInOne.enabled=false \
-    --set storage.type=elasticsearch \
-    --set collector.enabled=true \
-    --set query.enabled=true
+    --set storage.type=elasticsearch
 ```
 
 #### Elasticsearch Rollover
@@ -218,9 +214,7 @@ helm install jaeger jaegertracing/jaeger \
   --set storage.elasticsearch.host=<HOST> \
   --set storage.elasticsearch.port=<PORT> \
   --set storage.elasticsearch.user=<USER> \
-  --set storage.elasticsearch.password=<password> \
-  --set collector.enabled=true \
-  --set query.enabled=true
+  --set storage.elasticsearch.password=<password>
 ```
 
 #### Installing the Chart using an Existing ElasticSearch Cluster with TLS
@@ -245,19 +239,6 @@ storage:
       enabled: true
       secretName: es-tls-secret
 
-collector:
-  enabled: true
-
-query:
-  enabled: true
-```
-
-Generate the TLS secret:
-
-```console
-kubectl create secret generic es-tls-secret --from-file=ca-cert.pem=es.pem
-```
-
 ```console
 helm install jaeger jaegertracing/jaeger --values jaeger-values.yaml
 ```
@@ -277,9 +258,7 @@ helm install jaeger jaegertracing/jaeger \
   --set storage.cassandra.host=<HOST> \
   --set storage.cassandra.port=<PORT> \
   --set storage.cassandra.user=<USER> \
-  --set storage.cassandra.password=<PASSWORD> \
-  --set collector.enabled=true \
-  --set query.enabled=true
+  --set storage.cassandra.password=<PASSWORD>
 ```
 
 #### Installing the Chart using an Existing Cassandra Cluster with TLS
@@ -306,11 +285,6 @@ storage:
 provisionDataStore:
   cassandra: false
 
-collector:
-  enabled: true
-
-query:
-  enabled: true
 ```
 
 Content of the `jaeger-tls-cassandra-secret.yaml` file:
@@ -346,87 +320,6 @@ kubectl apply -f jaeger-tls-cassandra-secret.yaml
 helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
 
-### Ingester Configuration (Legacy)
-
-> **Note:** The ingester component is from the Jaeger v1 architecture. In Jaeger v2, the architecture is unified and may not require separate ingester components.
-
-#### Installing the Chart with Ingester enabled
-
-The architecture illustrated below can be achieved by enabling the ingester component. When enabled, Cassandra or Elasticsearch (depending on the configured values) now becomes the ingester's storage backend, whereas Kafka becomes the storage backend of the collector service.
-
-![Jaeger with Ingester](https://www.jaegertracing.io/img/architecture-v2.png)
-
-#### Installing the Chart with Ingester enabled using a New Kafka Cluster
-
-To provision a new Kafka cluster along with jaeger-ingester:
-
-```console
-helm install jaeger jaegertracing/jaeger \
-  --set allInOne.enabled=false \
-  --set provisionDataStore.kafka=true \
-  --set ingester.enabled=true \
-  --set collector.enabled=true \
-  --set query.enabled=true
-```
-
-#### Installing the Chart with Ingester using an existing Kafka Cluster
-
-You can use an existing Kafka cluster with jaeger too
-
-```console
-helm install jaeger jaegertracing/jaeger \
-  --set allInOne.enabled=false \
-  --set ingester.enabled=true \
-  --set storage.kafka.brokers={<BROKER1:PORT>,<BROKER2:PORT>} \
-  --set storage.kafka.topic=<TOPIC> \
-  --set collector.enabled=true \
-  --set query.enabled=true
-```
-
-### Other Storage Configuration (Legacy)
-
-> **Note:** grpc-plugin storage is from Jaeger v1 architecture. Check if your plugin is compatible with Jaeger v2.
-
-If you are using grpc-plugin based storage, you can set environment
-variables that are needed by the plugin.
-
-As an example if using the [jaeger-mongodb](https://github.com/mongodb-labs/jaeger-mongodb)
-plugin you can set the `MONGO_URL` as follows...
-
-```YAML
-storage:
-  type: grpc-plugin
-  grpcPlugin:
-    extraEnv:
-      - name: MONGO_URL
-        valueFrom:
-          secretKeyRef:
-            key: MONGO_URL
-            name: jaeger-secrets
-```
-
-## Separate Collector and Query Mode
-
-For production deployments requiring scalability, you can deploy Jaeger with separate collector and query services instead of all-in-one mode:
-
-```yaml
-allInOne:
-  enabled: false
-
-collector:
-  enabled: true
-  replicaCount: 2
-
-query:
-  enabled: true
-  replicaCount: 2
-
-provisionDataStore:
-  elasticsearch: true
-
-storage:
-  type: elasticsearch
-```
 
 ## oAuth2 Sidecar
 
