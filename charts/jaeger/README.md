@@ -97,6 +97,7 @@ config:
       trace_storage: primary_store
 ```
 
+See more configuration examples in https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 ### Dependencies
 
 If installing with a dependency such as Elasticsearch and/or Kafka,
