@@ -31,7 +31,7 @@ By default, the chart deploys:
 
 Jaeger v2 uses a YAML-based configuration format built on the OpenTelemetry Collector framework. The configuration is defined in the `config` section of the values file.
 
-See [Customizing the Chart Before Installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing). To see all configurable options with detailed comments, visit the chart's [values.yaml](https://github.com/jaegertracing/helm-charts/blob/v2/charts/jaeger/values.yaml), or run these configuration commands:
+See [Customizing the Chart Before Installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing). To see all configurable options with detailed comments, visit the chart's [values.yaml](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger/values.yaml), or run these configuration commands:
 
 ```console
 $ helm show values jaegertracing/jaeger
