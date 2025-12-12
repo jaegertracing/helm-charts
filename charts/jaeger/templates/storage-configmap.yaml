@@ -33,7 +33,8 @@ data:
             {{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
             elasticsearch:
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
-              index_prefix: {{ .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.index_prefix | quote }}
+              indices:
+                index_prefix: {{ .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.index_prefix | quote }}
               {{- if .Values.config.extensions.jaeger_storage.backends.primary_store.elasticsearch.username }}
               auth:
                 basic:
@@ -47,7 +48,7 @@ data:
                 {{- if .Values.storage.elasticsearch.tls.ca }}
                 ca_file: {{ .Values.storage.elasticsearch.tls.ca }}
                 {{- end }}
-            {{- else if .Values.provisionDataStore.cassandra }}
+            {{- else if or .Values.provisionDataStore.cassandra (eq .Values.storage.type "cassandra") }}
             cassandra:
               connection:
                 servers: 
@@ -63,12 +64,14 @@ data:
                   insecure: true
               schema:
                 keyspace: {{ .Values.storage.cassandra.keyspace }}
+                replication_factor: 1
             {{- end }}
           archive_store:
             {{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
             elasticsearch:
               server_urls: ["{{ include "elasticsearch.client.url" . }}"]
-              index_prefix: {{ .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.index_prefix | quote }}
+              indices:
+                index_prefix: {{ .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.index_prefix | quote }}
               {{- if .Values.config.extensions.jaeger_storage.backends.archive_store.elasticsearch.username }}
               auth:
                 basic:

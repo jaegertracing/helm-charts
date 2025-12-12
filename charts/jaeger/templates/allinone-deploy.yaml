@@ -62,7 +62,7 @@ spec:
           imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
           name: jaeger
           args:
-            {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra }}
+            {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
             - "--config"
             - "/etc/jaeger/user-config.yaml"
             {{- end }}
@@ -115,7 +115,7 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
-        {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra }}  
+        {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
             - name: user-config
               mountPath: /etc/jaeger
         {{- end }}
@@ -141,7 +141,7 @@ spec:
         {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
-      {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra }}
+      {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
         - name: user-config
           configMap:
             name: user-config

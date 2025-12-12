@@ -8,6 +8,20 @@ This chart deploys Jaeger v2, which uses a unified binary built on the OpenTelem
 
 By default, the chart deploys Jaeger in **all-in-one mode** with **in-memory storage**, which is suitable for testing and development. For production deployments, it is recommended to use Elasticsearch as the storage backend.
 
+## Deployment Architecture
+
+### All-In-One (Supported)
+This chart currently uses the **All-In-One** deployment architecture.
+*   **Single Deployable:** All Jaeger components (Collector, Query, Ingester) run within a single application (the compiled Jaeger v2 binary).
+*   **Scalability:** You can scale this Deployment to multiple replicas for high availability, but each replica performs all roles.
+*   **Storage:** While "All-In-One" implies simplicity, **it DOES support persistent storage** (Elasticsearch, Opensearch, Cassandra). You can use this mode for production if your load allows for a unified deployment shape.
+
+### Distributed / Microservices (Not Yet Supported)
+*   **Separate Collectors/Query:** Splitting the stack into separate microservices (e.g., a Deployment for Collectors and a separate Deployment for Query services) is **not currently supported** by this chart configuration.
+*   **Kafka/Ingester:** The `collector -> kafka -> ingester` pipeline is **not currently supported**.
+
+If you require a fully distributed architecture, you would need to manually create separate values files or fork this chart to create distinct Deployments for each role, utilizing the same Jaeger v2 binary but with different configurations (pipelines).
+
 ## Installing the Chart
 
 Add the Jaeger Tracing Helm repository:
@@ -122,6 +136,55 @@ Jaeger v2 supports multiple storage backends. For production deployments, the Ja
 
 The storage backend is configured via the `jaeger_storage` extension in the `config` section.
 
+### Quick Start: Storage Configuration
+
+Here is how to configure the chart for the most common storage scenarios.
+
+#### 1. Provisioned Mode (Easiest)
+*Best for testing/development. The chart creates the database for you.*
+
+**Elasticsearch**:
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.elasticsearch=true \
+  --set storage.type=elasticsearch
+```
+
+**Cassandra**:
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.cassandra=true \
+  --set storage.type=cassandra
+```
+
+#### 2. External Mode (Production)
+*Connect to an existing database running outside this chart.*
+
+**External Elasticsearch**:
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.elasticsearch=false \
+  --set storage.type=elasticsearch \
+  --set storage.elasticsearch.host=<EXISTING_ES_HOST> \
+  --set storage.elasticsearch.port=9200 \
+  --set storage.elasticsearch.user=<USER> \
+  --set storage.elasticsearch.password=<PASSWORD>
+```
+*Note: The chart automatically generates the required configuration file for you.*
+
+**External Cassandra**:
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set provisionDataStore.cassandra=false \
+  --set storage.type=cassandra \
+  --set storage.cassandra.host=<EXISTING_CASSANDRA_HOST> \
+  --set storage.cassandra.port=9042 \
+  --set storage.cassandra.user=<USER> \
+  --set storage.cassandra.password=<PASSWORD>
+```
+*Note: No config file needed. The chart uses environment variables automatically.*
+
+
 ### Storage Configuration Options
 
 #### Primary Storage Settings
@@ -178,7 +241,6 @@ To deploy Jaeger with a provisioned Elasticsearch cluster:
 ```bash
 helm install jaeger jaegertracing/jaeger \
     --set provisionDataStore.elasticsearch=true \
-    --set allInOne.enabled=false \
     --set storage.type=elasticsearch \
     --set elasticsearch.master.masterOnly=false \
     --set elasticsearch.master.replicaCount=1 \
@@ -192,7 +254,6 @@ helm install jaeger jaegertracing/jaeger \
 ```bash
 helm install jaeger jaegertracing/jaeger \
     --set provisionDataStore.elasticsearch=true \
-    --set allInOne.enabled=false \
     --set storage.type=elasticsearch
 ```
 
@@ -210,7 +271,6 @@ A release can be configured as follows to use an existing ElasticSearch cluster 
 
 ```console
 helm install jaeger jaegertracing/jaeger \
-  --set allInOne.enabled=false \
   --set storage.type=elasticsearch \
   --set storage.elasticsearch.host=<HOST> \
   --set storage.elasticsearch.port=<PORT> \
@@ -225,9 +285,6 @@ If you already have an existing running ElasticSearch cluster with TLS, you can 
 Content of the `jaeger-values.yaml` file:
 
 ```YAML
-allInOne:
-  enabled: false
-
 storage:
   type: elasticsearch
   elasticsearch:
@@ -254,7 +311,6 @@ If you already have an existing running Cassandra cluster, you can configure the
 
 ```console
 helm install jaeger jaegertracing/jaeger \
-  --set allInOne.enabled=false \
   --set provisionDataStore.cassandra=false \
   --set storage.cassandra.host=<HOST> \
   --set storage.cassandra.port=<PORT> \
@@ -269,9 +325,6 @@ If you already have an existing running Cassandra cluster with TLS, you can conf
 Content of the `values.yaml` file:
 
 ```YAML
-allInOne:
-  enabled: false
-
 storage:
   type: cassandra
   cassandra:
@@ -322,55 +375,7 @@ helm install jaeger jaegertracing/jaeger --values values.yaml
 ```
 
 
-## oAuth2 Sidecar
 
-If extra protection of the Jaeger UI is needed, then the oAuth2 sidecar can be enabled in the Jaeger Query. The oAuth2
-sidecar acts as a security proxy in front of the Jaeger Query service and enforces user authentication before reaching
-the Jaeger UI. This method can work with any valid provider including Keycloak, Azure, Google, GitHub, and more.
-
-Official docs [here](https://oauth2-proxy.github.io/oauth2-proxy/docs/behaviour)
-
-Content of the `jaeger-values.yaml` file:
-
-```YAML
-query:
-  enabled: true
-  oAuthSidecar:
-    enabled: true
-    resources: {}
-    image:
-      registry: quay.io
-      repository: oauth2-proxy/oauth2-proxy
-      tag: v7.6.0
-    pullPolicy: IfNotPresent
-    containerPort: 4180
-    args:
-      - --config
-      - /etc/oauth2-proxy/oauth2-proxy.cfg
-      - --client-secret
-      - "$(client-secret)"
-    extraEnv:
-      - name: client-secret
-        valueFrom:
-          secretKeyRef:
-            name: client-secret
-            key: client-secret-key
-    extraConfigmapMounts: []
-    extraSecretMounts: []
-    config: |-
-      provider = "oidc"
-      https_address = ":4180"
-      upstreams = ["http://localhost:16686"]
-      redirect_url = "https://jaeger-svc-domain/oauth2/callback"
-      client_id = "jaeger-query"
-      oidc_issuer_url = "https://keycloak-svc-domain/auth/realms/Default"
-      cookie_secure = "true"
-      cookie_secret = ""
-      email_domains = "*"
-      oidc_groups_claim = "groups"
-      user_id_claim = "preferred_username"
-      skip_provider_button = "true"
-```
 
 ## Installing extra kubernetes objects
 

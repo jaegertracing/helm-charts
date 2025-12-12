@@ -1,4 +1,3 @@
-
 {{- if eq .Values.storage.type "cassandra" -}}
 {{- if .Values.storage.cassandra.schemaJobEnabled -}}
 apiVersion: batch/v1
@@ -93,7 +92,7 @@ spec:
       {{- end }}
       {{- if .Values.storage.cassandra.tls.enabled }}
         - name: {{ .Values.storage.cassandra.tls.secretName }}
-          secret:
+           secret:
             secretName: {{ .Values.storage.cassandra.tls.secretName }}
       {{- end }}
     {{- with .Values.schema.tolerations }}
@@ -106,4 +105,3 @@ spec:
     {{- end }}
 {{- end -}}
 {{- end -}}
-
