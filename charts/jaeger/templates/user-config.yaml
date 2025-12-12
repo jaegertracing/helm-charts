@@ -1,5 +1,5 @@
+{{- if .Values.userconfig -}}
 # Generates a config map from a file provided by user via `--set-file userconfig=`
-{{ if .Values.userconfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,10 +10,12 @@ metadata:
 data:
   user-config.yaml: |
     {{- .Values.userconfig | nindent 4 }}
-{{- end }}
+{{- end -}}
+{{- if .Values.uiconfig -}}
+{{- if .Values.userconfig }}
 ---
+{{- end }}
 # Generates a config map from a file provided by user via `--set-file uiconfig=`
-{{- if .Values.uiconfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -24,4 +26,4 @@ metadata:
 data:
   ui-config.json: |
     {{- .Values.uiconfig | nindent 4 }}
-{{- end }}
+{{- end -}}
