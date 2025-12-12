@@ -7,7 +7,9 @@
 ### Please use <component>.extraEnv: [] instead.                ###
 ###################################################################
 
-You can log into the Jaeger Query UI here:
+🚀 Congratulations on successfully installing / upgrading Jaeger v{version}!
+
+📊 You can log into the Jaeger Query UI here:
 
 {{- if .Values.allInOne.ingress.enabled }}
   {{- range .Values.allInOne.ingress.hosts }}
