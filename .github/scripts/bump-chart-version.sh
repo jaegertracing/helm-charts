@@ -33,7 +33,12 @@ if [[ ! -f "$CHART_PATH" ]]; then
 fi
 
 # --- 2. Get the current version from Chart.yaml ---
-CURRENT_CHART_VERSION=$(grep '^version:' "$CHART_PATH" | sed 's/version: *//' | tr -d '"')
+CURRENT_CHART_VERSION=$(grep '^version:' "$CHART_PATH" | sed 's/version: *//' | tr -d '"') || true
+
+if [[ -z "$CURRENT_CHART_VERSION" ]]; then
+  echo "Error: Could not extract version from '${CHART_PATH}'. Exiting."
+  exit 1
+fi
 
 echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
 
@@ -70,6 +75,6 @@ ESCAPED_CURRENT=$(echo "$CURRENT_CHART_VERSION" | sed 's/[.]/\\./g')
 ESCAPED_NEW=$(echo "$NEW_CHART_VERSION" | sed 's/[.]/\\./g')
 
 # Update version
-sed -i "s/^version: *${ESCAPED_CURRENT}$/version: ${NEW_CHART_VERSION}/" "$CHART_PATH"
+sed -i "s/^version: *${ESCAPED_CURRENT}$/version: ${ESCAPED_NEW}/" "$CHART_PATH"
 
 echo "Successfully updated chart version to ${NEW_CHART_VERSION}"
