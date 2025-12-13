@@ -30,17 +30,16 @@ jobs:
           ref: main
           
       - name: 🔍 Check for new Jaeger version
-        id: check_version
         run: bash ./.github/scripts/update-jaeger-version.sh
 
       - name: ⚙️ Configure Git
-        if: ${{ steps.check_version.outputs.update_needed == 'true' && env.DRY_RUN != 'true' }}
+        if: ${{ env.DRY_RUN != 'true' }}
         run: |
           git config user.name "jaegertracingbot"
           git config user.email "jaegertracingbot+jaeger-tracing@googlegroups.com"
     
       - name: 📝 Commit changes
-        if: ${{ steps.check_version.outputs.update_needed == 'true' && env.DRY_RUN != 'true' }}
+        if: ${{ env.DRY_RUN != 'true' }}
         id: commit
         run: |
           CHART_PATH="charts/jaeger/Chart.yaml"
@@ -50,15 +49,19 @@ jobs:
             echo "No changes to commit. Exiting."
             echo "pr_needed=false" >> $GITHUB_OUTPUT
           else
+            # Extract versions from Chart.yaml for commit message and PR
+            NEW_APP_VERSION=$(grep '^appVersion:' "$CHART_PATH" | sed 's/appVersion: *//' | tr -d '"')
+            
             git add "$CHART_PATH"
-            git commit -sm "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}"
+            git commit -sm "chore(deps): Bump Jaeger to ${NEW_APP_VERSION}"
 
             # Create and switch to a new topic branch for the PR
-            NEW_BRANCH="bot/update-jaeger-${{ steps.check_version.outputs.latest_tag }}"
+            NEW_BRANCH="bot/update-jaeger-${NEW_APP_VERSION}"
             git checkout -b "$NEW_BRANCH"
 
             echo "pr_needed=true" >> $GITHUB_OUTPUT
             echo "branch_name=${NEW_BRANCH}" >> $GITHUB_OUTPUT
+            echo "new_app_version=${NEW_APP_VERSION}" >> $GITHUB_OUTPUT
           fi
 
       - name: 🚀 Push new branch
@@ -72,12 +75,8 @@ jobs:
           GH_TOKEN: ${{ secrets.JAEGERTRACINGBOT_PAT }}
         run: |
           gh pr create \
-            --title "chore(deps): Bump Jaeger to ${{ steps.check_version.outputs.latest_tag }}" \
-            --body "This PR was automatically generated to update the Jaeger Helm chart.
-
-          ## Changes
-          - **appVersion**: \`${{ steps.check_version.outputs.current_app_version }}\` → \`${{ steps.check_version.outputs.latest_tag }}\`
-          - **version**: \`${{ steps.check_version.outputs.current_chart_version }}\` → \`${{ steps.check_version.outputs.new_chart_version }}\`
+            --title "chore(deps): Bump Jaeger to ${{ steps.commit.outputs.new_app_version }}" \
+            --body "This PR was automatically generated to update the Jaeger Helm chart to version \`${{ steps.commit.outputs.new_app_version }}\`.
 
           ## Source
           Docker Hub image: [jaegertracing/jaeger](https://hub.docker.com/r/jaegertracing/jaeger)" \
