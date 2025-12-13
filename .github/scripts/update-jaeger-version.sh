@@ -84,64 +84,29 @@ echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
 # --- 3. Compare and determine if update is needed ---
 if [[ "$LATEST_TAG" == "$CURRENT_APP_VERSION" ]]; then
   echo "Versions match. No update needed."
-  if [[ -n "$GITHUB_OUTPUT" ]]; then
-    echo "update_needed=false" >> "$GITHUB_OUTPUT"
-  fi
-  if [[ "$DRY_RUN" == "true" ]]; then
-    echo "=============================================="
-    echo "DRY RUN MODE - No changes needed"
-    echo "=============================================="
-  fi
   exit 0
 fi
 
+# --- 4. Print summary about appVersion update ---
 echo "Update needed: appVersion change from ${CURRENT_APP_VERSION} to ${LATEST_TAG}."
 
-# --- 4. Bump chart version (using bump-chart-version.sh) ---
-echo "Calculating new chart version..."
-
-# Get the script directory (where this script is located)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Run bump-chart-version.sh to calculate new version
-NEW_CHART_VERSION=$("${SCRIPT_DIR}/bump-chart-version.sh" --print-only --bump-minor)
-
-if [[ -z "$NEW_CHART_VERSION" ]]; then
-  echo "Error: Could not calculate new chart version. Exiting."
-  exit 1
-fi
-
-echo "   -> New chart version will be: ${NEW_CHART_VERSION}"
-
-# Set outputs for GitHub Actions
-if [[ -n "$GITHUB_OUTPUT" ]]; then
-  echo "update_needed=true" >> "$GITHUB_OUTPUT"
-  echo "latest_tag=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
-  echo "current_app_version=${CURRENT_APP_VERSION}" >> "$GITHUB_OUTPUT"
-  echo "current_chart_version=${CURRENT_CHART_VERSION}" >> "$GITHUB_OUTPUT"
-  echo "new_chart_version=${NEW_CHART_VERSION}" >> "$GITHUB_OUTPUT"
-fi
-
-# --- 5. Handle dry run mode ---
 if [[ "$DRY_RUN" == "true" ]]; then
   echo "=============================================="
   echo "DRY RUN MODE - No changes will be made"
   echo "=============================================="
-  echo "Update IS needed:"
-  echo "  - appVersion: ${CURRENT_APP_VERSION} -> ${LATEST_TAG}"
-  echo "  - version: ${CURRENT_CHART_VERSION} -> ${NEW_CHART_VERSION}"
-  echo "=============================================="
   exit 0
 fi
 
-# --- 6. Update Chart.yaml ---
+# --- 5. Execute the update ---
 echo "Updating ${CHART_PATH}..."
 
 # Update appVersion
 sed -i "s/^appVersion:.*/appVersion: ${LATEST_TAG}/" "$CHART_PATH"
 
-# Update chart version using bump-chart-version.sh
+# Get the script directory (where this script is located)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Call bump-chart-version.sh to update chart version
 "${SCRIPT_DIR}/bump-chart-version.sh" --bump-minor
 
-echo "Updated ${CHART_PATH}:"
-cat "$CHART_PATH"
+echo "Update complete."
