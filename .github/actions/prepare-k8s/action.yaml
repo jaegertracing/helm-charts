@@ -23,7 +23,7 @@ runs:
       uses: helm/kind-action@v1.9.0
 
     - name: Install kubectl
-      uses: azure/setup-kubectl@v4.0.0
+      uses: azure/setup-kubectl@v4.0.1
       with:
         version: 'v1.28.8'
       id: install
