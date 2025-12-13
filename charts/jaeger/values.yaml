@@ -341,7 +341,7 @@ elasticsearch:
   image:
     registry: docker.io
     repository: bitnamilegacy/elasticsearch
-    tag: 8.13.2-debian-12-r0
+    tag: 8.18.0-debian-12-r0
 
   master:
     masterOnly: false
