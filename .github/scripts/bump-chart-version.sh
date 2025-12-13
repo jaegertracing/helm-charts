@@ -8,6 +8,7 @@
 # Options:
 #   --dry-run      Skip making changes (just print what would be done)
 #   --bump-minor   Bump minor version instead of patch (e.g., 4.0.0 -> 4.1.0)
+#   --print-only   Only print the new version number (for scripting)
 #
 # Environment variables:
 #   DRY_RUN - Set to 'true' to skip making changes (same as --dry-run flag)
@@ -16,6 +17,7 @@ set -eo pipefail
 
 CHART_PATH="charts/jaeger/Chart.yaml"
 BUMP_TYPE="patch"
+PRINT_ONLY="false"
 
 # Parse command line arguments
 for arg in "$@"; do
@@ -28,16 +30,24 @@ for arg in "$@"; do
       BUMP_TYPE="minor"
       shift
       ;;
+    --print-only)
+      PRINT_ONLY="true"
+      DRY_RUN="true"  # print-only implies dry-run
+      shift
+      ;;
   esac
 done
 
 # Default DRY_RUN to false if not set
 DRY_RUN="${DRY_RUN:-false}"
 
-if [[ "$BUMP_TYPE" == "minor" ]]; then
-  echo "Bumping chart minor version in ${CHART_PATH}..."
-else
-  echo "Bumping chart patch version in ${CHART_PATH}..."
+# Skip verbose output in print-only mode
+if [[ "$PRINT_ONLY" != "true" ]]; then
+  if [[ "$BUMP_TYPE" == "minor" ]]; then
+    echo "Bumping chart minor version in ${CHART_PATH}..."
+  else
+    echo "Bumping chart patch version in ${CHART_PATH}..."
+  fi
 fi
 
 # --- 1. Verify Chart.yaml exists ---
@@ -50,15 +60,21 @@ fi
 CURRENT_CHART_VERSION=$(grep '^version:' "$CHART_PATH" | sed 's/version: *//' | tr -d '"') || true
 
 if [[ -z "$CURRENT_CHART_VERSION" ]]; then
-  echo "Error: Could not extract version from '${CHART_PATH}'. Exiting."
+  if [[ "$PRINT_ONLY" != "true" ]]; then
+    echo "Error: Could not extract version from '${CHART_PATH}'. Exiting."
+  fi
   exit 1
 fi
 
-echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
+if [[ "$PRINT_ONLY" != "true" ]]; then
+  echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
+fi
 
 # --- 2. Validate current version format (X.Y.Z) ---
 if ! [[ "$CURRENT_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: Current chart version '${CURRENT_CHART_VERSION}' does not match expected format X.Y.Z. Exiting."
+  if [[ "$PRINT_ONLY" != "true" ]]; then
+    echo "Error: Current chart version '${CURRENT_CHART_VERSION}' does not match expected format X.Y.Z. Exiting."
+  fi
   exit 1
 fi
 
@@ -74,6 +90,12 @@ else
   # Bump patch version (e.g., 4.1.0 -> 4.1.1)
   NEW_PATCH=$((PATCH + 1))
   NEW_CHART_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+fi
+
+if [[ "$PRINT_ONLY" == "true" ]]; then
+  # Print only mode: just output the new version
+  echo "${NEW_CHART_VERSION}"
+  exit 0
 fi
 
 echo "   -> New chart version will be: ${NEW_CHART_VERSION}"

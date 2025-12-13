@@ -103,9 +103,8 @@ echo "Calculating new chart version..."
 # Get the script directory (where this script is located)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Run bump-chart-version.sh to calculate new version (dry-run to get the version without updating)
-BUMP_OUTPUT=$("${SCRIPT_DIR}/bump-chart-version.sh" --dry-run --bump-minor)
-NEW_CHART_VERSION=$(echo "$BUMP_OUTPUT" | grep "version:" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$' | tail -1)
+# Run bump-chart-version.sh to calculate new version
+NEW_CHART_VERSION=$("${SCRIPT_DIR}/bump-chart-version.sh" --print-only --bump-minor)
 
 if [[ -z "$NEW_CHART_VERSION" ]]; then
   echo "Error: Could not calculate new chart version. Exiting."
