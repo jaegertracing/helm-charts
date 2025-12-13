@@ -4,13 +4,25 @@
     "config:recommended",
     ":gitSignOff"
   ],
-  "postUpgradeTasks": {
-    "commands": [
-      ".github/scripts/bump-chart-version.sh"
-    ],
-    "fileFilters": [
-      "charts/**/Chart.yaml"
-    ],
-    "executionMode": "update"
-  }
+  "packageRules": [
+    {
+      // Target any package update that affects the Helm chart (e.g., dependencies or images)
+      "matchManagers": ["helm-requirements", "helm-values", "helmfile"],
+      "matchPackageNames": ["*"],
+      "postUpgradeTasks": {
+        "commands": [
+          "renovate-bump"
+        ],
+        "bumpVersions": [
+          {
+            "bumpType": "patch"
+          }
+        ],
+        "fileFilters": [
+          "charts/**/Chart.yaml"
+        ],
+        "executionMode": "update"
+      }
+    }
+  ]
 }
