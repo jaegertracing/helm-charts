@@ -3,7 +3,7 @@ appVersion: 2.13.0
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
-version: 4.1.1
+version: 4.1.2
 # CronJobs require v1.21
 kubeVersion: ">= 1.21-0"
 keywords:
@@ -36,7 +36,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.elasticsearch
   - name: kafka
-    version: 26.6.2
+    version: 26.11.4
     repository: https://charts.bitnami.com/bitnami
     condition: provisionDataStore.kafka
   - name: common
