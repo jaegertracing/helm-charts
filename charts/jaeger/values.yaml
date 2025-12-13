@@ -301,7 +301,7 @@ schema:
   image:
     registry: ""
     repository: jaegertracing/jaeger-cassandra-schema
-    tag: "1.62.0"
+    tag: "1.76.0"
     digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
