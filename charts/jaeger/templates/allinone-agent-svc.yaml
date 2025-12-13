@@ -1,7 +1,7 @@
 # This service provides backward compatibility for clients expecting
 # the legacy Jaeger Agent UDP endpoints (5775, 6831, 6832).
 # It routes traffic to the All-in-One pod.
-{{- if .Values.allInOne.enabled -}}
+{{ if .Values.allInOne.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:

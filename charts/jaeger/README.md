@@ -41,6 +41,23 @@ By default, the chart deploys:
 - Jaeger All-in-One Deployment (combines collector, query, and internal components)
 - In-memory storage (non-persistent)
 
+### Overriding the Jaeger Version
+
+The chart version maps to a specific Jaeger version (appVersion). You can override this to use a different Jaeger image version without upgrading the chart:
+
+```bash
+helm install jaeger jaegertracing/jaeger \
+  --set allInOne.image.tag=2.13.0
+```
+
+Or via a values file:
+
+```yaml
+allInOne:
+  image:
+    tag: "2.13.0"
+```
+
 ## Configuration
 
 Jaeger v2 uses a YAML-based configuration format built on the OpenTelemetry Collector framework. The configuration is defined in the `config` section of the values file.

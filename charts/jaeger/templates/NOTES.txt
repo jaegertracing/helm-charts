@@ -2,12 +2,9 @@
 ###################################################################
 ### IMPORTANT: Ensure that storage is explicitly configured     ###
 ### Default storage options are subject to change.              ###
-###                                                             ###
-### IMPORTANT: The use of <component>.env: {...} is deprecated. ###
-### Please use <component>.extraEnv: [] instead.                ###
 ###################################################################
 
-🚀 Congratulations on successfully installing / upgrading Jaeger v{version}!
+🚀 Congratulations on successfully installing / upgrading Jaeger v{{ .Chart.AppVersion }}!
 
 📊 You can log into the Jaeger Query UI here:
 

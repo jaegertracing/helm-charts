@@ -45,7 +45,7 @@ data:
               {{- end }}
               tls:
                 insecure: {{ .Values.storage.elasticsearch.tls.insecure | default false }}
-                {{- if .Values.storage.elasticsearch.tls.ca }}
+                {{- if and .Values.storage.elasticsearch.tls.enabled .Values.storage.elasticsearch.tls.ca }}
                 ca_file: {{ .Values.storage.elasticsearch.tls.ca }}
                 {{- end }}
             {{- else if or .Values.provisionDataStore.cassandra (eq .Values.storage.type "cassandra") }}
@@ -82,7 +82,7 @@ data:
               {{- end }}
               tls:
                 insecure: {{ .Values.storage.elasticsearch.tls.insecure | default false }}
-                {{- if .Values.storage.elasticsearch.tls.ca }}
+                {{- if and .Values.storage.elasticsearch.tls.enabled .Values.storage.elasticsearch.tls.ca }}
                 ca_file: {{ .Values.storage.elasticsearch.tls.ca }}
                 {{- end }}
             {{- else }}
