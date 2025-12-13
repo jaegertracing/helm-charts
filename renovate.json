@@ -9,7 +9,6 @@
     {
       "matchManagers": ["helm", "helm-requirements", "helm-values", "helmv3"],
       "matchFileNames": ["charts/**"],
-      "logLevel": "debug",
       "bumpVersions": [
         {
           "name": "Bump chart version",
