@@ -6,23 +6,35 @@
   ],
   "packageRules": [
     {
-      // Target any package update that affects the Helm chart (e.g., dependencies or images)
-      "matchManagers": ["helm-requirements", "helm-values", "helmfile"],
-      "matchPackageNames": ["*"],
-      "postUpgradeTasks": {
-        "commands": [
-          "renovate-bump"
-        ],
-        "bumpVersions": [
-          {
-            "bumpType": "patch"
-          }
-        ],
-        "fileFilters": [
-          "charts/**/Chart.yaml"
-        ],
-        "executionMode": "update"
-      }
+      "matchFileNames": ["charts/**"],
+      "bumpVersions": [
+        {
+          "name": "Bump chart version",
+          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "matchStrings": ["^version:\\s(?<version>[^\\s]+)"],
+          "bumpType": "patch"
+        }
+      ]
     }
+
+    // {
+    //   // Target any package update that affects the Helm chart (e.g., dependencies or images)
+    //   "matchManagers": ["helm-requirements", "helm-values", "helmfile"],
+    //   "matchPackageNames": ["*"],
+    //   "postUpgradeTasks": {
+    //     "commands": [
+    //       "renovate-bump"
+    //     ],
+    //     "bumpVersions": [
+    //       {
+    //         "bumpType": "patch"
+    //       }
+    //     ],
+    //     "fileFilters": [
+    //       "charts/**/Chart.yaml"
+    //     ],
+    //     "executionMode": "update"
+    //   }
+    // }
   ]
 }
