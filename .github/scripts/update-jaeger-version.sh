@@ -97,17 +97,20 @@ fi
 
 echo "Update needed: appVersion change from ${CURRENT_APP_VERSION} to ${LATEST_TAG}."
 
-# --- 4. Calculate new chart version (bump minor version) ---
-# Validate that the current chart version follows semantic versioning (X.Y.Z)
-if ! [[ "$CURRENT_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: Current chart version '${CURRENT_CHART_VERSION}' does not match expected format X.Y.Z. Exiting."
+# --- 4. Bump chart version (using bump-chart-version.sh) ---
+echo "Calculating new chart version..."
+
+# Get the script directory (where this script is located)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Run bump-chart-version.sh to calculate new version (dry-run to get the version without updating)
+BUMP_OUTPUT=$("${SCRIPT_DIR}/bump-chart-version.sh" --dry-run --bump-minor)
+NEW_CHART_VERSION=$(echo "$BUMP_OUTPUT" | grep "version:" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+$' | tail -1)
+
+if [[ -z "$NEW_CHART_VERSION" ]]; then
+  echo "Error: Could not calculate new chart version. Exiting."
   exit 1
 fi
-
-# Parse the current chart version (e.g., 4.0.0 -> major=4, minor=0, patch=0)
-IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_CHART_VERSION"
-NEW_MINOR=$((MINOR + 1))
-NEW_CHART_VERSION="${MAJOR}.${NEW_MINOR}.0"
 
 echo "   -> New chart version will be: ${NEW_CHART_VERSION}"
 
@@ -132,14 +135,14 @@ if [[ "$DRY_RUN" == "true" ]]; then
   exit 0
 fi
 
-# --- 6. Update Chart.yaml using sed ---
+# --- 6. Update Chart.yaml ---
 echo "Updating ${CHART_PATH}..."
 
 # Update appVersion
 sed -i "s/^appVersion:.*/appVersion: ${LATEST_TAG}/" "$CHART_PATH"
 
-# Update version
-sed -i "s/^version:.*/version: ${NEW_CHART_VERSION}/" "$CHART_PATH"
+# Update chart version using bump-chart-version.sh
+"${SCRIPT_DIR}/bump-chart-version.sh" --bump-minor
 
 echo "Updated ${CHART_PATH}:"
 cat "$CHART_PATH"

@@ -1,8 +1,13 @@
 #!/bin/bash
-# Script to bump the chart patch version in Chart.yaml
+# Script to bump the chart version in Chart.yaml
 # Used by renovatebot postUpgradeTasks to bump chart version on dependency updates
+# Used by update-jaeger-version.sh to bump chart version on app version updates
 #
-# Usage: ./bump-chart-version.sh [--dry-run]
+# Usage: ./bump-chart-version.sh [--dry-run] [--bump-minor]
+#
+# Options:
+#   --dry-run      Skip making changes (just print what would be done)
+#   --bump-minor   Bump minor version instead of patch (e.g., 4.0.0 -> 4.1.0)
 #
 # Environment variables:
 #   DRY_RUN - Set to 'true' to skip making changes (same as --dry-run flag)
@@ -10,6 +15,7 @@
 set -eo pipefail
 
 CHART_PATH="charts/jaeger/Chart.yaml"
+BUMP_TYPE="patch"
 
 # Parse command line arguments
 for arg in "$@"; do
@@ -18,13 +24,21 @@ for arg in "$@"; do
       DRY_RUN="true"
       shift
       ;;
+    --bump-minor)
+      BUMP_TYPE="minor"
+      shift
+      ;;
   esac
 done
 
 # Default DRY_RUN to false if not set
 DRY_RUN="${DRY_RUN:-false}"
 
-echo "Bumping chart patch version in ${CHART_PATH}..."
+if [[ "$BUMP_TYPE" == "minor" ]]; then
+  echo "Bumping chart minor version in ${CHART_PATH}..."
+else
+  echo "Bumping chart patch version in ${CHART_PATH}..."
+fi
 
 # --- 1. Verify Chart.yaml exists ---
 if [[ ! -f "$CHART_PATH" ]]; then
@@ -48,11 +62,19 @@ if ! [[ "$CURRENT_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-# --- 3. Calculate new chart version (bump patch version) ---
+# --- 3. Calculate new chart version (bump patch or minor version) ---
 # Parse the current chart version (e.g., 4.1.0 -> major=4, minor=1, patch=0)
 IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_CHART_VERSION"
-NEW_PATCH=$((PATCH + 1))
-NEW_CHART_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+
+if [[ "$BUMP_TYPE" == "minor" ]]; then
+  # Bump minor version and reset patch to 0 (e.g., 4.0.0 -> 4.1.0)
+  NEW_MINOR=$((MINOR + 1))
+  NEW_CHART_VERSION="${MAJOR}.${NEW_MINOR}.0"
+else
+  # Bump patch version (e.g., 4.1.0 -> 4.1.1)
+  NEW_PATCH=$((PATCH + 1))
+  NEW_CHART_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+fi
 
 echo "   -> New chart version will be: ${NEW_CHART_VERSION}"
 
@@ -72,9 +94,8 @@ echo "Updating ${CHART_PATH}..."
 
 # Escape any special characters in versions for sed (though semver should only have digits and dots)
 ESCAPED_CURRENT=$(echo "$CURRENT_CHART_VERSION" | sed 's/[.]/\\./g')
-ESCAPED_NEW=$(echo "$NEW_CHART_VERSION" | sed 's/[.]/\\./g')
 
-# Update version
-sed -i "s/^version: *${ESCAPED_CURRENT}$/version: ${ESCAPED_NEW}/" "$CHART_PATH"
+# Update version using a safer sed command with mixed quoting
+sed -i 's/^version: *'"${ESCAPED_CURRENT}"'$/version: '"${NEW_CHART_VERSION}"'/' "$CHART_PATH"
 
 echo "Successfully updated chart version to ${NEW_CHART_VERSION}"
