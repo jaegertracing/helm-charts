@@ -4,37 +4,20 @@
     "config:recommended",
     ":gitSignOff"
   ],
+  "dependencyDashboard": true,
   "packageRules": [
     {
+      "matchManagers": ["helm", "helm-requirements", "helm-values", "helmv3"],
       "matchFileNames": ["charts/**"],
+      "logLevel": "debug",
       "bumpVersions": [
         {
           "name": "Bump chart version",
-          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "filePatterns": ["charts/**/Chart.{yaml,yml}"],
           "matchStrings": ["^version:\\s(?<version>[^\\s]+)"],
           "bumpType": "patch"
         }
       ]
     }
-
-    // {
-    //   // Target any package update that affects the Helm chart (e.g., dependencies or images)
-    //   "matchManagers": ["helm-requirements", "helm-values", "helmfile"],
-    //   "matchPackageNames": ["*"],
-    //   "postUpgradeTasks": {
-    //     "commands": [
-    //       "renovate-bump"
-    //     ],
-    //     "bumpVersions": [
-    //       {
-    //         "bumpType": "patch"
-    //       }
-    //     ],
-    //     "fileFilters": [
-    //       "charts/**/Chart.yaml"
-    //     ],
-    //     "executionMode": "update"
-    //   }
-    // }
   ]
 }
