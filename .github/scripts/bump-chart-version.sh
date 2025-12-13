@@ -26,7 +26,13 @@ DRY_RUN="${DRY_RUN:-false}"
 
 echo "Bumping chart patch version in ${CHART_PATH}..."
 
-# --- 1. Get the current version from Chart.yaml ---
+# --- 1. Verify Chart.yaml exists ---
+if [[ ! -f "$CHART_PATH" ]]; then
+  echo "Error: Chart file '${CHART_PATH}' not found. Exiting."
+  exit 1
+fi
+
+# --- 2. Get the current version from Chart.yaml ---
 CURRENT_CHART_VERSION=$(grep '^version:' "$CHART_PATH" | sed 's/version: *//' | tr -d '"')
 
 echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
@@ -59,7 +65,11 @@ fi
 # --- 5. Update Chart.yaml using sed ---
 echo "Updating ${CHART_PATH}..."
 
+# Escape any special characters in versions for sed (though semver should only have digits and dots)
+ESCAPED_CURRENT=$(echo "$CURRENT_CHART_VERSION" | sed 's/[.]/\\./g')
+ESCAPED_NEW=$(echo "$NEW_CHART_VERSION" | sed 's/[.]/\\./g')
+
 # Update version
-sed -i "s/^version:.*/version: ${NEW_CHART_VERSION}/" "$CHART_PATH"
+sed -i "s/^version: *${ESCAPED_CURRENT}$/version: ${NEW_CHART_VERSION}/" "$CHART_PATH"
 
 echo "Successfully updated chart version to ${NEW_CHART_VERSION}"
