@@ -34,19 +34,7 @@ done
 # Default DRY_RUN to false if not set
 DRY_RUN="${DRY_RUN:-false}"
 
-if [[ "$BUMP_TYPE" == "minor" ]]; then
-  echo "Bumping chart minor version in ${CHART_PATH}..."
-else
-  echo "Bumping chart patch version in ${CHART_PATH}..."
-fi
-
-# --- 1. Verify Chart.yaml exists ---
-if [[ ! -f "$CHART_PATH" ]]; then
-  echo "Error: Chart file '${CHART_PATH}' not found. Exiting."
-  exit 1
-fi
-
-# --- 2. Get the current version from Chart.yaml ---
+# Get the current version from Chart.yaml
 CURRENT_CHART_VERSION=$(grep '^version:' "$CHART_PATH" | sed 's/version: *//' | tr -d '"') || true
 
 if [[ -z "$CURRENT_CHART_VERSION" ]]; then
@@ -56,13 +44,13 @@ fi
 
 echo "   -> Current chart version in ${CHART_PATH} is: ${CURRENT_CHART_VERSION}"
 
-# --- 2. Validate current version format (X.Y.Z) ---
+# Validate current version format (X.Y.Z)
 if ! [[ "$CURRENT_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Error: Current chart version '${CURRENT_CHART_VERSION}' does not match expected format X.Y.Z. Exiting."
   exit 1
 fi
 
-# --- 3. Calculate new chart version (bump patch or minor version) ---
+# Calculate new chart version (bump patch or minor version)
 # Parse the current chart version (e.g., 4.1.0 -> major=4, minor=1, patch=0)
 IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_CHART_VERSION"
 
@@ -78,7 +66,7 @@ fi
 
 echo "   -> New chart version will be: ${NEW_CHART_VERSION}"
 
-# --- 4. Handle dry run mode ---
+# Handle dry run mode
 if [[ "$DRY_RUN" == "true" ]]; then
   echo "=============================================="
   echo "DRY RUN MODE - No changes will be made"
@@ -89,7 +77,7 @@ if [[ "$DRY_RUN" == "true" ]]; then
   exit 0
 fi
 
-# --- 5. Update Chart.yaml using sed ---
+# Update Chart.yaml using sed
 echo "Updating ${CHART_PATH}..."
 
 # Escape any special characters in versions for sed (though semver should only have digits and dots)

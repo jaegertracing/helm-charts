@@ -30,7 +30,6 @@ jobs:
           ref: main
           
       - name: 🔍 Check for new Jaeger version
-        id: check_version
         run: bash ./.github/scripts/update-jaeger-version.sh
 
       - name: ⚙️ Configure Git
