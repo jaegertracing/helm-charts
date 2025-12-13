@@ -23,7 +23,7 @@ jobs:
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
     steps:
       - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Use the bot's PAT instead of the default GITHUB_TOKEN
           token: ${{ secrets.JAEGERTRACINGBOT_PAT }}
