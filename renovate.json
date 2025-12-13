@@ -13,7 +13,7 @@
         {
           "name": "Bump chart version",
           "filePatterns": ["charts/**/Chart.{yaml,yml}"],
-          "matchStrings": ["^version:\\s(?<version>[^\\s]+)"],
+          "matchStrings": ["(?:^|\\n)version:\\s*(?<version>[^\\s]+)"],
           "bumpType": "patch"
         }
       ]
