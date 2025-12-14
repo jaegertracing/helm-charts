@@ -266,6 +266,8 @@ helm install jaeger jaegertracing/jaeger \
     --set storage.type=elasticsearch
 ```
 
+The provisioned Elasticsearch dependency is configured without xpack security or TLS so Jaeger can connect over HTTP out of the box. If you want to enable HTTPS, set `storage.elasticsearch.scheme=https`, turn on `storage.elasticsearch.tls.enabled`, and provide a CA (or `storage.elasticsearch.tls.insecure=true` for testing). You can also re-enable xpack security via `elasticsearch.esConfig`.
+
 #### Elasticsearch Rollover
 
 If using the [Elasticsearch

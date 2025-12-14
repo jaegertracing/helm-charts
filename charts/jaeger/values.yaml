@@ -319,7 +319,8 @@ elasticsearch:
     password: changeme
   esConfig:
     elasticsearch.yml: |
-      xpack.security.enabled: true
+      # Security/TLS disabled so Jaeger can reach the provisioned cluster over HTTP by default.
+      xpack.security.enabled: false
 
 spark:
   enabled: false
