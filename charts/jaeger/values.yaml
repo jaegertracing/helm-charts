@@ -315,7 +315,6 @@ schema:
 # For configurable values of Elasticsearch when provisioned, see:
 # https://github.com/elastic/helm-charts/tree/main/elasticsearch
 elasticsearch:
-  fullnameOverride: elasticsearch
   replicas: 1
   minimumMasterNodes: 1
   roles:
