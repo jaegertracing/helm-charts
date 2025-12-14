@@ -24,16 +24,7 @@ jobs:
         with:
           version: v3.10.1
 
-      - name: Check for chart changes
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --config ct.yaml)
-          if [[ -n "$changed" ]]; then
-            echo "::set-output name=changed::true"
-          fi
-
       - run: make lint
-        if: steps.list-changed.outputs.changed == 'true'
 
   test-with-all-in-one:
     runs-on: ubuntu-latest
@@ -44,9 +35,7 @@ jobs:
 
       - uses: ./.github/actions/prepare-k8s
 
-      - name: Run chart-testing (install)
-        run: |
-          make test
+      - run: make test
 
   test-with-elasticsearch:
       runs-on: ubuntu-latest
