@@ -5,11 +5,8 @@ dependencies:
 - name: elasticsearch
   repository: https://helm.elastic.co
   version: 8.5.1
-- name: strimzi-kafka-operator
-  repository: https://strimzi.io/charts/
-  version: 0.45.0
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 2.31.4
-digest: sha256:1f5ff65f18d8afcc11949955b158db15c701b146710c805651403e0a602bad26
-generated: "2025-12-14T08:27:12.9696915-05:00"
+digest: sha256:d0beaceb47b883faf8d19180bb382925ffeaa02e6af60852877a5db547435d48
+generated: "2025-12-14T12:44:06.776735448-05:00"

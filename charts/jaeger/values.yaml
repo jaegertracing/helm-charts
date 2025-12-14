@@ -75,7 +75,6 @@ global:
 provisionDataStore:
   cassandra: false
   elasticsearch: false
-  kafka: false
 
 networkPolicy:
   enabled: false
@@ -235,12 +234,6 @@ storage:
       # How ES_TLS_CA variable will be set in the various components
       ca: /es-tls/ca-cert.pem
 
-  kafka:
-    brokers:
-      - kafka:9092
-    topic: jaeger_v1_test
-    authentication: none
-    extraEnv: []
   badger:
     ephemeral: true
     persistence:
@@ -262,10 +255,6 @@ cassandra:
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
 # End: Override values on the Cassandra subchart to customize for Jaeger
-
-# Strimzi Kafka Operator subchart defaults.
-# This chart deploys the operator only; you must supply Kafka CRs separately.
-kafka: {}
 
 # Begin: Default values for the various components of Jaeger
 # This chart has been based on the Kubernetes integration found in the following repo:

@@ -35,10 +35,6 @@ dependencies:
     version: 8.5.1
     repository: https://helm.elastic.co
     condition: provisionDataStore.elasticsearch
-  - name: strimzi-kafka-operator
-    version: 0.45.0
-    repository: https://strimzi.io/charts/
-    condition: provisionDataStore.kafka
   - name: common
     repository: https://charts.bitnami.com/bitnami
     version: 2.x.x
