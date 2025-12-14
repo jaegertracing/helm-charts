@@ -131,21 +131,19 @@ config:
 See more configuration examples in https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 ### Dependencies
 
-If installing with a dependency such as Elasticsearch and/or Kafka,
-their values can be shown by running:
+If installing with a dependency such as Elasticsearch and/or Kafka, their values can be shown by running:
 
 ```console
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm show values bitnami/elasticsearch
+helm repo add elastic https://helm.elastic.co
+helm show values elastic/elasticsearch
 ```
 
 ```console
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm show values bitnami/kafka
+helm repo add strimzi https://strimzi.io/charts/
+helm show values strimzi/strimzi-kafka-operator
 ```
 
-Please note, any dependency values must be nested within the key named after the
-chart, i.e. `elasticsearch`, `cassandra` and/or `kafka`.
+Please note, any dependency values must be nested within the key named after the chart (e.g., `elasticsearch`, `cassandra`, `kafka`).
 
 ## Storage
 
