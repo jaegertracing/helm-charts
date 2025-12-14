@@ -32,12 +32,12 @@ dependencies:
     repository: https://charts.helm.sh/incubator
     condition: provisionDataStore.cassandra
   - name: elasticsearch
-    version: 22.1.6
-    repository: https://charts.bitnami.com/bitnami
+    version: 8.5.1
+    repository: https://helm.elastic.co
     condition: provisionDataStore.elasticsearch
-  - name: kafka
-    version: 26.11.4
-    repository: https://charts.bitnami.com/bitnami
+  - name: strimzi-kafka-operator
+    version: 0.45.0
+    repository: https://strimzi.io/charts/
     condition: provisionDataStore.kafka
   - name: common
     repository: https://charts.bitnami.com/bitnami
