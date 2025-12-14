@@ -6,5 +6,8 @@ chart-repos:
   - incubator=https://charts.helm.sh/incubator
   - elastic=https://helm.elastic.co
   - bitnami=https://charts.bitnami.com/bitnami
+  - strimzi=https://strimzi.io/charts/
+validate-chart-schema: false
+validate-yaml: false
 helm-extra-args: --timeout=600s
 target-branch: main
