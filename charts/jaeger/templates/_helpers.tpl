@@ -156,7 +156,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
 {{- $host := .Values.storage.elasticsearch.host }}
 {{- if .Values.provisionDataStore.elasticsearch }}
-{{- $host = printf "%s-elasticsearch" .Release.Name }}
+{{- $host = printf "%s-elasticsearch-master" .Release.Name }}
 {{- end }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- end -}}
