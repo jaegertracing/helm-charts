@@ -6,7 +6,9 @@ chart-repos:
   - incubator=https://charts.helm.sh/incubator
   - elastic=https://helm.elastic.co
   - bitnami=https://charts.bitnami.com/bitnami
-validate-chart-schema: false
-validate-yaml: false
+validate-chart-schema: true
+validate-yaml: true
+chart-yaml-schema: etc/chart_schema.yaml
+lint-conf: etc/lintconf.yaml
 helm-extra-args: --timeout=600s
 target-branch: main
