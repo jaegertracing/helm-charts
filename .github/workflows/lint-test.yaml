@@ -10,33 +10,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v4
         with:
           version: v3.14.4
 
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.14'
 
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.8.0
+      - uses: helm/chart-testing-action@v2.8.0
         with:
           version: v3.10.1
 
-      - name: Run chart-testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --config ct.yaml)
-          if [[ -n "$changed" ]]; then
-            echo "::set-output name=changed::true"
-          fi
-
-      - name: Run chart-testing (lint)
-        run: ct lint --config ct.yaml
+      - run: make lint
 
   test-with-all-in-one:
     runs-on: ubuntu-latest
@@ -47,9 +35,8 @@ jobs:
 
       - uses: ./.github/actions/prepare-k8s
 
-      - name: Run chart-testing (install)
-        run: |
-          ct install --config ct.yaml 
+      - run: make test
+
   test-with-elasticsearch:
       runs-on: ubuntu-latest
       steps:
@@ -59,17 +46,4 @@ jobs:
 
         - uses: ./.github/actions/prepare-k8s
 
-        - name: Run chart-testing (install)
-          run: |
-            ct install --config ct.yaml \
-                --helm-extra-set-args " \
-                --set provisionDataStore.elasticsearch=true \
-                --set storage.type=elasticsearch \
-                --set elasticsearch.master.masterOnly=false \
-                --set elasticsearch.master.replicaCount=1 \
-                --set elasticsearch.data.replicaCount=0 \
-                --set elasticsearch.coordinating.replicaCount=0 \
-                --set elasticsearch.ingest.replicaCount=0 \
-                --set elasticsearch.clusterHealthCheckParams=wait_for_status=yellow&timeout=1s \
-                --set storage.elasticsearch.scheme=https \
-                --set storage.elasticsearch.tls.insecure=true"
+        - run: make test-es
