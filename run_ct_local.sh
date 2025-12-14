@@ -10,4 +10,6 @@ ct install --config ct.yaml \
     --set elasticsearch.data.replicaCount=0 \
     --set elasticsearch.coordinating.replicaCount=0 \
     --set elasticsearch.ingest.replicaCount=0 \
-    --set elasticsearch.clusterHealthCheckParams=wait_for_status=yellow&timeout=1s"
+    --set elasticsearch.clusterHealthCheckParams=wait_for_status=yellow&timeout=1s \
+    --set storage.elasticsearch.scheme=https \
+    --set storage.elasticsearch.tls.insecure=true"
