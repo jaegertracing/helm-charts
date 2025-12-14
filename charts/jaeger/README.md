@@ -18,7 +18,6 @@ This chart currently uses the **All-In-One** deployment architecture.
 
 ### Distributed / Microservices (Not Yet Supported)
 *   **Separate Collectors/Query:** Splitting the stack into separate microservices (e.g., a Deployment for Collectors and a separate Deployment for Query services) is **not currently supported** by this chart configuration.
-*   **Kafka/Ingester:** The `collector -> kafka -> ingester` pipeline is **not currently supported**.
 
 If you require a fully distributed architecture, you would need to manually create separate values files or fork this chart to create distinct Deployments for each role, utilizing the same Jaeger v2 binary but with different configurations (pipelines).
 
@@ -131,21 +130,14 @@ config:
 See more configuration examples in https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 ### Dependencies
 
-If installing with a dependency such as Elasticsearch and/or Kafka,
-their values can be shown by running:
+If installing with a dependency such as Elasticsearch, their values can be shown by running:
 
 ```console
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm show values bitnami/elasticsearch
+helm repo add elastic https://helm.elastic.co
+helm show values elastic/elasticsearch
 ```
 
-```console
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm show values bitnami/kafka
-```
-
-Please note, any dependency values must be nested within the key named after the
-chart, i.e. `elasticsearch`, `cassandra` and/or `kafka`.
+Please note, any dependency values must be nested within the key named after the chart (e.g., `elasticsearch`, `cassandra`).
 
 ## Storage
 
@@ -273,6 +265,8 @@ helm install jaeger jaegertracing/jaeger \
     --set provisionDataStore.elasticsearch=true \
     --set storage.type=elasticsearch
 ```
+
+The provisioned Elasticsearch dependency is configured without xpack security or TLS so Jaeger can connect over HTTP out of the box. If you want to enable HTTPS, set `storage.elasticsearch.scheme=https`, turn on `storage.elasticsearch.tls.enabled`, and provide a CA (or `storage.elasticsearch.tls.insecure=true` for testing). You can also re-enable xpack security via `elasticsearch.esConfig`.
 
 #### Elasticsearch Rollover
 
@@ -444,17 +438,3 @@ hotrod:
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
       value: http://my-otel-collector-opentelemetry-collector:4318
 ```
-
-## Updating Kafka to Kraft Mode
-
-In the Kafka Helm Chart version 24.0.0 major refactors were done to support Kraft mode. More information can be found [here](https://github.com/bitnami/charts/tree/main/bitnami/kafka#to-2400).
-
-#### Upgrading from Kraft mode
-
-If you are upgrading from Kraft mode, follow the instructions [here](https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode).
-
-#### Upgrading from Zookeeper mode
-
-If you are upgrading from Zookeeper mode, follow the instructions [here](https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode).
-
-After you complete the steps above, follow the instructions [here](https://github.com/bitnami/charts/tree/main/bitnami/kafka#migrating-from-zookeeper-early-access) to finally migrate from Zookeeper.

@@ -21,6 +21,22 @@ You can then run `helm search repo jaegertracing` to see the charts.
 See additional documentation:
   * [Jaeger chart](./charts/jaeger)
 
+### Running chart-testing locally
+
+The lint step requires `yamllint` to be available on your `PATH`. If you use a virtual environment (e.g., `.venv`), prepend its `bin` directory when invoking `ct lint`, for example:
+
+```bash
+PATH="$(pwd)/.venv/bin:$PATH" ct lint --config ct.yaml
+PATH="$(pwd)/.venv/bin:$PATH" ct lint --config ct.yaml
+```
+
+To run the full chart installation test locally (simulating the CI environment), you can use the provided helper script. This requires a running local Kubernetes cluster (e.g., Kind) and Docker.
+
+```bash
+./run_ct_local.sh
+```
+
+
 ## Contributing
 
 We'd love to have you contribute! Please refer to our [contribution guidelines](CONTRIBUTING.md) for details.

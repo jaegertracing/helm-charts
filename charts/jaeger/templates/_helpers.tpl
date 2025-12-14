@@ -156,7 +156,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
 {{- $host := .Values.storage.elasticsearch.host }}
 {{- if .Values.provisionDataStore.elasticsearch }}
-{{- $host = printf "%s-elasticsearch" .Release.Name }}
+{{- $es := .Values.elasticsearch }}
+{{- if $es.masterService }}
+{{- $host = $es.masterService }}
+{{- else if $es.fullnameOverride }}
+{{- $host = $es.fullnameOverride }}
+{{- else if $es.nameOverride }}
+{{- $host = printf "%s-master" $es.nameOverride }}
+{{- else -}}
+{{- $clusterName := default "elasticsearch" $es.clusterName }}
+{{- $host = printf "%s-master" $clusterName }}
+{{- end }}
 {{- end }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- end -}}

@@ -3,13 +3,10 @@ dependencies:
   repository: https://charts.helm.sh/incubator
   version: 0.15.3
 - name: elasticsearch
-  repository: https://charts.bitnami.com/bitnami
-  version: 22.1.6
-- name: kafka
-  repository: https://charts.bitnami.com/bitnami
-  version: 26.11.4
+  repository: https://helm.elastic.co
+  version: 8.5.1
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 2.31.4
-digest: sha256:e963de1745f8299641c3d48bb8cc87e71299c6ec95d2ee9d0aede67ed5573362
-generated: "2025-12-13T21:24:40.040423174Z"
+digest: sha256:d0beaceb47b883faf8d19180bb382925ffeaa02e6af60852877a5db547435d48
+generated: "2025-12-14T12:44:06.776735448-05:00"

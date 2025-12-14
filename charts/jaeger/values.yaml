@@ -75,7 +75,6 @@ global:
 provisionDataStore:
   cassandra: false
   elasticsearch: false
-  kafka: false
 
 networkPolicy:
   enabled: false
@@ -235,12 +234,6 @@ storage:
       # How ES_TLS_CA variable will be set in the various components
       ca: /es-tls/ca-cert.pem
 
-  kafka:
-    brokers:
-      - kafka:9092
-    topic: jaeger_v1_test
-    authentication: none
-    extraEnv: []
   badger:
     ephemeral: true
     persistence:
@@ -262,32 +255,6 @@ cassandra:
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
 # End: Override values on the Cassandra subchart to customize for Jaeger
-
-# Begin: Override values on the Kafka subchart to customize for Jaeger
-kafka:
-  listeners:
-    client:
-      protocol: PLAINTEXT
-    controller:
-      protocol: PLAINTEXT
-    interbroker:
-      protocol: PLAINTEXT
-    external:
-      protocol: PLAINTEXT
-  controller:
-    replicaCount: 3
-    extraConfig: |
-      auto.create.topics.enable=true
-# Zookeeper has been deprecated by Kafka in favor of Kraft Mode: https://developer.confluent.io/learn/kraft/
-# Documentation for upgrading Kafka and keeping Zookeeper: https://github.com/bitnami/charts/tree/main/bitnami/kafka#upgrading-from-zookeeper-mode
-# Documentation for migrating away from Zookeeper to Kraft Mode: https://github.com/bitnami/charts/tree/main/bitnami/kafka#migrating-from-zookeeper-early-access
-  # zookeeper:
-  #   enabled: false
-  #   replicaCount: 1
-  #   serviceAccount:
-  #     create: true
-
-# End: Override values on the Kafka subchart to customize for Jaeger
 
 # Begin: Default values for the various components of Jaeger
 # This chart has been based on the Kubernetes integration found in the following repo:
@@ -334,75 +301,26 @@ schema:
     # - name: DEPENDENCIES_TTL
     #   value: "0"
 
-# For configurable values of the elasticsearch if provisioned, please see:
-# https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
-# NOTE: The original Bitnami images under docker.io/bitnami/elasticsearch and docker.io/bitnami/os-shell used by chart version 20.0.4 are no longer available. The settings below override the subchart to use images that have been verified to work in testing.
+# For configurable values of Elasticsearch when provisioned, see:
+# https://github.com/elastic/helm-charts/tree/main/elasticsearch
 elasticsearch:
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/elasticsearch
-    tag: 9.1.2-debian-12-r0
-
-  master:
-    masterOnly: false
-
-  data:
-    replicaCount: 0
-
-  coordinating:
-    replicaCount: 0
-
-  ingest:
-    replicaCount: 0
-
-  sysctlImage:
-    registry: docker.io
-    repository: bitnami/os-shell
-    tag: latest
-
-  volumePermissions:
-    enabled: true
-    image:
-      registry: docker.io
-      repository: bitnami/os-shell
-      tag: latest
-
-# Original Bitnami example kept for reference:
-# elasticsearch:
-#   fullnameOverride: "elasticsearch"
-#   image:
-#     registry: ""
-#     repository: docker.io/bitnami/elasticsearch
-#     tag: ""
-#   master:
-#     masterOnly: false
-#     replicaCount: 3
-#     extraEnvVars:
-#       - name: ES_JAVA_OPTS
-#         value: "-Xmx20g -Xms20g"
-#     persistence:
-#       enabled: true
-#       storageClass: managed-premium
-#       accessModes: [ "ReadWriteOnce" ]
-#       size: 100gb
-#   extraConfig:
-#     cluster.max_shards_per_node: 3000
-#   sysctlImage:
-#     registry: ""
-#     repository: docker.io/bitnami/os-shell
-#     tag: 12-debian-12-r18
-#   volumePermissions:
-#     enabled: true
-#     image:
-#       registry: ""
-#       repository: docker.io/bitnami/os-shell
-#       tag: 12-debian-12-r18
-#   data:
-#     replicaCount: 0
-#   coordinating:
-#     replicaCount: 0
-#   ingest:
-    # replicaCount: 0
+  replicas: 1
+  minimumMasterNodes: 1
+  roles:
+    - master
+    - data
+    - ingest
+    - ml
+    - transform
+    - remote_cluster_client
+  volumeClaimTemplate:
+    enabled: false
+  secret:
+    password: changeme
+  esConfig:
+    elasticsearch.yml: |
+      # Security/TLS disabled so Jaeger can reach the provisioned cluster over HTTP by default.
+      xpack.security.enabled: false
 
 spark:
   enabled: false
