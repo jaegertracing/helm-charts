@@ -26,14 +26,14 @@ See additional documentation:
 The lint step requires `yamllint` to be available on your `PATH`. If you use a virtual environment (e.g., `.venv`), prepend its `bin` directory when invoking `ct lint`, for example:
 
 ```bash
-PATH="$(pwd)/.venv/bin:$PATH" ct lint --config ct.yaml
-PATH="$(pwd)/.venv/bin:$PATH" ct lint --config ct.yaml
+PATH="$(pwd)/.venv/bin:$PATH" make lint
 ```
 
-To run the full chart installation test locally (simulating the CI environment), you can use the provided helper script. This requires a running local Kubernetes cluster (e.g., Kind) and Docker.
+To run the chart installation tests locally (simulating the CI environment), use the Makefile targets. These require a running local Kubernetes cluster (e.g., Kind) and Docker:
 
 ```bash
-./run_ct_local.sh
+make test      # default install suite
+make test-es   # Elasticsearch-provisioned suite
 ```
 
 
