@@ -199,40 +199,9 @@ storage:
       # cassandra.keyspace: jaeger_v1_test
       # cassandra.tls.enabled: "false"
   elasticsearch:
-    scheme: http
-    host: elasticsearch-master
-    port: 9200
-    anonymous: false
-    user: elastic
-    usePassword: true
-    password: changeme
-    # indexPrefix: test
-    ## Use existing secret (ignores previous password)
-    # existingSecret:
-    # existingSecretKey:
-    nodesWanOnly: false
-    extraEnv: []
-    ## ES related env vars to be configured on the concerned components
-    # - name: ES_SERVER_URLS
-    #   value: http://elasticsearch-master:9200
-    # - name: ES_USERNAME
-    #   value: elastic
-    # - name: ES_INDEX_PREFIX
-    #   value: test
-    ## ES related cmd line opts to be configured on the concerned components
-    cmdlineParams:
-      {}
-      # es.server-urls: http://elasticsearch-master:9200
-      # es.username: elastic
-      # es.index-prefix: test
-    tls:
-      enabled: false
-      secretName: es-tls-secret
-      # The mount properties of the secret
-      mountPath: /es-tls/ca-cert.pem
-      subPath: ca-cert.pem
-      # How ES_TLS_CA variable will be set in the various components
-      ca: /es-tls/ca-cert.pem
+    # Deprecated: use extraEnv
+    # indexPrefix: jaeger
+    # serverUrls: http://elasticsearch:9200
 
   badger:
     ephemeral: true
@@ -517,81 +486,5 @@ esLookback:
   # ttlSecondsAfterFinished: 120
 # End: Default values for the various components of Jaeger
 
-hotrod:
-  enabled: false
-  podSecurityContext: {}
-  securityContext: {}
-  replicaCount: 1
-  # set the primary command(s) for the hotrod application
-  args:
-    - all
-  # add extra arguments to the hotrod application to customize tracing
-  extraArgs: []
-  #   - --otel-exporter=otlp
-  #   - --jaeger-ui=http://jaeger.chart.local
-  # add extra environment variables to the hotrod application
-  extraEnv: []
-  #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
-  #     value: http://my-otel-collector.chart.local:4318
-  image:
-    registry: ""
-    repository: jaegertracing/example-hotrod
-    tag: ""
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  service:
-    annotations: {}
-    name: hotrod
-    type: ClusterIP
-    # List of IP ranges that are allowed to access the load balancer (if supported)
-    loadBalancerSourceRanges: []
-    port: 80
-  ingress:
-    enabled: false
-    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    # ingressClassName: nginx
-    # Used to create Ingress record (should be used with service.type: ClusterIP).
-    hosts:
-      - chart-example.local
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    tls:
-      # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
-      #   hosts:
-      #     - chart-example.local
-    pathType:
-  resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-  serviceAccount:
-    create: true
-    # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: false
-    annotations: {}
-    name:
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  tracing:
-    host: null
-    port: 6831
-  livenessProbe:
-    path: /
-  readinessProbe:
-    path: /
 # Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
 extraObjects: []

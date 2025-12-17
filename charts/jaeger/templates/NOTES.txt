@@ -1,12 +1,17 @@
-
 ###################################################################
-### IMPORTANT: Ensure that storage is explicitly configured     ###
-### Default storage options are subject to change.              ###
+### IMPORTANT: BROKEN CHANGES IN v5.0.0                         ###
+###                                                             ###
+### This is a major refactor. Deprecated components removed:    ###
+### - HotROD                                                    ###
+### - Bespoke Elasticsearch config (use extraEnv)               ###
+### - Legacy deployment modes                                   ###
+###                                                             ###
+### See README.md for migration guide.                          ###
 ###################################################################
 
-🚀 Congratulations on successfully installing / upgrading Jaeger v{{ .Chart.AppVersion }}!
+🚀 Congratulations on successfully installing Jaeger v{{ .Chart.AppVersion }} (Chart v{{ .Chart.Version }})!
 
-📊 You can log into the Jaeger Query UI here:
+To access the query UI:
 
 {{- if .Values.allInOne.ingress.enabled }}
   {{- range .Values.allInOne.ingress.hosts }}
@@ -14,6 +19,6 @@
   {{- end }}
 {{- else }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=all-in-one" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:16686/
+  echo "Visit http://127.0.0.1:16686/"
   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 16686:16686
 {{- end }}

@@ -44,8 +44,10 @@ spec:
           - name: {{ include "jaeger.fullname" . }}-spark
             image: {{ include "spark.image" . }}
             imagePullPolicy: {{ .Values.spark.image.pullPolicy }}
+            {{- if .Values.spark.cmdlineParams }}
             args:
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.spark.cmdlineParams ) | nindent 14  }}
+            {{- end }}
             env:
               - name: STORAGE
                 value: {{ .Values.storage.type }}
@@ -57,14 +59,10 @@ spec:
               - name: CASSANDRA_CONTACT_POINTS
                 value: {{ include "cassandra.contact_points" . }}
             {{- end }}
-            {{- if eq .Values.storage.type "elasticsearch" }}
-              - name: ES_NODES
-                value: {{ include "elasticsearch.client.url" . }}
-              - name: ES_NODES_WAN_ONLY
-                value: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
-            {{- end }}
+            # Elasticsearch configuration (ES_NODES, ES_NODES_WAN_ONLY) must be provided via extraEnv
             resources:
               {{- toYaml .Values.spark.resources | nindent 14 }}
+            {{- if or .Values.spark.extraConfigmapMounts .Values.spark.extraSecretMounts }}
             volumeMounts:
             {{- range .Values.spark.extraConfigmapMounts }}
               - name: {{ .name }}
@@ -78,9 +76,11 @@ spec:
                 subPath: {{ .subPath }}
                 readOnly: {{ .readOnly }}
             {{- end }}
+            {{- end }}
             securityContext:
               {{- toYaml .Values.spark.securityContext | nindent 14 }}
           restartPolicy: OnFailure
+          {{- if or .Values.spark.extraConfigmapMounts .Values.spark.extraSecretMounts }}
           volumes:
           {{- range .Values.spark.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -91,6 +91,7 @@ spec:
             - name: {{ .name }}
               secret:
                 secretName: {{ .secretName }}
+          {{- end }}
           {{- end }}
         {{- with .Values.spark.nodeSelector }}
           nodeSelector:
@@ -104,4 +105,20 @@ spec:
           tolerations:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+{{- end -}}
+
+{{- if and .Values.spark.enabled .Values.spark.serviceAccount.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "jaeger.spark.serviceAccountName" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: spark
+  {{- with .Values.spark.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+automountServiceAccountToken: {{ .Values.spark.serviceAccount.automountServiceAccountToken }}
 {{- end -}}
