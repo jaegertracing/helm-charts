@@ -239,13 +239,41 @@ memory related environment variables
 
 
 {{/*
+Elasticsearch related environment variables
+*/}}
+{{- define "elasticsearch.env" -}}
+{{- if .Values.provisionDataStore.elasticsearch }}
+{{- $es := .Values.storage.elasticsearch | default dict -}}
+{{- $scheme := $es.scheme | default "http" -}}
+{{- $port := $es.port | default 9200 -}}
+{{- $user := $es.user | default "elastic" -}}
+{{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
+- name: ES_SERVER_URLS
+  value: "{{ $scheme }}://elasticsearch-master:{{ $port }}"
+- name: ES_USERNAME
+  value: {{ $user | quote }}
+- name: ES_PASSWORD
+  value: {{ $password | quote }}
+{{- /* Handle TLS insecurity */ -}}
+{{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
+  {{- if $es.tls }}
+    {{- if $es.tls.insecure }}
+- name: ES_TLS_SKIP_HOST_VERIFY
+  value: "true"
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment variables depending on which is used
 */}}
 {{- define "storage.env" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
 {{ include "cassandra.env" . }}
-{{- else if eq .Values.storage.type "elasticsearch" -}}
-# No specific helper, usage depends on extraEnv
+{{- else if or (eq .Values.storage.type "elasticsearch") .Values.provisionDataStore.elasticsearch -}}
+{{ include "elasticsearch.env" . }}
 {{- else if or (eq .Values.storage.type "grpc-plugin") (eq .Values.storage.type "grpc") -}}
 {{ include "grpcPlugin.env" . }}
 {{- else if eq .Values.storage.type "badger" -}}
