@@ -7,7 +7,7 @@ chart-repos:
   - elastic=https://helm.elastic.co
   - bitnami=https://charts.bitnami.com/bitnami
 validate-chart-schema: true
-validate-yaml: false
+validate-yaml: true
 chart-yaml-schema: etc/chart_schema.yaml
 lint-conf: etc/lintconf.yaml
 helm-extra-args: --timeout=600s
