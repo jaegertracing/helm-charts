@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jaeger.fullname" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: all-in-one
+    {{- if .Values.allInOne.service.annotations }}
+    {{- toYaml .Values.allInOne.service.annotations | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if .Values.allInOne.service.annotations }}
+    {{- toYaml .Values.allInOne.service.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.allInOne.service.type | default "ClusterIP" }}
+  {{- if .Values.allInOne.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{ toYaml .Values.allInOne.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  ports:
+    # Agent Ports
+    - name: zk-compact-trft
+      port: 5775
+      protocol: UDP
+      targetPort: 5775
+    - name: config-rest
+      port: 5778
+      targetPort: 5778
+    - name: jg-compact-trft
+      port: 6831
+      protocol: UDP
+      targetPort: 6831
+    - name: jg-binary-trft
+      port: 6832
+      protocol: UDP
+      targetPort: 6832
+    # Collector Ports
+    - name: http-zipkin
+      port: 9411
+      targetPort: 9411
+      appProtocol: http
+    - name: grpc-http
+      port: 14250
+      targetPort: 14250
+      appProtocol: grpc
+    - name: c-tchan-trft
+      port: 14267
+      targetPort: 14267
+    - name: http-c-binary-trft
+      port: 14268
+      targetPort: 14268
+      appProtocol: http
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      appProtocol: grpc
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      appProtocol: http
+    # Query Ports
+    - name: http-query
+      port: 16686
+      targetPort: 16686
+    - name: grpc-query
+      port: 16685
+      targetPort: 16685
+  selector:
+    {{- include "jaeger.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: all-in-one
