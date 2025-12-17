@@ -54,6 +54,7 @@ spec:
               # {{ include "elasticsearch.client.url" . }} 
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esIndexCleaner.cmdlineParams ) | nindent 14  }}
             env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
             {{- if .Values.esIndexCleaner.extraEnv }}
               {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}
             {{- end }}
@@ -184,6 +185,7 @@ spec:
               # {{ include "elasticsearch.client.url" . }}
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 14  }}
             env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
               {{- if .Values.esRollover.extraEnv }}
                 {{- toYaml .Values.esRollover.extraEnv | nindent 14 }}
               {{- end }}
@@ -303,6 +305,7 @@ spec:
               # {{ include "elasticsearch.client.url" . }}
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esLookback.cmdlineParams ) | nindent 14  }}
             env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
               {{- if .Values.esLookback.extraEnv }}
                 {{- toYaml .Values.esLookback.extraEnv | nindent 14 }}
               {{- end }}
