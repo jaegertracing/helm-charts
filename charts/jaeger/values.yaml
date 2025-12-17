@@ -283,7 +283,10 @@ elasticsearch:
     - transform
     - remote_cluster_client
   volumeClaimTemplate:
-    enabled: false
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 30Gi
   secret:
     password: changeme
   esConfig:

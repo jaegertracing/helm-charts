@@ -30,9 +30,23 @@ data:
       jaeger_storage:
         backends:
           primary_store:
-            {{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
-            # Automatic ES config generation removed. Use userconfig or extraEnv.
-            {{- else if or .Values.provisionDataStore.cassandra (eq .Values.storage.type "cassandra") }}
+            {{ if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
+            {{- $es := .Values.storage.elasticsearch | default dict -}}
+            {{- $scheme := $es.scheme | default "http" -}}
+            {{- $port := $es.port | default 9200 -}}
+            {{- $user := $es.user | default "elastic" -}}
+            {{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
+            elasticsearch:
+              server_urls: ["{{ $scheme }}://{{ $user }}:{{ $password }}@elasticsearch-master:{{ $port }}"]
+              {{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
+              tls:
+                {{- if $es.tls }}
+                insecure: {{ $es.tls.insecure }}
+                {{- else }}
+                insecure: true
+                {{- end }}
+              {{- end }}
+            {{ else if or .Values.provisionDataStore.cassandra (eq .Values.storage.type "cassandra") }}
             cassandra:
               connection:
                 servers: 
@@ -49,14 +63,28 @@ data:
               schema:
                 keyspace: {{ .Values.storage.cassandra.keyspace }}
                 replication_factor: 1
-            {{- end }}
+            {{ end }}
           archive_store:
-            {{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
-            # Automatic ES config generation removed. Use userconfig or extraEnv.
-            {{- else }}
+            {{ if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
+            {{- $es := .Values.storage.elasticsearch | default dict -}}
+            {{- $scheme := $es.scheme | default "http" -}}
+            {{- $port := $es.port | default 9200 -}}
+            {{- $user := $es.user | default "elastic" -}}
+            {{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
+            elasticsearch:
+              server_urls: ["{{ $scheme }}://{{ $user }}:{{ $password }}@elasticsearch-master:{{ $port }}"]
+              {{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
+              tls:
+                {{- if $es.tls }}
+                insecure: {{ $es.tls.insecure }}
+                {{- else }}
+                insecure: true
+                {{- end }}
+              {{- end }}
+            {{ else }}
             memory:
               max_traces: 100000
-            {{- end }}
+            {{ end }}
 
     receivers:
       otlp:
