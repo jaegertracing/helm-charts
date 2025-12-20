@@ -22,7 +22,7 @@ test-es:
 		--set elasticsearch.coordinating.replicaCount=0 \
 		--set elasticsearch.ingest.replicaCount=0 \
 		--set elasticsearch.clusterHealthCheckParams=wait_for_status=yellow&timeout=10s \
-		--set elasticsearch.readinessProbe.initialDelaySeconds=20 \
-		--set elasticsearch.readinessProbe.failureThreshold=5 \
+		--set elasticsearch.readinessProbe.initialDelaySeconds=60 \
+		--set elasticsearch.readinessProbe.failureThreshold=10 \
 		--set storage.elasticsearch.scheme=https \
 		--set storage.elasticsearch.tls.insecure=true"
