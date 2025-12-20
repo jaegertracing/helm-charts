@@ -34,18 +34,18 @@ config:
       backends:
         primary_store:
           elasticsearch:
-            index_prefix: jaeger
+            # index_prefix: jaeger
             server_urls: ["http://elasticsearch-master:9200"]
-            username: elastic
-            password: changeme
+            # username: elastic
+            # password: changeme
           memory:
             max_traces: 100000
         archive_store:
           elasticsearch:
-            index_prefix: jaeger-archive
+            # index_prefix: jaeger-archive
             server_urls: ["http://elasticsearch-master:9200"]
-            username: elastic
-            password: changeme
+            # username: elastic
+            # password: changeme
           memory:
             max_traces: 100000
 
@@ -96,8 +96,7 @@ allInOne:
     pullPolicy: IfNotPresent
     pullSecrets: []
   extraEnv: []
-  extraSecretMounts:
-    []
+  extraSecretMounts: []
     # - name: jaeger-tls
     #   mountPath: /tls
     #   subPath: ""
@@ -178,8 +177,7 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     ## Cassandra related env vars to be configured on the concerned components
-    extraEnv:
-      []
+    extraEnv: []
       # - name: CASSANDRA_SERVERS
       #   value: cassandra
       # - name: CASSANDRA_PORT
@@ -189,8 +187,7 @@ storage:
       # - name: CASSANDRA_TLS_ENABLED
       #   value: "false"
     ## Cassandra related cmd line opts to be configured on the concerned components
-    cmdlineParams:
-      {}
+    cmdlineParams: {}
       # cassandra.servers: cassandra
       # cassandra.port: 9042
       # cassandra.keyspace: jaeger_v1_test
@@ -268,8 +265,7 @@ spark:
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -308,16 +304,14 @@ esIndexCleaner:
     pullPolicy: IfNotPresent
     pullSecrets: []
   cmdlineParams: {}
-  extraEnv:
-    []
+  extraEnv: []
     # - name: ROLLOVER
     #   value: 'true'
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -363,8 +357,7 @@ esRollover:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -387,8 +380,7 @@ esRollover:
   podLabels: {}
   # ttlSecondsAfterFinished: 120
   initHook:
-    extraEnv:
-      []
+    extraEnv: []
       # - name: SHARDS
       #   value: "3"
     annotations: {}
@@ -419,8 +411,7 @@ esLookback:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
