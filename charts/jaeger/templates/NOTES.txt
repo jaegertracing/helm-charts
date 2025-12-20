@@ -1,12 +1,10 @@
 ###################################################################
-### IMPORTANT: BROKEN CHANGES IN v5.0.0                         ###
+### ⚠️  EXPERIMENTAL - NO STABILITY GUARANTEES                  ###
 ###                                                             ###
-### This is a major refactor. Deprecated components removed:    ###
-### - HotROD                                                    ###
-### - Bespoke Elasticsearch config (use extraEnv)               ###
-### - Legacy deployment modes                                   ###
+### This chart is under active development.                     ###
+### Breaking changes may occur in minor versions.               ###
 ###                                                             ###
-### See README.md for migration guide.                          ###
+### See README.md for configuration details.                    ###
 ###################################################################
 
 🚀 Congratulations on successfully installing Jaeger v{{ .Chart.AppVersion }} (Chart v{{ .Chart.Version }})!

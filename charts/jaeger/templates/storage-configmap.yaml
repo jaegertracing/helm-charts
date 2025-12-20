@@ -1,4 +1,4 @@
-{{- if (and (not .Values.userconfig) (or .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch"))) }}
+{{- if (and (not .Values.userconfig) (or .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra"))) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,107 +9,22 @@ metadata:
 data:
   user-config.yaml: |
     service:
-      extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+      extensions: {{ include "jaeger.serviceExtensions" . }}
       pipelines:
         traces:
-          receivers: [otlp, jaeger, zipkin]
-          processors: [batch]
-          exporters: [jaeger_storage_exporter]
+          receivers: {{ include "jaeger.serviceReceivers" . }}
+          processors: {{ include "jaeger.serviceProcessors" . }}
+          exporters: {{ include "jaeger.serviceExporters" . }}
 
     extensions:
-      healthcheckv2:
-        use_v2: true
-        http:
-            endpoint: 0.0.0.0:13133
-
-      jaeger_query:
-        storage:
-          traces: primary_store
-          traces_archive: archive_store
-
-      jaeger_storage:
-        backends:
-          primary_store:
-            {{ if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
-            {{- $es := .Values.storage.elasticsearch | default dict -}}
-            {{- $scheme := $es.scheme | default "http" -}}
-            {{- $port := $es.port | default 9200 -}}
-            {{- $user := $es.user | default "elastic" -}}
-            {{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
-            elasticsearch:
-              server_urls: ["{{ $scheme }}://{{ $user }}:{{ $password }}@elasticsearch-master:{{ $port }}"]
-              {{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
-              tls:
-                {{- if $es.tls }}
-                insecure: {{ $es.tls.insecure }}
-                {{- else }}
-                insecure: true
-                {{- end }}
-              {{- end }}
-            {{ else if or .Values.provisionDataStore.cassandra (eq .Values.storage.type "cassandra") }}
-            cassandra:
-              connection:
-                servers: 
-                  - jaeger-cassandra-0.jaeger-cassandra.{{ include "jaeger.namespace" . }}.svc.cluster.local
-                port: {{ .Values.storage.cassandra.port }}
-                {{- if .Values.storage.cassandra.username }}
-                auth:
-                  basic:
-                    username: {{ .Values.storage.cassandra.username }}
-                    password: {{ .Values.storage.cassandra.password }}
-                {{- end }}
-                tls:
-                  insecure: true
-              schema:
-                keyspace: {{ .Values.storage.cassandra.keyspace }}
-                replication_factor: 1
-            {{ end }}
-          archive_store:
-            {{ if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") }}
-            {{- $es := .Values.storage.elasticsearch | default dict -}}
-            {{- $scheme := $es.scheme | default "http" -}}
-            {{- $port := $es.port | default 9200 -}}
-            {{- $user := $es.user | default "elastic" -}}
-            {{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
-            elasticsearch:
-              server_urls: ["{{ $scheme }}://{{ $user }}:{{ $password }}@elasticsearch-master:{{ $port }}"]
-              {{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
-              tls:
-                {{- if $es.tls }}
-                insecure: {{ $es.tls.insecure }}
-                {{- else }}
-                insecure: true
-                {{- end }}
-              {{- end }}
-            {{ else }}
-            memory:
-              max_traces: 100000
-            {{ end }}
+{{ include "jaeger.extensionsConfig" . }}
 
     receivers:
-      otlp:
-        protocols:
-          grpc:
-            endpoint: 0.0.0.0:4317
-          http: 
-            endpoint: 0.0.0.0:4318
-      jaeger:
-        protocols:
-          grpc:
-            endpoint: 0.0.0.0:14250
-          thrift_http:
-            endpoint: 0.0.0.0:14268
-          thrift_compact:
-            endpoint: 0.0.0.0:6831
-          thrift_binary:
-            endpoint: 0.0.0.0:6832
-      zipkin:
-        endpoint: 0.0.0.0:9411
+{{ include "jaeger.receiversConfig" . }}
 
     processors:
-      batch:
+{{ include "jaeger.processorsConfig" . }}
 
     exporters:
-      jaeger_storage_exporter:
-        trace_storage: primary_store
+{{ include "jaeger.exportersConfig" . }}
 {{- end }}
