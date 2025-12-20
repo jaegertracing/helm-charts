@@ -52,17 +52,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
-Create the name of the cassandra schema service account to use
-*/}}
-{{- define "jaeger.cassandraSchema.serviceAccountName" -}}
-{{- if .Values.schema.serviceAccount.create -}}
-  {{ default (printf "%s-cassandra-schema" (include "jaeger.fullname" .)) .Values.schema.serviceAccount.name }}
-{{- else -}}
-  {{ default "default" .Values.schema.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create the name of the spark service account to use
 */}}
 {{- define "jaeger.spark.serviceAccountName" -}}
@@ -402,21 +391,6 @@ Create pull secrets for all-in-one image
 {{- define "allInOne.imagePullSecrets" -}}
 {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.allInOne.image) "context" $) -}}
 {{- end }}
-
-{{/*
-Create image name for schema image
-*/}}
-{{- define "schema.image" -}}
-{{- include "renderImage" ( dict "imageRoot" .Values.schema.image "context" $ ) -}}
-{{- end -}}
-
-{{/*
-Create pull secrets for schema image
-*/}}
-{{- define "schema.imagePullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.schema.image) "context" $) -}}
-{{- end }}
-
 
 {{/*
 Create image name for spark image

@@ -1,16 +1,16 @@
 # Jaeger Helm Chart
 
+> ⚠️ **Experimental**: This chart is under active development with no stability guarantees. Breaking changes may occur in minor versions.
+
 [Jaeger](https://www.jaegertracing.io/) is a distributed tracing system. This chart deploys Jaeger v2 using a unified "All-In-One" architecture built on the OpenTelemetry Collector framework.
 
-## ⚠️ Breaking Changes in v5.0.0
+## Changes in v4.2.0
 
-This release (v5.0.0) is a major refactor designed to simplify operation and configuration.
+This release is a refactor designed to simplify operation and configuration.
 
-- **Unified Architecture**: All functionality (Collector, Query, Ingester) is now provided by a single "All-in-One" deployment. Legacy split deployments are removed.
-- **Configuration Simplification**:
-    - **Elasticsearch**: The bespoke `storage.elasticsearch.*` configuration DSL has been **removed**. You must now configure connection details using standard environment variables (e.g., `ES_SERVER_URLS` via `allInOne.extraEnv`).
-    - **Spark**: Configuration for Spark dependencies job now requires manual environment variable setup via `spark.extraEnv`. The automatic connection logic has been removed.
-- **Component Removal**: The **HotROD** example application has been removed from the chart.
+- **Unified Architecture**: All functionality (Collector, Query, Ingester) is now provided by a single "All-in-One" deployment.
+- **Configuration**: Storage is configured via the `config.extensions.jaeger_storage` section using native Jaeger/OTEL config syntax.
+- **Cassandra Schema**: Jaeger v2 handles schema creation internally. The legacy schema job has been removed.
 - **Service Consolidation**: A single Service now exposes all ports (agent, collector, query).
 
 ## Architecture
@@ -41,46 +41,61 @@ helm install jaeger jaegertracing/jaeger
 ```
 
 ### 2. Elasticsearch (Production Recommended)
-Configure Jaeger to connect to an existing Elasticsearch cluster using `extraEnv`.
+Configure Jaeger to connect to Elasticsearch using the native config syntax.
 
 **values.yaml Example:**
 ```yaml
-allInOne:
-  extraEnv:
-    - name: SPAN_STORAGE_TYPE
-      value: elasticsearch
-    - name: ES_SERVER_URLS
-      value: http://elasticsearch:9200
-    - name: ES_USERNAME
-      value: elastic
-    - name: ES_PASSWORD
-      value: changeme
+# Use the provisioned Elasticsearch subchart
+provisionDataStore:
+  elasticsearch: true
+
+# Or connect to an external Elasticsearch cluster by customizing the config:
+config:
+  extensions:
+    jaeger_storage:
+      backends:
+        primary_store:
+          elasticsearch:
+            server_urls: ["http://elasticsearch:9200"]
+            username: elastic
+            password: changeme
 ```
 
 **Running Maintenance Jobs:**
-To run Index Cleaner or Rollover jobs, enable them and provide connection details:
+To run Index Cleaner or Rollover jobs, enable them. They auto-configure when `provisionDataStore.elasticsearch` is enabled:
 ```yaml
 esIndexCleaner:
   enabled: true
-  extraEnv:
-    - name: ES_SERVER_URLS
-      value: http://elasticsearch:9200
 ```
 
 ### 3. Cassandra
-To use Cassandra storage:
+Cassandra support in Jaeger v2 is limited. To use Cassandra storage, configure via the native config syntax:
+
+**values.yaml Example:**
 ```yaml
 storage:
   type: cassandra
-  cassandra:
-    host: cassandra-host
-    port: 9042
-    keyspace: jaeger_v1_test
+
+config:
+  extensions:
+    jaeger_storage:
+      backends:
+        primary_store:
+          cassandra:
+            connection:
+              servers:
+                - cassandra-host
+              port: 9042
+            schema:
+              keyspace: jaeger_v1_test
 ```
-*Note: The chart includes a Schema Job that runs automatically if `storage.type` is `cassandra`.*
+
+> **Note**: The legacy Cassandra schema job has been removed. Jaeger v2 handles schema creation internally.
 
 ### 4. Spark Dependencies
+
 To run the Spark dependencies job (for dependency links graph):
+
 ```yaml
 spark:
   enabled: true
@@ -92,6 +107,7 @@ spark:
 ```
 
 ## Configuring the Collector
+
 The Jaeger v2 configuration is defined in `config` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.
 
 ```yaml
@@ -105,7 +121,9 @@ config:
 ```
 
 ## Ports
+
 The unified Service exposes the following ports:
+
 - **Query UI**: 16686, 16685 (gRPC)
 - **OTLP**: 4317 (gRPC), 4318 (HTTP)
 - **Jaeger**: 14250 (gRPC), 14268 (HTTP), 6831/6832 (UDP)

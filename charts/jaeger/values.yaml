@@ -168,9 +168,6 @@ storage:
   cassandra:
     host: cassandra
     port: 9042
-    # Change this value to false if you want to avoid starting the
-    # -cassandra-schema Job
-    schemaJobEnabled: true
     tls:
       enabled: false
       secretName: cassandra-tls-secret
@@ -228,47 +225,6 @@ cassandra:
 # Begin: Default values for the various components of Jaeger
 # This chart has been based on the Kubernetes integration found in the following repo:
 # https://github.com/jaegertracing/jaeger-kubernetes/blob/main/production/jaeger-production-template.yml
-#
-# This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
-# use by Jaeger
-schema:
-  annotations: {}
-  tolerations: []
-  image:
-    registry: ""
-    repository: jaegertracing/jaeger-cassandra-schema
-    tag: "1.76.0"
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  resources:
-    {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #   cpu: 256m
-    #   memory: 128Mi
-  serviceAccount:
-    create: true
-    # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
-    name:
-  podAnnotations: {}
-  podLabels: {}
-  securityContext: {}
-  podSecurityContext: {}
-  nodeSelector: {}
-  ## Deadline for cassandra schema creation job
-  activeDeadlineSeconds: 300
-  extraEnv:
-    []
-    # - name: MODE
-    #   value: prod
-    # - name: TRACE_TTL
-    #   value: "172800"
-    # - name: DEPENDENCIES_TTL
-    #   value: "0"
 
 # For configurable values of Elasticsearch when provisioned, see:
 # https://github.com/elastic/helm-charts/tree/main/elasticsearch
