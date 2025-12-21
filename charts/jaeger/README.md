@@ -20,6 +20,22 @@ This chart uses the **All-In-One** deployment model.
 - **Stateless**: Can connect to external persistent storage (Elasticsearch, Cassandra) for production use.
 - **Default**: Memory storage (ephemeral), suitable for testing.
 
+## Overriding the Jaeger Version
+
+You can customize the Jaeger image and tag using the following values:
+
+```yaml
+allInOne:
+  image:
+    repository: jaegertracing/jaeger
+    tag: "2.2.0"  # Override the default version
+```
+
+Or globally:
+```yaml
+tag: "2.2.0"  # Applies to all components
+```
+
 ## Installing the Chart
 
 Add the Jaeger Tracing Helm repository:
@@ -69,7 +85,7 @@ esIndexCleaner:
 ```
 
 ### 3. Cassandra
-Cassandra support in Jaeger v2 is limited. To use Cassandra storage, configure via the native config syntax:
+This chart does not provision a Cassandra cluster. To use Cassandra storage, you must provide your own Cassandra instance and configure Jaeger via the native config syntax:
 
 **values.yaml Example:**
 ```yaml
@@ -105,6 +121,8 @@ spark:
     - name: ES_NODES_WAN_ONLY
       value: "true"
 ```
+
+For a full list of supported environment variables, see the [Spark Dependencies README](https://github.com/jaegertracing/spark-dependencies#readme).
 
 ## Configuring the Collector
 

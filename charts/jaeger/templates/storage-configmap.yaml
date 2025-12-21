@@ -1,4 +1,4 @@
-{{- if (and (not .Values.userconfig) (or .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra"))) }}
+{{- if (not .Values.userconfig) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
