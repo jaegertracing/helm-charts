@@ -231,7 +231,7 @@ memory related environment variables
 Elasticsearch related environment variables
 */}}
 {{- define "elasticsearch.env" -}}
-{{- if .Values.provisionDataStore.elasticsearch }}
+{{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") -}}
 {{- $es := .Values.storage.elasticsearch | default dict -}}
 {{- $scheme := $es.scheme | default "http" -}}
 {{- $port := $es.port | default 9200 -}}

@@ -49,7 +49,6 @@ spec:
             imagePullPolicy: {{ .Values.esIndexCleaner.image.pullPolicy }}
             args:
               - {{ .Values.esIndexCleaner.numberOfDays | quote }}
-              - {{ .Values.esIndexCleaner.numberOfDays | quote }}
               # URL is now expected to be passed via args or env if needed, or configured in external scripts
               # {{ include "elasticsearch.client.url" . }} 
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esIndexCleaner.cmdlineParams ) | nindent 14  }}
@@ -180,7 +179,6 @@ spec:
             imagePullPolicy: {{ .Values.esRollover.image.pullPolicy }}
             args:
               - rollover
-              - rollover
               # URL must be passed via extraArgs or env
               # {{ include "elasticsearch.client.url" . }}
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 14  }}
@@ -299,7 +297,6 @@ spec:
             image: {{ include "esLookback.image" . }}
             imagePullPolicy: {{ .Values.esLookback.image.pullPolicy }}
             args:
-              - lookback
               - lookback
               # URL must be passed via extraArgs or env
               # {{ include "elasticsearch.client.url" . }}
