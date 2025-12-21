@@ -8,23 +8,5 @@ metadata:
     {{- include "jaeger.labels" . | nindent 4 }}
 data:
   user-config.yaml: |
-    service:
-      extensions: {{ include "jaeger.serviceExtensions" . }}
-      pipelines:
-        traces:
-          receivers: {{ include "jaeger.serviceReceivers" . }}
-          processors: {{ include "jaeger.serviceProcessors" . }}
-          exporters: {{ include "jaeger.serviceExporters" . }}
-
-    extensions:
-{{ include "jaeger.extensionsConfig" . }}
-
-    receivers:
-{{ include "jaeger.receiversConfig" . }}
-
-    processors:
-{{ include "jaeger.processorsConfig" . }}
-
-    exporters:
-{{ include "jaeger.exportersConfig" . }}
+{{ toYaml .Values.config | indent 4 }}
 {{- end }}
