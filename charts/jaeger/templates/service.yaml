@@ -5,13 +5,10 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
-    {{- if .Values.allInOne.service.annotations }}
-    {{- toYaml .Values.allInOne.service.annotations | nindent 4 }}
-    {{- end }}
+  {{- if .Values.allInOne.service.annotations }}
   annotations:
-    {{- if .Values.allInOne.service.annotations }}
     {{- toYaml .Values.allInOne.service.annotations | nindent 4 }}
-    {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.allInOne.service.type | default "ClusterIP" }}
   {{- if .Values.allInOne.service.loadBalancerSourceRanges }}
