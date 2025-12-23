@@ -205,12 +205,13 @@ storage:
       # cassandra.keyspace: jaeger_v1_test
       # cassandra.tls.enabled: "false"
 
-  # Elasticsearch connection settings (for external ES or customizing provisioned)
-  # Note: Most ES settings are now configured in config.extensions.jaeger_storage
+  # Elasticsearch connection settings
+  # NOTE: In Jaeger v2, Elasticsearch is configured directly in config.extensions.jaeger_storage
+  # (see the 'config' section at the top of this file). The settings below are only used by
+  # the ES maintenance jobs (esIndexCleaner, esRollover, esLookback) via the elasticsearch.env helper.
   elasticsearch:
-    # Deprecated: use config.extensions.jaeger_storage or extraEnv
-    # indexPrefix: jaeger
-    # serverUrls: http://elasticsearch:9200
+    tls:
+      insecure: true  # Set to false and provide ca_file for production TLS
 
   badger:
     ephemeral: true
