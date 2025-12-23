@@ -161,9 +161,21 @@ allInOne:
     fsGroup: 10001
   securityContext: {}
 
+# ------------------------------------------------------------------------------
+# Storage Connection Settings
+# ------------------------------------------------------------------------------
+# These settings configure how Jaeger connects to your storage backend.
+# Use these when connecting to an EXTERNAL storage system (not provisioned by this chart)
+# or to customize connection parameters for provisioned storage.
+#
+# For provisioned storage (via provisionDataStore), see the 'cassandra' and
+# 'elasticsearch' top-level sections below which configure the subcharts.
+# ------------------------------------------------------------------------------
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
   type: memory
+
+  # Cassandra connection settings (for external Cassandra or customizing provisioned)
   cassandra:
     host: cassandra
     port: 9042
@@ -192,8 +204,11 @@ storage:
       # cassandra.port: 9042
       # cassandra.keyspace: jaeger_v1_test
       # cassandra.tls.enabled: "false"
+
+  # Elasticsearch connection settings (for external ES or customizing provisioned)
+  # Note: Most ES settings are now configured in config.extensions.jaeger_storage
   elasticsearch:
-    # Deprecated: use extraEnv
+    # Deprecated: use config.extensions.jaeger_storage or extraEnv
     # indexPrefix: jaeger
     # serverUrls: http://elasticsearch:9200
 
@@ -206,7 +221,14 @@ storage:
   memory:
     extraEnv: []
 
-# Begin: Override values on the Cassandra subchart to customize for Jaeger
+# ------------------------------------------------------------------------------
+# Cassandra Subchart (Provisioning)
+# ------------------------------------------------------------------------------
+# These values are passed to the Cassandra subchart when provisionDataStore.cassandra=true
+# This provisions a NEW Cassandra cluster - not for connecting to existing clusters.
+# For connection settings to external Cassandra, use 'storage.cassandra' above.
+# See: https://github.com/bitnami/charts/tree/main/bitnami/cassandra
+# ------------------------------------------------------------------------------
 cassandra:
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
@@ -217,14 +239,15 @@ cassandra:
     dc_name: dc1
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
-# End: Override values on the Cassandra subchart to customize for Jaeger
-
-# Begin: Default values for the various components of Jaeger
-# This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/main/production/jaeger-production-template.yml
-
-# For configurable values of Elasticsearch when provisioned, see:
-# https://github.com/elastic/helm-charts/tree/main/elasticsearch
+# ------------------------------------------------------------------------------
+# Elasticsearch Subchart (Provisioning)
+# ------------------------------------------------------------------------------
+# These values are passed to the Elasticsearch subchart when provisionDataStore.elasticsearch=true
+# This provisions a NEW Elasticsearch cluster - not for connecting to existing clusters.
+# For connection settings to external Elasticsearch, use 'storage.elasticsearch' above
+# or configure directly in 'config.extensions.jaeger_storage'.
+# See: https://github.com/elastic/helm-charts/tree/main/elasticsearch
+# ------------------------------------------------------------------------------
 elasticsearch:
   replicas: 1
   minimumMasterNodes: 1
