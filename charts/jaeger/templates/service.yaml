@@ -5,15 +5,15 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
-  {{- if .Values.allInOne.service.annotations }}
+  {{- if .Values.jaeger.service.annotations }}
   annotations:
-    {{- toYaml .Values.allInOne.service.annotations | nindent 4 }}
+    {{- toYaml .Values.jaeger.service.annotations | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.allInOne.service.type | default "ClusterIP" }}
-  {{- if .Values.allInOne.service.loadBalancerSourceRanges }}
+  type: {{ .Values.jaeger.service.type | default "ClusterIP" }}
+  {{- if .Values.jaeger.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-    {{ toYaml .Values.allInOne.service.loadBalancerSourceRanges | nindent 4 }}
+    {{ toYaml .Values.jaeger.service.loadBalancerSourceRanges | nindent 4 }}
   {{- end }}
   ports:
     # Agent Ports

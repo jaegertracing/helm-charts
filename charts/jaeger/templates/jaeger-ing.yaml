@@ -1,4 +1,4 @@
-{{- if and (.Values.allInOne.enabled) (.Values.allInOne.ingress.enabled) -}}
+{{- if and (.Values.jaeger.enabled) (.Values.jaeger.ingress.enabled) -}}
 {{- $ingressSupportsIngressClassName := eq (include "common.ingress.supportsIngressClassname" .) "true" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -7,25 +7,25 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
-  {{- if .Values.allInOne.ingress.annotations }}
+  {{- if .Values.jaeger.ingress.annotations }}
   annotations:
-    {{- toYaml .Values.allInOne.ingress.annotations | nindent 4 }}
+    {{- toYaml .Values.jaeger.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and $ingressSupportsIngressClassName .Values.allInOne.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.allInOne.ingress.ingressClassName }}
+  {{- if and $ingressSupportsIngressClassName .Values.jaeger.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.jaeger.ingress.ingressClassName }}
   {{- end }}
   rules:
-    {{- range $host := .Values.allInOne.ingress.hosts }}
+    {{- range $host := .Values.jaeger.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
           - path: /
-            pathType: {{ default "ImplementationSpecific" $.Values.allInOne.ingress.pathType }}
+            pathType: {{ default "ImplementationSpecific" $.Values.jaeger.ingress.pathType }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" (include "jaeger.query.name" $) "servicePort" 16686 "context" $) | nindent 14 }}
   {{- end -}}
-  {{- if .Values.allInOne.ingress.tls }}
+  {{- if .Values.jaeger.ingress.tls }}
   tls:
-  {{- toYaml .Values.allInOne.ingress.tls | nindent 4 }}
+  {{- toYaml .Values.jaeger.ingress.tls | nindent 4 }}
   {{- end -}}
 {{- end -}}

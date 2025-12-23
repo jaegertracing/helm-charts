@@ -85,7 +85,10 @@ tag: ""
 nameOverride: ""
 fullnameOverride: ""
 
-allInOne:
+# ------------------------------------------------------------------------------
+# Jaeger Deployment Settings
+# ------------------------------------------------------------------------------
+jaeger:
   enabled: true
   replicas: 1
   image:

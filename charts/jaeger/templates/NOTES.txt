@@ -11,8 +11,8 @@
 
 To access the query UI:
 
-{{- if .Values.allInOne.ingress.enabled }}
-  {{- range .Values.allInOne.ingress.hosts }}
+{{- if .Values.jaeger.ingress.enabled }}
+  {{- range .Values.jaeger.ingress.hosts }}
   http://{{ .host }}
   {{- end }}
 {{- else }}

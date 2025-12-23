@@ -1,4 +1,4 @@
-{{- if .Values.allInOne.enabled -}}
+{{- if .Values.jaeger.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,8 +9,8 @@ metadata:
     prometheus.io/port: "14269"
     prometheus.io/scrape: "true"
 spec:
-  {{- if hasKey .Values.allInOne "replicas" }}
-  replicas: {{ .Values.allInOne.replicas }}
+  {{- if hasKey .Values.jaeger "replicas" }}
+  replicas: {{ .Values.jaeger.replicas }}
   {{- end }}
   strategy:
     type: Recreate
@@ -23,18 +23,18 @@ spec:
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: all-in-one
-{{- if .Values.allInOne.podLabels }}
-        {{- toYaml .Values.allInOne.podLabels | nindent 8 }}
+{{- if .Values.jaeger.podLabels }}
+        {{- toYaml .Values.jaeger.podLabels | nindent 8 }}
 {{- end }}
       annotations:
         prometheus.io/port: "14269"
         prometheus.io/scrape: "true"
     spec:
-      {{- include "allInOne.imagePullSecrets" . | nindent 6 }}
+      {{- include "jaeger.imagePullSecrets" . | nindent 6 }}
       containers:
         - env:
-          {{- if .Values.allInOne.extraEnv }}
-            {{- toYaml .Values.allInOne.extraEnv | nindent 12 }}
+          {{- if .Values.jaeger.extraEnv }}
+            {{- toYaml .Values.jaeger.extraEnv | nindent 12 }}
           {{- end }}
             - name: SPAN_STORAGE_TYPE
               value: {{ .Values.storage.type }}
@@ -45,7 +45,7 @@ spec:
               value: "false"
             - name: COLLECTOR_OTLP_ENABLED
               value: "true"
-            {{- if .Values.allInOne.samplingConfig }}
+            {{- if .Values.jaeger.samplingConfig }}
             - name: SAMPLING_STRATEGIES_FILE
               value: /etc/conf/strategies.json
             {{- end }}
@@ -53,20 +53,20 @@ spec:
             - name: QUERY_UI_CONFIG
               value: /etc/jaeger/ui-config/ui-config.json
             {{- end }}
-        {{- with .Values.allInOne.envFrom }}
+        {{- with .Values.jaeger.envFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
         {{- end }}
           securityContext:
-            {{- toYaml .Values.allInOne.securityContext | nindent 12 }}
-          image: {{ include "allInOne.image" . }}
-          imagePullPolicy: {{ .Values.allInOne.image.pullPolicy }}
+            {{- toYaml .Values.jaeger.securityContext | nindent 12 }}
+          image: {{ include "jaeger.image" . }}
+          imagePullPolicy: {{ .Values.jaeger.image.pullPolicy }}
           name: jaeger
           args:
             {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
             - "--config"
             - "/etc/jaeger/user-config.yaml"
             {{- end }}
-            {{- range $arg := .Values.allInOne.args }}
+            {{- range $arg := .Values.jaeger.args }}
             - "{{ tpl $arg $ }}"
             {{- end }}
           ports:
@@ -110,7 +110,7 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
-      {{- with .Values.allInOne.resources }}
+      {{- with .Values.jaeger.resources }}
           resources:
         {{- toYaml . | nindent 12 }}
       {{- end }}
@@ -127,18 +127,18 @@ spec:
             - name: badger-data
               mountPath: {{ .Values.storage.badger.persistence.mountPath }}
         {{- end }}
-        {{- if .Values.allInOne.samplingConfig}}
+        {{- if .Values.jaeger.samplingConfig}}
             - name: strategies
               mountPath: /etc/conf/
         {{- end }}
-        {{- range .Values.allInOne.extraSecretMounts }}
+        {{- range .Values.jaeger.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
         {{- end }}
       securityContext:
-        {{- toYaml .Values.allInOne.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
       {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
@@ -156,29 +156,29 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.storage.badger.persistence.useExistingPvcName | required "Using badger persistence it is required to set an existing PVC"  }}
     {{- end }}
-    {{- if .Values.allInOne.samplingConfig}}
+    {{- if .Values.jaeger.samplingConfig}}
         - name: strategies
           configMap:
             name: {{ include "jaeger.fullname" . }}-sampling-strategies
     {{- end }}
-    {{- range .Values.allInOne.extraSecretMounts }}
+    {{- range .Values.jaeger.extraSecretMounts }}
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
     {{- end }}
-    {{- with .Values.allInOne.affinity }}
+    {{- with .Values.jaeger.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.topologySpreadConstraints }}
+    {{- with .Values.jaeger.topologySpreadConstraints }}
       topologySpreadConstraints:
       {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.nodeSelector }}
+    {{- with .Values.jaeger.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.allInOne.tolerations }}
+    {{- with .Values.jaeger.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

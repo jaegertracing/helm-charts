@@ -1,4 +1,4 @@
-{{- if .Values.allInOne.samplingConfig }}
+{{- if .Values.jaeger.samplingConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,5 +8,5 @@ metadata:
     app.kubernetes.io/component: all-in-one
 data:
   strategies.json: |-
-{{ tpl .Values.allInOne.samplingConfig . | indent 4 }}
+{{ tpl .Values.jaeger.samplingConfig . | indent 4 }}
 {{- end }}

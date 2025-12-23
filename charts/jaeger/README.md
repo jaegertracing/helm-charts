@@ -25,7 +25,7 @@ This chart uses the **All-In-One** deployment model.
 You can customize the Jaeger image and tag using the following values:
 
 ```yaml
-allInOne:
+jaeger:
   image:
     repository: jaegertracing/jaeger
     tag: "2.2.0"  # Override the default version
