@@ -117,8 +117,16 @@ allInOne:
     annotations: {}
     automountServiceAccountToken: true
   service:
+    agent:
+      labels: {}
+      annotations: {}
+    query:
+      labels: {}
+      annotations: {}
     headless: true
     collector:
+      labels: {}
+      annotations: {}
       otlp:
         grpc:
           name: otlp-grpc
@@ -541,6 +549,7 @@ hotrod:
     pullPolicy: IfNotPresent
     pullSecrets: []
   service:
+    labels: {}
     annotations: {}
     name: hotrod
     type: ClusterIP
