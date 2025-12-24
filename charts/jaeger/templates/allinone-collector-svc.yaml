@@ -6,6 +6,13 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: service-collector
+    {{- if .Values.allInOne.service.collector.labels }}
+      {{- toYaml .Values.allInOne.service.collector.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.allInOne.service.collector.annotations }}
+  annotations:
+    {{- toYaml .Values.allInOne.service.collector.annotations | nindent 4 }}
+  {{- end }}
 spec:
   clusterIP: {{ .Values.allInOne.service.headless | ternary "None" "null" }}
   ports:

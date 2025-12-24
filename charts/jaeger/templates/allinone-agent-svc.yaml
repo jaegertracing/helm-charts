@@ -9,6 +9,13 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: service-agent
+    {{- if .Values.allInOne.service.agent.labels }}
+      {{- toYaml .Values.allInOne.service.agent.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.allInOne.service.agent.annotations }}
+  annotations:
+    {{- toYaml .Values.allInOne.service.agent.annotations | nindent 4 }}
+  {{- end }}
 spec:
   clusterIP: None
   ports:
