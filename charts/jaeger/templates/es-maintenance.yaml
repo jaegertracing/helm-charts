@@ -1,0 +1,351 @@
+{{- if .Values.esIndexCleaner.enabled -}}
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
+kind: CronJob
+metadata:
+  name: {{ include "jaeger.fullname" . }}-es-index-cleaner
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-index-cleaner
+{{- if .Values.esIndexCleaner.annotations }}
+  annotations:
+    {{- toYaml .Values.esIndexCleaner.annotations | nindent 4 }}
+{{- end }}
+spec:
+  concurrencyPolicy: {{ .Values.esIndexCleaner.concurrencyPolicy }}
+  schedule: {{ .Values.esIndexCleaner.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.esIndexCleaner.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.esIndexCleaner.failedJobsHistoryLimit }}
+  suspend: false
+  jobTemplate:
+    spec:
+      {{- if .Values.esIndexCleaner.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esIndexCleaner.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esIndexCleaner.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esIndexCleaner.ttlSecondsAfterFinished }}
+      {{- end }}
+      template:
+        metadata:
+          {{- if .Values.esIndexCleaner.podAnnotations }}
+          annotations:
+            {{- toYaml .Values.esIndexCleaner.podAnnotations | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "jaeger.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: es-index-cleaner
+            {{- if .Values.esIndexCleaner.podLabels }}
+            {{- toYaml .Values.esIndexCleaner.podLabels | nindent 12 }}
+            {{- end }}
+        spec:
+          serviceAccountName: {{ template "jaeger.esIndexCleaner.serviceAccountName" . }}
+          {{- include "esIndexCleaner.imagePullSecrets" . | nindent 10 }}
+          securityContext:
+            {{- toYaml .Values.esIndexCleaner.podSecurityContext | nindent 12 }}
+          containers:
+          - name: {{ include "jaeger.fullname" . }}-es-index-cleaner
+            securityContext:
+              {{- toYaml .Values.esIndexCleaner.securityContext | nindent 14 }}
+            image: {{ include "esIndexCleaner.image" . }}
+            imagePullPolicy: {{ .Values.esIndexCleaner.image.pullPolicy }}
+            args:
+              - {{ .Values.esIndexCleaner.numberOfDays | quote }}
+              # URL is now expected to be passed via args or env if needed, or configured in external scripts
+              # {{ include "elasticsearch.client.url" . }} 
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esIndexCleaner.cmdlineParams ) | nindent 14  }}
+            env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
+            {{- if .Values.esIndexCleaner.extraEnv }}
+              {{- toYaml .Values.esIndexCleaner.extraEnv | nindent 14 }}
+            {{- end }}
+            resources:
+              {{- toYaml .Values.esIndexCleaner.resources | nindent 14 }}
+            volumeMounts:
+            {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- range .Values.esIndexCleaner.extraSecretMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+          restartPolicy: OnFailure
+        {{- with .Values.esIndexCleaner.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- with .Values.esIndexCleaner.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.esIndexCleaner.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          volumes:
+          {{- range .Values.esIndexCleaner.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esIndexCleaner.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+          {{- end }}
+{{- end -}}
+
+{{- if and .Values.esIndexCleaner.enabled .Values.esIndexCleaner.serviceAccount.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "jaeger.esIndexCleaner.serviceAccountName" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-index-cleaner
+  {{- with .Values.esIndexCleaner.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+automountServiceAccountToken: {{ .Values.esIndexCleaner.serviceAccount.automountServiceAccountToken }}
+{{- end -}}
+
+{{- if .Values.esRollover.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
+kind: CronJob
+metadata:
+  name: {{ include "jaeger.fullname" . }}-es-rollover
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-rollover
+{{- if .Values.esRollover.annotations }}
+  annotations:
+    {{- toYaml .Values.esRollover.annotations | nindent 4 }}
+{{- end }}
+spec:
+  concurrencyPolicy: {{ .Values.esRollover.concurrencyPolicy }}
+  schedule: {{ .Values.esRollover.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.esRollover.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.esRollover.failedJobsHistoryLimit }}
+  suspend: false
+  jobTemplate:
+    spec:
+      {{- if .Values.esRollover.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esRollover.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esRollover.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esRollover.ttlSecondsAfterFinished }}
+      {{- end }}
+      template:
+        metadata:
+          {{- if .Values.esRollover.podAnnotations }}
+          annotations:
+            {{- toYaml .Values.esRollover.podAnnotations | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "jaeger.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: es-rollover
+            {{- if .Values.esRollover.podLabels }}
+            {{- toYaml .Values.esRollover.podLabels | nindent 12 }}
+            {{- end }}
+        spec:
+          serviceAccountName: {{ template "jaeger.esRollover.serviceAccountName" . }}
+          {{- include "esRollover.imagePullSecrets" . | nindent 10 }}
+          securityContext:
+            {{- toYaml .Values.esRollover.podSecurityContext | nindent 12 }}
+          restartPolicy: OnFailure
+          {{- with .Values.esRollover.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.esRollover.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.esRollover.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+          - name: {{ include "jaeger.fullname" . }}-es-rollover
+            securityContext:
+              {{- toYaml .Values.esRollover.securityContext | nindent 14 }}
+            image: {{ include "esRollover.image" . }}
+            imagePullPolicy: {{ .Values.esRollover.image.pullPolicy }}
+            args:
+              - rollover
+              # URL must be passed via extraArgs or env
+              # {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 14  }}
+            env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
+              {{- if .Values.esRollover.extraEnv }}
+                {{- toYaml .Values.esRollover.extraEnv | nindent 14 }}
+              {{- end }}
+            resources:
+              {{- toYaml .Values.esRollover.resources | nindent 14 }}
+            volumeMounts:
+            {{- range .Values.esRollover.extraConfigmapMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- range .Values.esRollover.extraSecretMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+          volumes:
+          {{- range .Values.esRollover.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esRollover.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+          {{- end }}
+{{- end -}}
+
+{{- if and .Values.esRollover.enabled .Values.esRollover.serviceAccount.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "jaeger.esRollover.serviceAccountName" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-index-rollover
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    # Must be created before the rollover init hook
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+automountServiceAccountToken: {{ .Values.esRollover.serviceAccount.automountServiceAccountToken }}
+{{- end -}}
+
+{{- if .Values.esLookback.enabled -}}
+---
+apiVersion: {{ include "common.capabilities.cronjob.apiVersion" $ }}
+kind: CronJob
+metadata:
+  name: {{ include "jaeger.fullname" . }}-es-lookback
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-lookback
+{{- if .Values.esLookback.annotations }}
+  annotations:
+    {{- toYaml .Values.esLookback.annotations | nindent 4 }}
+{{- end }}
+spec:
+  concurrencyPolicy: {{ .Values.esLookback.concurrencyPolicy }}
+  schedule: {{ .Values.esLookback.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.esLookback.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.esLookback.failedJobsHistoryLimit }}
+  suspend: false
+  jobTemplate:
+    spec:
+      {{- if .Values.esLookback.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ .Values.esLookback.activeDeadlineSeconds }}
+      {{- end }}
+      {{- if .Values.esLookback.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.esLookback.ttlSecondsAfterFinished }}
+      {{- end }}
+      template:
+        metadata:
+          {{- if .Values.esLookback.podAnnotations }}
+          annotations:
+            {{- toYaml .Values.esLookback.podAnnotations | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "jaeger.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: es-lookback
+            {{- if .Values.esLookback.podLabels }}
+            {{- toYaml .Values.esLookback.podLabels | nindent 12 }}
+            {{- end }}
+        spec:
+          serviceAccountName: {{ template "jaeger.esLookback.serviceAccountName" . }}
+          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}  
+          securityContext:
+            {{- toYaml .Values.esLookback.podSecurityContext | nindent 12 }}
+          restartPolicy: OnFailure
+          {{- with .Values.esLookback.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.esLookback.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.esLookback.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          containers:
+          - name: {{ include "jaeger.fullname" . }}-es-lookback
+            securityContext:
+              {{- toYaml .Values.esLookback.securityContext | nindent 14 }}
+            image: {{ include "esLookback.image" . }}
+            imagePullPolicy: {{ .Values.esLookback.image.pullPolicy }}
+            args:
+              - lookback
+              # URL must be passed via extraArgs or env
+              # {{ include "elasticsearch.client.url" . }}
+              {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esLookback.cmdlineParams ) | nindent 14  }}
+            env:
+              {{- include "elasticsearch.env" . | nindent 14 }}
+              {{- if .Values.esLookback.extraEnv }}
+                {{- toYaml .Values.esLookback.extraEnv | nindent 14 }}
+              {{- end }}
+            resources:
+              {{- toYaml .Values.esLookback.resources | nindent 14 }}
+            volumeMounts:
+            {{- range .Values.esLookback.extraConfigmapMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- range .Values.esLookback.extraSecretMounts }}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                subPath: {{ .subPath }}
+                readOnly: {{ .readOnly }}
+            {{- end }}
+          volumes:
+          {{- range .Values.esLookback.extraConfigmapMounts }}
+            - name: {{ .name }}
+              configMap:
+                name: {{ .configMap }}
+          {{- end }}
+          {{- range .Values.esLookback.extraSecretMounts }}
+            - name: {{ .name }}
+              secret:
+                secretName: {{ .secretName }}
+          {{- end }}
+{{- end -}}
+
+{{- if and .Values.esLookback.enabled .Values.esLookback.serviceAccount.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "jaeger.esLookback.serviceAccountName" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: es-lookback
+  {{- with .Values.esLookback.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+automountServiceAccountToken: {{ .Values.esLookback.serviceAccount.automountServiceAccountToken }}
+{{- end -}}

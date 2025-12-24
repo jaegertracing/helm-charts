@@ -34,18 +34,18 @@ config:
       backends:
         primary_store:
           elasticsearch:
-            index_prefix: jaeger
+            # index_prefix: jaeger
             server_urls: ["http://elasticsearch-master:9200"]
-            username: elastic
-            password: changeme
+            # username: elastic
+            # password: changeme
           memory:
             max_traces: 100000
         archive_store:
           elasticsearch:
-            index_prefix: jaeger-archive
+            # index_prefix: jaeger-archive
             server_urls: ["http://elasticsearch-master:9200"]
-            username: elastic
-            password: changeme
+            # username: elastic
+            # password: changeme
           memory:
             max_traces: 100000
 
@@ -85,7 +85,10 @@ tag: ""
 nameOverride: ""
 fullnameOverride: ""
 
-allInOne:
+# ------------------------------------------------------------------------------
+# Jaeger Deployment Settings
+# ------------------------------------------------------------------------------
+jaeger:
   enabled: true
   replicas: 1
   image:
@@ -96,8 +99,7 @@ allInOne:
     pullPolicy: IfNotPresent
     pullSecrets: []
   extraEnv: []
-  extraSecretMounts:
-    []
+  extraSecretMounts: []
     # - name: jaeger-tls
     #   mountPath: /tls
     #   subPath: ""
@@ -162,15 +164,24 @@ allInOne:
     fsGroup: 10001
   securityContext: {}
 
+# ------------------------------------------------------------------------------
+# Storage Connection Settings
+# ------------------------------------------------------------------------------
+# These settings configure how Jaeger connects to your storage backend.
+# Use these when connecting to an EXTERNAL storage system (not provisioned by this chart)
+# or to customize connection parameters for provisioned storage.
+#
+# For provisioned storage (via provisionDataStore), see the 'cassandra' and
+# 'elasticsearch' top-level sections below which configure the subcharts.
+# ------------------------------------------------------------------------------
 storage:
   # allowed values (cassandra, elasticsearch, grpc-plugin, badger, memory)
   type: memory
+
+  # Cassandra connection settings (for external Cassandra or customizing provisioned)
   cassandra:
     host: cassandra
     port: 9042
-    # Change this value to false if you want to avoid starting the
-    # -cassandra-schema Job
-    schemaJobEnabled: true
     tls:
       enabled: false
       secretName: cassandra-tls-secret
@@ -181,8 +192,7 @@ storage:
     ## Use existing secret (ignores previous password)
     # existingSecret:
     ## Cassandra related env vars to be configured on the concerned components
-    extraEnv:
-      []
+    extraEnv: []
       # - name: CASSANDRA_SERVERS
       #   value: cassandra
       # - name: CASSANDRA_PORT
@@ -192,47 +202,19 @@ storage:
       # - name: CASSANDRA_TLS_ENABLED
       #   value: "false"
     ## Cassandra related cmd line opts to be configured on the concerned components
-    cmdlineParams:
-      {}
+    cmdlineParams: {}
       # cassandra.servers: cassandra
       # cassandra.port: 9042
       # cassandra.keyspace: jaeger_v1_test
       # cassandra.tls.enabled: "false"
+
+  # Elasticsearch connection settings
+  # NOTE: In Jaeger v2, Elasticsearch is configured directly in config.extensions.jaeger_storage
+  # (see the 'config' section at the top of this file). The settings below are only used by
+  # the ES maintenance jobs (esIndexCleaner, esRollover, esLookback) via the elasticsearch.env helper.
   elasticsearch:
-    scheme: http
-    host: elasticsearch-master
-    port: 9200
-    anonymous: false
-    user: elastic
-    usePassword: true
-    password: changeme
-    # indexPrefix: test
-    ## Use existing secret (ignores previous password)
-    # existingSecret:
-    # existingSecretKey:
-    nodesWanOnly: false
-    extraEnv: []
-    ## ES related env vars to be configured on the concerned components
-    # - name: ES_SERVER_URLS
-    #   value: http://elasticsearch-master:9200
-    # - name: ES_USERNAME
-    #   value: elastic
-    # - name: ES_INDEX_PREFIX
-    #   value: test
-    ## ES related cmd line opts to be configured on the concerned components
-    cmdlineParams:
-      {}
-      # es.server-urls: http://elasticsearch-master:9200
-      # es.username: elastic
-      # es.index-prefix: test
     tls:
-      enabled: false
-      secretName: es-tls-secret
-      # The mount properties of the secret
-      mountPath: /es-tls/ca-cert.pem
-      subPath: ca-cert.pem
-      # How ES_TLS_CA variable will be set in the various components
-      ca: /es-tls/ca-cert.pem
+      insecure: true  # Set to false and provide ca_file for production TLS
 
   badger:
     ephemeral: true
@@ -243,7 +225,14 @@ storage:
   memory:
     extraEnv: []
 
-# Begin: Override values on the Cassandra subchart to customize for Jaeger
+# ------------------------------------------------------------------------------
+# Cassandra Subchart (Provisioning)
+# ------------------------------------------------------------------------------
+# These values are passed to the Cassandra subchart when provisionDataStore.cassandra=true
+# This provisions a NEW Cassandra cluster - not for connecting to existing clusters.
+# For connection settings to external Cassandra, use 'storage.cassandra' above.
+# See: https://github.com/bitnami/charts/tree/main/bitnami/cassandra
+# ------------------------------------------------------------------------------
 cassandra:
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
@@ -254,55 +243,15 @@ cassandra:
     dc_name: dc1
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
-# End: Override values on the Cassandra subchart to customize for Jaeger
-
-# Begin: Default values for the various components of Jaeger
-# This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/main/production/jaeger-production-template.yml
-#
-# This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
-# use by Jaeger
-schema:
-  annotations: {}
-  tolerations: []
-  image:
-    registry: ""
-    repository: jaegertracing/jaeger-cassandra-schema
-    tag: "1.76.0"
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  resources:
-    {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #   cpu: 256m
-    #   memory: 128Mi
-  serviceAccount:
-    create: true
-    # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: true
-    name:
-  podAnnotations: {}
-  podLabels: {}
-  securityContext: {}
-  podSecurityContext: {}
-  nodeSelector: {}
-  ## Deadline for cassandra schema creation job
-  activeDeadlineSeconds: 300
-  extraEnv:
-    []
-    # - name: MODE
-    #   value: prod
-    # - name: TRACE_TTL
-    #   value: "172800"
-    # - name: DEPENDENCIES_TTL
-    #   value: "0"
-
-# For configurable values of Elasticsearch when provisioned, see:
-# https://github.com/elastic/helm-charts/tree/main/elasticsearch
+# ------------------------------------------------------------------------------
+# Elasticsearch Subchart (Provisioning)
+# ------------------------------------------------------------------------------
+# These values are passed to the Elasticsearch subchart when provisionDataStore.elasticsearch=true
+# This provisions a NEW Elasticsearch cluster - not for connecting to existing clusters.
+# For connection settings to external Elasticsearch, use 'storage.elasticsearch' above
+# or configure directly in 'config.extensions.jaeger_storage'.
+# See: https://github.com/elastic/helm-charts/tree/main/elasticsearch
+# ------------------------------------------------------------------------------
 elasticsearch:
   replicas: 1
   minimumMasterNodes: 1
@@ -314,7 +263,10 @@ elasticsearch:
     - transform
     - remote_cluster_client
   volumeClaimTemplate:
-    enabled: false
+    accessModes: ["ReadWriteOnce"]
+    resources:
+      requests:
+        storage: 30Gi
   secret:
     password: changeme
   esConfig:
@@ -340,8 +292,7 @@ spark:
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -380,16 +331,14 @@ esIndexCleaner:
     pullPolicy: IfNotPresent
     pullSecrets: []
   cmdlineParams: {}
-  extraEnv:
-    []
+  extraEnv: []
     # - name: ROLLOVER
     #   value: 'true'
   schedule: "55 23 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -435,8 +384,7 @@ esRollover:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -459,8 +407,7 @@ esRollover:
   podLabels: {}
   # ttlSecondsAfterFinished: 120
   initHook:
-    extraEnv:
-      []
+    extraEnv: []
       # - name: SHARDS
       #   value: "3"
     annotations: {}
@@ -491,8 +438,7 @@ esLookback:
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
@@ -517,81 +463,5 @@ esLookback:
   # ttlSecondsAfterFinished: 120
 # End: Default values for the various components of Jaeger
 
-hotrod:
-  enabled: false
-  podSecurityContext: {}
-  securityContext: {}
-  replicaCount: 1
-  # set the primary command(s) for the hotrod application
-  args:
-    - all
-  # add extra arguments to the hotrod application to customize tracing
-  extraArgs: []
-  #   - --otel-exporter=otlp
-  #   - --jaeger-ui=http://jaeger.chart.local
-  # add extra environment variables to the hotrod application
-  extraEnv: []
-  #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
-  #     value: http://my-otel-collector.chart.local:4318
-  image:
-    registry: ""
-    repository: jaegertracing/example-hotrod
-    tag: ""
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  service:
-    annotations: {}
-    name: hotrod
-    type: ClusterIP
-    # List of IP ranges that are allowed to access the load balancer (if supported)
-    loadBalancerSourceRanges: []
-    port: 80
-  ingress:
-    enabled: false
-    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    # ingressClassName: nginx
-    # Used to create Ingress record (should be used with service.type: ClusterIP).
-    hosts:
-      - chart-example.local
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    tls:
-      # Secrets must be manually created in the namespace.
-      # - secretName: chart-example-tls
-      #   hosts:
-      #     - chart-example.local
-    pathType:
-  resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-  serviceAccount:
-    create: true
-    # Explicitly mounts the API credentials for the Service Account
-    automountServiceAccountToken: false
-    annotations: {}
-    name:
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  tracing:
-    host: null
-    port: 6831
-  livenessProbe:
-    path: /
-  readinessProbe:
-    path: /
 # Array with extra yaml objects to install alongside the chart. Values are evaluated as a template.
 extraObjects: []

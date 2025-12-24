@@ -2,3 +2,6 @@
 /charts/*/charts
 /charts/*/requirements.lock
 /charts/*/*.tgz
+
+# IDE/Editor settings
+.vscode/
