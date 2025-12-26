@@ -1,9 +1,8 @@
 {{- if and (.Values.jaeger.enabled) (.Values.jaeger.ingress.enabled) -}}
-{{- $ingressSupportsIngressClassName := eq (include "common.ingress.supportsIngressClassname" .) "true" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.query.name" . }}
+  name: {{ template "jaeger.fullname" . }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
@@ -12,7 +11,7 @@ metadata:
     {{- toYaml .Values.jaeger.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and $ingressSupportsIngressClassName .Values.jaeger.ingress.ingressClassName }}
+  {{- if .Values.jaeger.ingress.ingressClassName }}
   ingressClassName: {{ .Values.jaeger.ingress.ingressClassName }}
   {{- end }}
   rules:
