@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
-    prometheus.io/port: "14269"
+    prometheus.io/port: "8888"
     prometheus.io/scrape: "true"
 spec:
   {{- if hasKey .Values.jaeger "replicas" }}
@@ -27,7 +27,7 @@ spec:
         {{- toYaml .Values.jaeger.podLabels | nindent 8 }}
 {{- end }}
       annotations:
-        prometheus.io/port: "14269"
+        prometheus.io/port: "8888"
         prometheus.io/scrape: "true"
     spec:
       {{- include "jaeger.imagePullSecrets" . | nindent 6 }}
@@ -89,6 +89,8 @@ spec:
             - containerPort: 4318
               protocol: TCP
             - containerPort: 13133
+              protocol: TCP
+            - containerPort: 8888
               protocol: TCP
           livenessProbe:
             failureThreshold: 5
