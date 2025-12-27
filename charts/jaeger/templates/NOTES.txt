@@ -12,8 +12,8 @@
 To access the query UI:
 
 {{- if .Values.jaeger.ingress.enabled }}
-  {{- range .Values.jaeger.ingress.hosts }}
-  http://{{ .host }}
+  {{- range $host :=  .Values.jaeger.ingress.hosts }}
+  http://{{ $host }}
   {{- end }}
 {{- else }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=all-in-one" -o jsonpath="{.items[0].metadata.name}")
