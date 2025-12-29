@@ -129,6 +129,8 @@ jaeger:
     annotations: {}
     automountServiceAccountToken: true
   service:
+    # labels: {}
+    # annotations: {}
     headless: true
     collector:
       otlp:
