@@ -124,6 +124,18 @@ spark:
 
 For a full list of supported environment variables, see the [Spark Dependencies README](https://github.com/jaegertracing/spark-dependencies#readme).
 
+### 5. Query UI
+
+To enable the query ui, you need to enable the ingress and fill at least one host, reaching the ingress:
+
+```yaml
+jaeger:
+  ingress:
+    enabled: true
+    hosts:
+      - myhost.example.com
+```
+
 ## Configuring the Collector
 
 The Jaeger v2 configuration is defined in `config` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.
