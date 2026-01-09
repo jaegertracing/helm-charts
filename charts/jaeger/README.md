@@ -126,7 +126,7 @@ For a full list of supported environment variables, see the [Spark Dependencies 
 
 ### 5. Query UI
 
-To enable the query ui, you need to enable the ingress and fill at least one host, reaching the ingress:
+To enable the query ui, you need to enable the ingress and fill at least one host:
 
 ```yaml
 jaeger:
