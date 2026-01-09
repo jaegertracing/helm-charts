@@ -53,7 +53,6 @@ spec:
           imagePullPolicy: {{ .Values.esRollover.image.pullPolicy }}
           args:
             - init
-            - {{ include "elasticsearch.client.url" . }}
             {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.esRollover.cmdlineParams ) | nindent 12  }}
           env:
             {{ include "elasticsearch.env" . | nindent 12 }}
