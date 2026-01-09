@@ -133,7 +133,7 @@ jaeger:
   ingress:
     enabled: true
     hosts:
-      - myhost.example.com
+      - <fill a host here>
 ```
 
 ## Configuring the Collector
