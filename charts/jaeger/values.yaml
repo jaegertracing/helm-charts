@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
-# User provided ui config: see https://www.jaegertracing.io/docs/2.dev/deployment/frontend-ui/#configuration for more examples and settings
+# User provided ui config: see https://www.jaegertracing.io/docs/latest/deployment/frontend-ui/#configuration for more examples and settings
 uiconfig:
   # {
   #   "dependencies": {
