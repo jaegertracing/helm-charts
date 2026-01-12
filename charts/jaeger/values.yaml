@@ -2,9 +2,132 @@
 # This is a YAML-formatted file.
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
-# Will use for user provided config
-userconfig:
+# User provided ui config: see https://www.jaegertracing.io/docs/latest/deployment/frontend-ui/#configuration for more examples and settings
+uiconfig:
+  # {
+  #   "dependencies": {
+  #     "dagMaxNumServices": 200,
+  #     "menuEnabled": true
+  #   },
+  #   "monitor": {
+  #     "menuEnabled": true
+  #   },
+  #   "themes": {
+  #     "enabled": true
+  #   },
+  #   "archiveEnabled": true,
+  #   "tracking": {
+  #     "gaID": "UA-000000-2",
+  #     "trackErrors": true
+  #   },
+  #   "menu": [
+  #     {
+  #       "label": "About Jaeger",
+  #       "items": [
+  #         {
+  #           "label": "GitHub",
+  #           "url": "https://github.com/jaegertracing/jaeger"
+  #         },
+  #         {
+  #           "label": "Docs",
+  #           "url": "https://www.jaegertracing.io/docs/latest/"
+  #         }
+  #       ]
+  #     }
+  #   ],
+  #   "search": {
+  #     "maxLookback": {
+  #       "label": "2 Days",
+  #       "value": "2d"
+  #     },
+  #     "maxLimit": 1500
+  #   },
+  #   "linkPatterns": [{
+  #     "type": "process",
+  #     "key": "jaeger.version",
+  #     "url": "https://github.com/jaegertracing/jaeger-client-java/releases/tag/#{jaeger.version}",
+  #     "text": "Information about Jaeger release #{jaeger.version}"
+  #   },
+  #   {
+  #     "type": "tags",
+  #     "key": "uniqueId",
+  #     "url": "https://mykibana.com/uniqueId=#{uniqueId}&traceId=#{trace.traceID}",
+  #     "text": "Redirect to kibana to view log"
+  #   },
+  #   {
+  #     "type": "traces",
+  #     "url": "https://my-logs.server?from=#{startTime | add -60000000 | epoch_micros_to_date_iso}&to=#{endTime | add 60000000 | epoch_micros_to_date_iso}'",
+  #     "text": "Redirect to kibana to view log with formatted dates"
+  #   }],
+  #   "traceIdDisplayLength": 20,
+  #   "criticalPathEnabled": true,
+  #   "topTagPrefixes": ["http.", "db."]
+  # }
 
+# User provided config to override the config completely
+userconfig:
+  # service:
+  #   extensions: [jaeger_storage, jaeger_query, healthcheckv2]
+  #   pipelines:
+  #     traces:
+  #       receivers: [otlp]
+  #       #processors: [batch]
+  #       exporters: [jaeger_storage_exporter]
+  #   telemetry:
+  #     resource:
+  #       service.name: jaeger
+  #     metrics:
+  #       level: detailed
+  #       readers:
+  #         - pull:
+  #             exporter:
+  #               prometheus:
+  #                 host: 0.0.0.0
+  #                 port: 8888
+  # extensions:
+  #   healthcheckv2:
+  #     use_v2: true
+  #     http:
+  #       endpoint: 0.0.0.0:13133
+
+  #   jaeger_query:
+  #     base_path: /jaeger
+  #     storage:
+  #       traces: primary_store
+  #       traces_archive: archive_store
+
+  #   jaeger_storage:
+  #     backends:
+  #       primary_store:
+  #         elasticsearch:
+  #           server_urls: ["http://jaeger-elasticsearch-es-jaeger:9200"]
+  #           auth:
+  #             basic:
+  #               # these values are currently from elasticsearch-auth-user-admin
+  #               username: admin
+  #               password: password
+  #       archive_store:
+  #         elasticsearch:
+  #           server_urls: ["http://jaeger-elasticsearch-es-jaeger:9200"]
+  #           auth:
+  #             basic:
+  #               # these values are currently from elasticsearch-auth-user-admin
+  #               username: admin
+  #               password: password
+
+  # receivers:
+  #   otlp:
+  #     protocols:
+  #       grpc:
+  #         endpoint: 0.0.0.0:4317
+  #       http:
+  #         endpoint: 0.0.0.0:4318
+
+  # exporters:
+  #   jaeger_storage_exporter:
+  #     trace_storage: primary_store
+
+# Default configuration is to use in memory storage.  To override completely please see the userconfig above that uses elasticsearch external
 config:
   service:
     extensions: [jaeger_storage, jaeger_query, healthcheckv2]
@@ -46,16 +169,20 @@ config:
           elasticsearch:
             # index_prefix: jaeger
             server_urls: ["http://elasticsearch-master:9200"]
-            # username: elastic
-            # password: changeme
+            # auth:
+            #   basic:
+            #     username: admin
+            #     password: password
           memory:
             max_traces: 100000
         archive_store:
           elasticsearch:
             # index_prefix: jaeger-archive
             server_urls: ["http://elasticsearch-master:9200"]
-            # username: elastic
-            # password: changeme
+            # auth:
+            #   basic:
+            #     username: admin
+            #     password: password
           memory:
             max_traces: 100000
 
@@ -77,7 +204,6 @@ config:
   exporters:
     jaeger_storage_exporter:
       trace_storage: primary_store
-# The following settings apply to Jaeger v1 and partially to Jaeger v2
 
 global:
   imageRegistry:
