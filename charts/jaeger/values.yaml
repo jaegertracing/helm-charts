@@ -177,7 +177,7 @@ config:
             max_traces: 100000
         archive_store:
           elasticsearch:
-            # index_prefix: jaeger
+            # index_prefix: jaeger-archive
             server_urls: ["http://elasticsearch-master:9200"]
             # auth:
             #   basic:
