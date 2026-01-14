@@ -233,24 +233,21 @@ Elasticsearch related environment variables
 {{- define "elasticsearch.env" -}}
 {{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") -}}
 {{- $es := .Values.storage.elasticsearch | default dict -}}
-{{- $scheme := $es.scheme | default "http" -}}
-{{- $port := $es.port | default 9200 -}}
 {{- $user := $es.user | default "elastic" -}}
-{{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
+{{- $password := $es.password | default "changeme" -}}
+{{- $url := $es.url | default "http://elasticsearch-master:9200" -}}
 - name: ES_SERVER_URLS
-  value: "{{ $scheme }}://elasticsearch-master:{{ $port }}"
+  value: {{ $url | quote }}
+- name: ES_NODES
+  value: {{ $url | quote }}
 - name: ES_USERNAME
   value: {{ $user | quote }}
 - name: ES_PASSWORD
   value: {{ $password | quote }}
 {{- /* Handle TLS insecurity */ -}}
-{{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
-  {{- if $es.tls }}
-    {{- if $es.tls.insecure }}
+{{- if and (($es).tls).enabled (($es).tls).insecure }}
 - name: ES_TLS_SKIP_HOST_VERIFY
   value: "true"
-    {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}

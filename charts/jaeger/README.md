@@ -50,6 +50,10 @@ helm install jaeger jaegertracing/jaeger
 
 ## Configuration
 
+There are several examples of how to configure you can reference at:
+
+https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
+
 ### 1. In-Memory (Default)
 Ideal for testing. No persistence.
 ```bash
@@ -59,30 +63,70 @@ helm install jaeger jaegertracing/jaeger
 ### 2. Elasticsearch (Production Recommended)
 Configure Jaeger to connect to Elasticsearch using the native config syntax.
 
-**values.yaml Example:**
+You can either use the internal provisioned elasticsearch or point to an external elasticsearch.
+
+The internal elasticsearch is configured to __NOT__ require a password or username by default.
+
+#### Internal Provisioned Elasticsearch example:
+
+**values.yaml**
 ```yaml
 # Use the provisioned Elasticsearch subchart
 provisionDataStore:
   elasticsearch: true
 
-# Or connect to an external Elasticsearch cluster by customizing the config:
 config:
   extensions:
+    jaeger_query:
+      storage:
+        traces: primary_store_elasticsearch
+        traces_archive: archive_store_elasticsearch
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store_elasticsearch
+```
+
+#### External Elasticsearch example:
+
+**values.yaml**
+```yaml
+# External is very similar but you need to configure the urls
+config:
+  extensions:
+    jaeger_query:
+      storage:
+        traces: primary_store_elasticsearch
+        traces_archive: archive_store_elasticsearch
     jaeger_storage:
       backends:
-        primary_store:
+        primary_store_elasticsearch:
           elasticsearch:
-            server_urls: ["http://elasticsearch:9200"]
-            username: elastic
-            password: changeme
+            server_urls: ["http://my-elasticsearch-master:9200"]
+            auth:
+              basic:
+                username: elastic
+                password: changeme
+        archive_store_elasticsearch:
+          elasticsearch:
+            server_urls: ["http://my-elasticsearch-master:9200"]
+            auth:
+              basic:
+                username: elastic
+                password: changeme
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store_elasticsearch
 ```
 
 **Running Maintenance Jobs:**
-To run Index Cleaner or Rollover jobs, enable them. They auto-configure when `provisionDataStore.elasticsearch` is enabled:
+To run Index Cleaner or Rollover jobs, enable them. They require configuration if using external by setting ```storage.type=elasticsearch``` and adjusting ```storage.elasticsearch``` values.  See that section in values.yaml for more details.
+
 ```yaml
 esIndexCleaner:
   enabled: true
 ```
+
+* es-rollover __requires__ elasticsearch to be running __BEFORE__ install so the hook job can run.
 
 ### 3. Cassandra
 This chart does not provision a Cassandra cluster. To use Cassandra storage, you must provide your own Cassandra instance and configure Jaeger via the native config syntax:
@@ -110,14 +154,16 @@ config:
 
 ### 4. Spark Dependencies
 
-To run the Spark dependencies job (for dependency links graph):
+To run the Spark dependencies job (for dependency links graph) set ```spark.enabled=true```
+
+Below is an example of how to set overrides.  Please see the values.yaml for more examples:
+
+The values are populated under ```storage.elasticsearch``` Please see comments in values.yaml for more details.
 
 ```yaml
 spark:
   enabled: true
   extraEnv:
-    - name: ES_NODES
-      value: http://elasticsearch:9200
     - name: ES_NODES_WAN_ONLY
       value: "true"
 ```

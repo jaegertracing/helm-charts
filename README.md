@@ -33,7 +33,7 @@ To run the chart installation tests locally (simulating the CI environment), use
 
 ```bash
 make test      # default install suite
-make test-es   # Elasticsearch-provisioned suite
+make test-jaeger-connect-elasticsearch   # Elasticsearch-provisioned suite
 ```
 
 

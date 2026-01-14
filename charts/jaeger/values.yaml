@@ -65,6 +65,7 @@ uiconfig:
   # }
 
 # User provided config to override the config completely
+# There are several examples at https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 userconfig:
   # service:
   #   extensions: [jaeger_storage, jaeger_query, healthcheckv2]
@@ -160,31 +161,36 @@ config:
 
     jaeger_query:
       storage:
-        traces: primary_store
-        traces_archive: archive_store
+        traces: primary_store_memory
+        traces_archive: archive_store_memory
+        # you can set traces to this to use the elasticsearch or override or define your own in userconfig
+        # traces: primary_store_elasticsearch
+        # traces_archive: archive_store_elasticsearch
 
+    # There are several examples at https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
+    # you can create your own storage definitions to use, but two have been created for you already.
     jaeger_storage:
       backends:
-        primary_store:
-          elasticsearch:
-            # index_prefix: jaeger
-            server_urls: ["http://elasticsearch-master:9200"]
-            # auth:
-            #   basic:
-            #     username: admin
-            #     password: password
+        primary_store_memory:
           memory:
             max_traces: 100000
-        archive_store:
-          elasticsearch:
-            # index_prefix: jaeger-archive
-            server_urls: ["http://elasticsearch-master:9200"]
-            # auth:
-            #   basic:
-            #     username: admin
-            #     password: password
+        archive_store_memory:
           memory:
             max_traces: 100000
+        primary_store_elasticsearch:
+          elasticsearch:
+            server_urls: ["http://elasticsearch-master:9200"]
+            auth:
+              basic:
+                username: elastic
+                password: changeme
+        archive_store_elasticsearch:
+          elasticsearch:
+            server_urls: ["http://elasticsearch-master:9200"]
+            auth:
+              basic:
+                username: elastic
+                password: changeme
 
   receivers:
     otlp:
@@ -203,7 +209,9 @@ config:
 
   exporters:
     jaeger_storage_exporter:
-      trace_storage: primary_store
+      trace_storage: primary_store_memory
+      # you can set trace_storage to this to use the elasticsearch or override or define your own in userconfig
+      # trace_storage: primary_store_elasticsearch
 
 global:
   imageRegistry:
@@ -352,7 +360,11 @@ storage:
   # the ES maintenance jobs (esIndexCleaner, esRollover, esLookback) via the elasticsearch.env helper.
   elasticsearch:
     tls:
+      enabled: false
       insecure: true  # Set to false and provide ca_file for production TLS
+    url: http://elasticsearch-master:9200
+    # user: elastic
+    # password: changeme
 
   badger:
     ephemeral: true
@@ -391,15 +403,9 @@ cassandra:
 # See: https://github.com/elastic/helm-charts/tree/main/elasticsearch
 # ------------------------------------------------------------------------------
 elasticsearch:
+  # set this to https if enabling tls
+  protocol: http
   replicas: 1
-  minimumMasterNodes: 1
-  roles:
-    - master
-    - data
-    - ingest
-    - ml
-    - transform
-    - remote_cluster_client
   volumeClaimTemplate:
     accessModes: ["ReadWriteOnce"]
     resources:
@@ -407,10 +413,14 @@ elasticsearch:
         storage: 30Gi
   secret:
     password: changeme
-  esConfig:
-    elasticsearch.yml: |
-      # Security/TLS disabled so Jaeger can reach the provisioned cluster over HTTP by default.
-      xpack.security.enabled: false
+  extraEnvs:
+    # Security/TLS disabled so Jaeger can reach the provisioned cluster over HTTP by default.
+    - name: xpack.security.enabled
+      value: "false"
+    - name: xpack.security.transport.ssl.enabled
+      value: "false"
+    - name: xpack.security.http.ssl.enabled
+      value: "false"
 
 spark:
   enabled: false
@@ -425,7 +435,22 @@ spark:
     pullPolicy: IfNotPresent
     pullSecrets: []
   cmdlineParams: {}
+  # spark env var values at
+  # https://github.com/jaegertracing/spark-dependencies/blob/main/jaeger-spark-dependencies-elasticsearch/src/main/java/io/jaegertracing/spark/dependencies/elastic/ElasticsearchDependenciesJob.java
+  # ES_NODES, ES_USERNAME, ES_PASSWORD are set via elasticsearch.env helper which uses storage.elasticsearch
   extraEnv: []
+    # - name: ES_NODES_WAN_ONLY
+    #   value: 'true'
+    # - name: ES_CLIENT_NODE_ONLY
+    #   value: 'false'
+    # - name: ES_INDEX_PREFIX
+    #   value: 'jaeger'
+    # - name: ES_INDEX_DATE_SEPARATOR
+    #   value: '-'
+    # - name: ES_TIME_RANGE
+    #   value: '24h'
+    # - name: ES_USE_ALIASES
+    #   value: 'false'
   schedule: "49 23 * * *"
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5
@@ -469,6 +494,7 @@ esIndexCleaner:
     pullPolicy: IfNotPresent
     pullSecrets: []
   cmdlineParams: {}
+    # timeout: 30000
   extraEnv: []
     # - name: ROLLOVER
     #   value: 'true'
@@ -502,6 +528,7 @@ esIndexCleaner:
   # ttlSecondsAfterFinished: 120
 
 esRollover:
+  # This runs the es-rollover-hook that will fail if elasticsearch is not already up
   enabled: false
   securityContext: {}
   podSecurityContext:
@@ -531,6 +558,7 @@ esRollover:
     #   memory: 128Mi
   serviceAccount:
     create: true
+    annotations: {}
     # Explicitly mounts the API credentials for the Service Account
     automountServiceAccountToken: false
     name:
