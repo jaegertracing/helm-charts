@@ -17,6 +17,6 @@ To access the query UI:
   {{- end }}
 {{- else }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=all-in-one" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:16686/"
   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 16686:16686
+  Visit http://127.0.0.1:16686/
 {{- end }}

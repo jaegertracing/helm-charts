@@ -49,8 +49,10 @@ spec:
               {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.spark.cmdlineParams ) | nindent 14  }}
             {{- end }}
             env:
+              # TODO: is this actually used by spark?
               - name: STORAGE
                 value: {{ .Values.storage.type }}
+                # TODO: a lot of the storage values are only used here...
               {{- include "storage.env" . | nindent 14 }}
             # Elasticsearch configuration (ES_NODES, ES_NODES_WAN_ONLY) must be provided via extraEnv
             {{- if .Values.spark.extraEnv }}

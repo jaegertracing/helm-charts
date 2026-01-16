@@ -12,6 +12,7 @@ This release is a refactor designed to simplify operation and configuration.
 - **Configuration**: Storage is configured via the `config.extensions.jaeger_storage` section using native Jaeger/OTEL config syntax.
 - **Cassandra Schema**: Jaeger v2 handles schema creation internally. The legacy schema job has been removed.
 - **Service Consolidation**: A single Service now exposes all ports (agent, collector, query).
+- **No provisioned storage**: Dependency charts have been removed.  The user must deploy them separately and configure connection using the Otel config Syntax https://github.com/jaegertracing/jaeger/blob/main/cmd/jaeger/config.yaml 
 
 ## Architecture
 
@@ -19,8 +20,10 @@ This chart uses the **All-In-One** deployment model.
 - **Single Binary**: Runs as a `Deployment` scalable to multiple replicas.
 - **Stateless**: Can connect to external persistent storage (Elasticsearch, Cassandra) for production use.
 - **Default**: Memory storage (ephemeral), suitable for testing.
+- **Scalable**: Increase replica count to scale horizontally
 
-## Overriding the Jaeger Version
+## Overriding the Jaeger Version 
+##### (chart only supports Jaever v2+)
 
 You can customize the Jaeger image and tag using the following values:
 
@@ -61,37 +64,16 @@ helm install jaeger jaegertracing/jaeger
 ```
 
 ### 2. Elasticsearch (Production Recommended)
-Configure Jaeger to connect to Elasticsearch using the native config syntax.
 
-You can either use the internal provisioned elasticsearch or point to an external elasticsearch.
+This chart does not provision an ElasticSearch instance.
 
-The internal elasticsearch is configured to __NOT__ require a password or username by default.
+To use ElasticSearch storage, you must provide your own ElasticSearch instance and configure Jaeger via the native config syntax:
 
-#### Internal Provisioned Elasticsearch example:
-
-**values.yaml**
-```yaml
-# Use the provisioned Elasticsearch subchart
-provisionDataStore:
-  elasticsearch: true
-
-config:
-  extensions:
-    jaeger_query:
-      storage:
-        traces: primary_store_elasticsearch
-        traces_archive: archive_store_elasticsearch
-  exporters:
-    jaeger_storage_exporter:
-      trace_storage: primary_store_elasticsearch
-```
-
-#### External Elasticsearch example:
+#### Elasticsearch example:
 
 **values.yaml**
 ```yaml
-# External is very similar but you need to configure the urls
-config:
+userconfig:
   extensions:
     jaeger_query:
       storage:
@@ -119,17 +101,29 @@ config:
 ```
 
 **Running Maintenance Jobs:**
-To run Index Cleaner or Rollover jobs, enable them. They require configuration if using external by setting ```storage.type=elasticsearch``` and adjusting ```storage.elasticsearch``` values.  See that section in values.yaml for more details.
+
+To run Index Cleaner or Rollover jobs, enable them. 
+They require configuration by adjusting ```storage.elasticsearch``` values.  See that section in values.yaml for more details.
 
 ```yaml
 esIndexCleaner:
   enabled: true
+
+storage:
+  elasticsearch:
+    tls:
+      enabled: false
+    url: http://elasticsearch-master:9200
+    # user: elastic
+    # password: changeme
 ```
 
 * es-rollover __requires__ elasticsearch to be running __BEFORE__ install so the hook job can run.
 
 ### 3. Cassandra
-This chart does not provision a Cassandra cluster. To use Cassandra storage, you must provide your own Cassandra instance and configure Jaeger via the native config syntax:
+This chart does not provision a Cassandra cluster.
+
+To use Cassandra storage, you must provide your own Cassandra instance and configure Jaeger via the native config syntax:
 
 **values.yaml Example:**
 ```yaml
@@ -158,7 +152,9 @@ To run the Spark dependencies job (for dependency links graph) set ```spark.enab
 
 Below is an example of how to set overrides.  Please see the values.yaml for more examples:
 
-The values are populated under ```storage.elasticsearch``` Please see comments in values.yaml for more details.
+The values are populated under ```storage.elasticsearch``` and ```storage.casandra``` Please see comments in values.yaml for more details.
+
+You must choose the storage type with ```storage.type=elasticsearch``` or ```storage.type=cassandra```
 
 ```yaml
 spark:
@@ -172,7 +168,11 @@ For a full list of supported environment variables, see the [Spark Dependencies 
 
 ### 5. Query UI
 
-To enable the query ui, you need to enable the ingress and fill at least one host:
+To access the ui you can either:
+
+* enable the ingress and fill at least one host
+* provide your own ingress
+* or port forward ```kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 16686:16686 --address 0.0.0.0``` and access at http://localhost:16686/
 
 ```yaml
 jaeger:
@@ -181,6 +181,8 @@ jaeger:
     hosts:
       - <fill a host here>
 ```
+
+You can customize the UI by setting ```uiconfig```.  Please see the values.yaml for examples or https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 
 ## Configuring the Collector
 
