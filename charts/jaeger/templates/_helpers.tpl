@@ -95,39 +95,10 @@ Create the name of the esLookback service account to use
 {{- end -}}
 {{- end -}}
 
-
-
-
-
-
-{{- define "cassandra.host" -}}
-{{- if .Values.provisionDataStore.cassandra -}}
-{{- if .Values.storage.cassandra.nameOverride }}
-{{- printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- else }}
-{{- .Values.storage.cassandra.host }}
-{{- end -}}
-{{- end -}}
-
 {{- define "cassandra.contact_points" -}}
 {{- $port := .Values.storage.cassandra.port | toString }}
-{{- if .Values.provisionDataStore.cassandra -}}
-{{- if .Values.storage.cassandra.nameOverride }}
-{{- $host := printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s:%s" $host $port }}
-{{- else }}
-{{- $host := printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s:%s" $host $port }}
-{{- end -}}
-{{- else }}
 {{- printf "%s:%s" .Values.storage.cassandra.host $port }}
 {{- end -}}
-{{- end -}}
-
-
 
 {{/*
 Configure list of IP CIDRs allowed access to load balancer (if supported)
@@ -149,10 +120,11 @@ Configure list of IP CIDRs allowed access to load balancer (if supported)
 
 {{/*
 Cassandra related environment variables
+TODO: Is this needed other than spark?
 */}}
 {{- define "cassandra.env" -}}
 - name: CASSANDRA_SERVERS
-  value: {{ include "cassandra.host" . }}
+  value: {{ .Values.storage.cassandra.host }}
 - name: CASSANDRA_PORT
   value: {{ .Values.storage.cassandra.port | quote }}
 {{ if .Values.storage.cassandra.tls.enabled }}
@@ -190,182 +162,41 @@ Cassandra related environment variables
 {{- end }}
 {{- end -}}
 
-
-{{/*
-grpcPlugin related environment variables
-*/}}
-{{- define "grpcPlugin.env" -}}
-{{- if .Values.storage.grpcPlugin.extraEnv }}
-{{- toYaml .Values.storage.grpcPlugin.extraEnv }}
-{{- end }}
-{{- end -}}
-
-{{/*
-badger related environment variables
-*/}}
-{{- define "badger.env" -}}
-- name: BADGER_EPHEMERAL
-  value: {{ .Values.storage.badger.ephemeral | quote }}
-{{- if not .Values.storage.badger.ephemeral }}
-- name: BADGER_DIRECTORY_VALUE
-  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/data" | quote }}
-- name: BADGER_DIRECTORY_KEY
-  value: {{ print .Values.storage.badger.persistence.mountPath "/badger/key" | quote }}
-{{- end }}
-{{- if .Values.storage.badger.extraEnv }}
-{{- toYaml .Values.storage.badger.extraEnv }}
-{{- end }}
-{{- end -}}
-
-{{/*
-memory related environment variables
-*/}}
-{{- define "memory.env" -}}
-{{- if .Values.storage.memory.extraEnv }}
-{{- toYaml .Values.storage.memory.extraEnv }}
-{{- end }}
-{{- end -}}
-
-
 {{/*
 Elasticsearch related environment variables
 */}}
 {{- define "elasticsearch.env" -}}
-{{- if or .Values.provisionDataStore.elasticsearch (eq .Values.storage.type "elasticsearch") -}}
+{{- if eq .Values.storage.type "elasticsearch" -}}
 {{- $es := .Values.storage.elasticsearch | default dict -}}
-{{- $scheme := $es.scheme | default "http" -}}
-{{- $port := $es.port | default 9200 -}}
 {{- $user := $es.user | default "elastic" -}}
-{{- $password := .Values.elasticsearch.secret.password | default "changeme" -}}
+{{- $password := $es.password | default "changeme" -}}
+{{- $url := $es.url | default "http://elasticsearch-master:9200" -}}
 - name: ES_SERVER_URLS
-  value: "{{ $scheme }}://elasticsearch-master:{{ $port }}"
+  value: {{ $url | quote }}
+- name: ES_NODES
+  value: {{ $url | quote }}
 - name: ES_USERNAME
   value: {{ $user | quote }}
 - name: ES_PASSWORD
   value: {{ $password | quote }}
 {{- /* Handle TLS insecurity */ -}}
-{{- if or ( and $es.tls ( $es.tls.insecure ) ) ( eq $scheme "https" ) }}
-  {{- if $es.tls }}
-    {{- if $es.tls.insecure }}
+{{- if and (($es).tls).enabled (($es).tls).insecure }}
 - name: ES_TLS_SKIP_HOST_VERIFY
   value: "true"
-    {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}
 {{- end -}}
 
 {{/*
-Cassandra, Elasticsearch, or grpc-plugin, badger, memory related environment variables depending on which is used
+Cassandra, Elasticsearch related environment variables depending on which is used
+TODO: storage.env only used in spark
 */}}
 {{- define "storage.env" -}}
 {{- if eq .Values.storage.type "cassandra" -}}
 {{ include "cassandra.env" . }}
-{{- else if or (eq .Values.storage.type "elasticsearch") .Values.provisionDataStore.elasticsearch -}}
-{{ include "elasticsearch.env" . }}
-{{- else if or (eq .Values.storage.type "grpc-plugin") (eq .Values.storage.type "grpc") -}}
-{{ include "grpcPlugin.env" . }}
-{{- else if eq .Values.storage.type "badger" -}}
-{{ include "badger.env" . }}
-{{- else if eq .Values.storage.type "memory" -}}
-{{ include "memory.env" . }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Cassandra related command line options
-*/}}
-{{- define "cassandra.cmdArgs" -}}
-{{- range $key, $value := .Values.storage.cassandra.cmdlineParams -}}
-{{- if $value }}
-- --{{ $key }}={{ $value }}
-{{- else }}
-- --{{ $key }}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-
-{{/*
-Cassandra or Elasticsearch related command line options depending on which is used
-*/}}
-{{- define "storage.cmdArgs" -}}
-{{- if eq .Values.storage.type "cassandra" -}}
-{{- include "cassandra.cmdArgs" . -}}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
-# No specific helper, usage depends on args
+{{ include "elasticsearch.env" . }}
 {{- end -}}
-{{- end -}}
-
-
-{{/*
-Provides a basic ingress network policy
-*/}}
-{{- define "jaeger.ingress.networkPolicy" -}}
-apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
-kind: NetworkPolicy
-metadata:
-  name: {{ printf "%s-ingress" .Name }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/component: {{ .Component }}
-    {{- include "jaeger.labels" . | nindent 4 }}
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/component: {{ .Component }}
-  policyTypes:
-  - Ingress
-  ingress:
-  {{- if or .ComponentValues.networkPolicy.ingressRules.namespaceSelector .ComponentValues.networkPolicy.ingressRules.podSelector }}
-  - from:
-    {{- if .ComponentValues.networkPolicy.ingressRules.namespaceSelector }}
-    - namespaceSelector:
-        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.namespaceSelector "context" $) | nindent 10 }}
-    {{- end }}
-    {{- if .ComponentValues.networkPolicy.ingressRules.podSelector }}
-    - podSelector:
-        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.podSelector "context" $) | nindent 10 }}
-    {{- end }}
-  {{- end }}
-  {{- if .ComponentValues.networkPolicy.ingressRules.customRules }}
-  {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.ingressRules.customRules "context" $) | nindent 2 }}
-  {{- end }}
-{{- end -}}
-
-{{/*
-Provides a basic egress network policy
-*/}}
-{{- define "jaeger.egress.networkPolicy" -}}
-apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
-kind: NetworkPolicy
-metadata:
-  name: {{ printf "%s-egress" .Name }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/component: {{ .Component }}
-    {{- include "jaeger.labels" . | nindent 4 }}
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/component: {{ .Component }}
-  policyTypes:
-  - Egress
-  egress:
-  {{- if or .ComponentValues.networkPolicy.egressRules.namespaceSelector .ComponentValues.networkPolicy.egressRules.podSelector }}
-  - to:
-    {{- if .ComponentValues.networkPolicy.egressRules.namespaceSelector }}
-    - namespaceSelector:
-        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.namespaceSelector "context" $) | nindent 10 }}
-    {{- end }}
-    {{- if .ComponentValues.networkPolicy.egressRules.podSelector }}
-    - podSelector:
-        matchLabels: {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.podSelector "context" $) | nindent 10 }}
-    {{- end }}
-  {{- end }}
-  {{- if .ComponentValues.networkPolicy.egressRules.customRules }}
-  {{- include "common.tplvalues.render" (dict "value" .ComponentValues.networkPolicy.egressRules.customRules "context" $) | nindent 2 }}
-  {{- end }}
 {{- end -}}
 
 {{/*
@@ -447,15 +278,6 @@ Create pull secrets for esLookback image
 {{- define "esLookback.imagePullSecrets" -}}
 {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.esLookback.image) "context" $) -}}
 {{- end }}
-
-
-{{- define "jaeger.namespace" -}}
-  {{- if .Values.namespaceOverride -}}
-    {{- .Values.namespaceOverride -}}
-  {{- else -}}
-    {{- .Release.Namespace -}}
-  {{- end -}}
-{{- end -}}
 
 {{/*
 Generate command line arguments from a dictionary
