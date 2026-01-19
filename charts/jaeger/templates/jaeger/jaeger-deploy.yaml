@@ -32,37 +32,13 @@ spec:
     spec:
       {{- include "jaeger.imagePullSecrets" . | nindent 6 }}
       containers:
-        - env:
-          {{- if .Values.jaeger.extraEnv }}
-            {{- toYaml .Values.jaeger.extraEnv | nindent 12 }}
-          {{- end }}
-            - name: SPAN_STORAGE_TYPE
-              value: {{ .Values.storage.type }}
-            {{- include "storage.env" . | nindent 12 }}
-            - name: COLLECTOR_ZIPKIN_HOST_PORT
-              value: :9411
-            - name: JAEGER_DISABLED
-              value: "false"
-            - name: COLLECTOR_OTLP_ENABLED
-              value: "true"
-            {{- if .Values.jaeger.samplingConfig }}
-            - name: SAMPLING_STRATEGIES_FILE
-              value: /etc/conf/strategies.json
-            {{- end }}
-            {{- if .Values.uiconfig }}
-            - name: QUERY_UI_CONFIG
-              value: /etc/jaeger/ui-config/ui-config.json
-            {{- end }}
-        {{- with .Values.jaeger.envFrom }}
-          envFrom: {{- toYaml . | nindent 12 }}
-        {{- end }}
-          securityContext:
+        - securityContext:
             {{- toYaml .Values.jaeger.securityContext | nindent 12 }}
           image: {{ include "jaeger.image" . }}
           imagePullPolicy: {{ .Values.jaeger.image.pullPolicy }}
           name: jaeger
           args:
-            {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
+            {{- if .Values.userconfig }}
             - "--config"
             - "/etc/jaeger/user-config.yaml"
             {{- end }}
@@ -117,33 +93,19 @@ spec:
         {{- toYaml . | nindent 12 }}
       {{- end }}
           volumeMounts:
-        {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
+        {{- if .Values.userconfig }}
             - name: user-config
-              mountPath: /etc/jaeger
+              mountPath: /etc/jaeger/user-config
         {{- end }}
-        {{- if .Values.uiconfig }}  
+        {{- if .Values.uiconfig }}
             - name: ui-config
               mountPath: /etc/jaeger/ui-config
-        {{- end }}
-        {{- if not .Values.storage.badger.ephemeral }}
-            - name: badger-data
-              mountPath: {{ .Values.storage.badger.persistence.mountPath }}
-        {{- end }}
-        {{- if .Values.jaeger.samplingConfig}}
-            - name: strategies
-              mountPath: /etc/conf/
-        {{- end }}
-        {{- range .Values.jaeger.extraSecretMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
-              readOnly: {{ .readOnly }}
         {{- end }}
       securityContext:
         {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
       volumes:
-      {{- if or .Values.userconfig .Values.provisionDataStore.elasticsearch .Values.provisionDataStore.cassandra (eq .Values.storage.type "elasticsearch") (eq .Values.storage.type "cassandra") }}
+      {{- if .Values.userconfig }}
         - name: user-config
           configMap:
             name: user-config
@@ -153,21 +115,6 @@ spec:
           configMap:
             name: ui-config
       {{- end }}
-    {{- if not .Values.storage.badger.ephemeral }}
-        - name: badger-data
-          persistentVolumeClaim:
-            claimName: {{ .Values.storage.badger.persistence.useExistingPvcName | required "Using badger persistence it is required to set an existing PVC"  }}
-    {{- end }}
-    {{- if .Values.jaeger.samplingConfig}}
-        - name: strategies
-          configMap:
-            name: {{ include "jaeger.fullname" . }}-sampling-strategies
-    {{- end }}
-    {{- range .Values.jaeger.extraSecretMounts }}
-        - name: {{ .name }}
-          secret:
-            secretName: {{ .secretName }}
-    {{- end }}
     {{- with .Values.jaeger.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
