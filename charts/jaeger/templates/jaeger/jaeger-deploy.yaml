@@ -95,11 +95,13 @@ spec:
           volumeMounts:
         {{- if .Values.userconfig }}
             - name: user-config
-              mountPath: /etc/jaeger/user-config
+              mountPath: /etc/jaeger/user-config.yaml
+              subPath: user-config.yaml
         {{- end }}
         {{- if .Values.uiconfig }}
             - name: ui-config
-              mountPath: /etc/jaeger/ui-config
+              mountPath: /etc/jaeger/ui-config.json
+              subPath: ui-config.json
         {{- end }}
       securityContext:
         {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
