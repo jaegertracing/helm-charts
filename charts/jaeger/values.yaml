@@ -157,6 +157,9 @@ jaeger:
     digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
+  extraEnv: []
+    # - name: OTEL_TRACES_SAMPLER
+    #   value: "always_off"
   # command line arguments / CLI flags
   # See https://www.jaegertracing.io/docs/cli/
   args: []

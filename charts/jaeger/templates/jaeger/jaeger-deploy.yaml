@@ -32,7 +32,11 @@ spec:
     spec:
       {{- include "jaeger.imagePullSecrets" . | nindent 6 }}
       containers:
-        - securityContext:
+        - env:
+          {{- if .Values.jaeger.extraEnv }}
+            {{- toYaml .Values.jaeger.extraEnv | nindent 10 }}
+          {{- end }}
+          securityContext:
             {{- toYaml .Values.jaeger.securityContext | nindent 12 }}
           image: {{ include "jaeger.image" . }}
           imagePullPolicy: {{ .Values.jaeger.image.pullPolicy }}
