@@ -206,3 +206,5 @@ The unified Service exposes the following ports:
 - **OTLP**: 4317 (gRPC), 4318 (HTTP)
 - **Jaeger**: 14250 (gRPC), 14268 (HTTP), 6831/6832 (UDP)
 - **Zipkin**: 9411
+- **Prometheus**: 8888(HTTP), 8889(HTTP)
+- Additional ports may be added via jaeger.service.extraPorts override.

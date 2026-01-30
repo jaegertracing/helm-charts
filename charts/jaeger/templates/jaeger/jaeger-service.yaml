@@ -66,6 +66,26 @@ spec:
     - name: grpc-query
       port: 16685
       targetPort: 16685
+    # Metrics Ports
+    - name: internal-metrics
+      port: 8888
+      targetPort: 8888
+      appProtocol: http
+    - name: span-metrics
+      port: 8889
+      targetPort: 8889
+      appProtocol: http
+  {{- if .Values.jaeger.service.extraPorts }}
+    # Additional Ports
+  {{- range .Values.jaeger.service.extraPorts }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+  {{- if .protocol }}
+      protocol: {{ .protocol }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
   selector:
     {{- include "jaeger.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
