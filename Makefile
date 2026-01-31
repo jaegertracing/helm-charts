@@ -16,3 +16,13 @@ test-jaeger-env-vars:
 		--helm-extra-set-args " \
 		--set jaeger.extraEnv[0].name=OTEL_TRACES_SAMPLER \
 		--set jaeger.extraEnv[0].value=always_off"
+
+.PHONY: test-jaeger-extra-ports
+test-jaeger-extra-ports:
+	ct install --config ct.yaml \
+		--charts charts/jaeger \
+		--helm-extra-set-args " \
+		--set jaeger.service.extraPorts[0].name=custom-http \
+		--set jaeger.service.extraPorts[0].port=18080 \
+		--set jaeger.service.extraPorts[0].targetPort=18080 \
+		--set jaeger.service.extraPorts[0].protocol=TCP"
