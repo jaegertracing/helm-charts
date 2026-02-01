@@ -6,9 +6,9 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: all-in-one
-  {{- if .Values.jaeger.ingress.annotations }}
+  {{- with include "jaeger.annotations" (dict "context" . "component" .Values.jaeger.ingress.annotations) }}
   annotations:
-    {{- toYaml .Values.jaeger.ingress.annotations | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 spec:
   {{- if .Values.jaeger.ingress.ingressClassName }}

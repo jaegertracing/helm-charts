@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: spark
-{{- if .Values.spark.annotations }}
+  {{- with include "jaeger.annotations" (dict "context" . "component" .Values.spark.annotations) }}
   annotations:
-    {{- toYaml .Values.spark.annotations | nindent 4 }}
-{{- end }}
+    {{- . | nindent 4 }}
+  {{- end }}
 spec:
   schedule: {{ .Values.spark.schedule | quote }}
   successfulJobsHistoryLimit: {{ .Values.spark.successfulJobsHistoryLimit }}

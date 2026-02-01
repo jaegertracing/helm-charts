@@ -7,6 +7,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations:
+    {{- include "jaeger.annotations" . | nindent 4 }}
+  {{- end }}
 data:
   ui-config.json: {{ toJson .Values.uiconfig | quote }}
 {{- end -}}

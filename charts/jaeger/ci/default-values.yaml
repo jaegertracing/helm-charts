@@ -1,0 +1,5 @@
+# Test with default values
+# This ensures the chart works with minimal configuration
+
+jaeger:
+  enabled: true

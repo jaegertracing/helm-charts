@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/component: all-in-one
     prometheus.io/port: "8888"
     prometheus.io/scrape: "true"
+  {{- with include "jaeger.annotations" (dict "context" . "component" nil) }}
+  annotations:
+    {{- . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if hasKey .Values.jaeger "replicas" }}
   replicas: {{ .Values.jaeger.replicas }}

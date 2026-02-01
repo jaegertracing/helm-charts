@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: es-index-cleaner
-{{- if .Values.esIndexCleaner.annotations }}
+  {{- with include "jaeger.annotations" (dict "context" . "component" .Values.esIndexCleaner.annotations) }}
   annotations:
-    {{- toYaml .Values.esIndexCleaner.annotations | nindent 4 }}
-{{- end }}
+    {{- . | nindent 4 }}
+  {{- end }}
 spec:
   concurrencyPolicy: {{ .Values.esIndexCleaner.concurrencyPolicy }}
   schedule: {{ .Values.esIndexCleaner.schedule | quote }}

@@ -3,7 +3,7 @@ appVersion: 2.14.1
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
-version: 4.4.5
+version: 4.4.6
 # CronJobs require v1.21
 kubeVersion: ">= 1.21-0"
 keywords:
