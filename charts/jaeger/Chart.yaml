@@ -3,17 +3,7 @@ appVersion: 2.14.1
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
 type: application
-version: 4.4.4
-# Artifact Hub annotations
-# The jaeger image is whitelisted from security scanning because the reported
-# CVEs are in the upstream Alpine base image (OpenSSL libcrypto3/libssl3) and
-# Go stdlib, not in this Helm chart. These will be resolved when the Jaeger
-# project releases a new image with updated base packages.
-annotations:
-  artifacthub.io/images: |
-    - name: jaeger
-      image: jaegertracing/jaeger:2.14.1
-      whitelisted: true
+version: 4.4.5
 # CronJobs require v1.21
 kubeVersion: ">= 1.21-0"
 keywords:
