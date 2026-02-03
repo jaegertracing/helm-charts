@@ -1,0 +1,17 @@
+# Test with common labels and annotations in values
+
+commonLabels:
+  common-label-1: "value-1"
+  common-label-2: "value-2"
+
+commonAnnotations:
+  example/common-annotation-1: "value-1"
+  example/common-annotation-2: "value-2"
+
+jaeger:
+  enabled: true
+  service:
+    annotations:
+      # When component annotations are present, override common annotation
+      example/common-annotation-1: "component-value-1"
+      example/common-annotation-3: "component-value-3"

@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: es-lookback
-{{- if .Values.esLookback.annotations }}
+  {{- with include "jaeger.annotations" (dict "context" . "component" .Values.esLookback.annotations) }}
   annotations:
-    {{- toYaml .Values.esLookback.annotations | nindent 4 }}
-{{- end }}
+    {{- . | nindent 4 }}
+  {{- end }}
 spec:
   concurrencyPolicy: {{ .Values.esLookback.concurrencyPolicy }}
   schedule: {{ .Values.esLookback.schedule | quote }}
@@ -38,7 +38,7 @@ spec:
             {{- end }}
         spec:
           serviceAccountName: {{ template "jaeger.esLookback.serviceAccountName" . }}
-          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}  
+          {{- include "esLookback.imagePullSecrets" . | nindent 10 }}
           securityContext:
             {{- toYaml .Values.esLookback.podSecurityContext | nindent 12 }}
           restartPolicy: OnFailure

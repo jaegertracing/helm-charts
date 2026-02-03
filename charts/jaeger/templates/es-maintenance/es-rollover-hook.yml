@@ -9,9 +9,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-    {{- if .Values.esRollover.initHook.annotations }}
-      {{- toYaml .Values.esRollover.initHook.annotations | nindent 4 }}
-    {{- end }}
+    {{- include "jaeger.annotations" (dict "context" . "component" .Values.esRollover.initHook.annotations) | nindent 4 }}
 spec:
   {{- if .Values.esRollover.initHook.activeDeadlineSeconds }}
   activeDeadlineSeconds: {{ .Values.esRollover.initHook.activeDeadlineSeconds }}

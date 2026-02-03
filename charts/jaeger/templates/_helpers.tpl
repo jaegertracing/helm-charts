@@ -41,6 +41,9 @@ helm.sh/chart: {{ include "jaeger.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -49,6 +52,17 @@ Selector labels
 {{- define "jaeger.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "jaeger.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{/*
+Merge common annotations with component-specific annotations.
+Component-specific annotations take precedence.
+*/}}
+{{- define "jaeger.annotations" -}}
+{{- $annotations := merge (dict) (.component | default dict) (.context.Values.commonAnnotations | default dict) -}}
+{{- if gt (len (keys $annotations)) 0 -}}
+{{- toYaml $annotations -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

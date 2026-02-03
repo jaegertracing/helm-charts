@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "jaeger.labels" . | nindent 4 }}
     app.kubernetes.io/component: es-rollover
-{{- if .Values.esRollover.annotations }}
+  {{- with include "jaeger.annotations" (dict "context" . "component" .Values.esRollover.annotations) }}
   annotations:
-    {{- toYaml .Values.esRollover.annotations | nindent 4 }}
-{{- end }}
+    {{- . | nindent 4 }}
+  {{- end }}
 spec:
   concurrencyPolicy: {{ .Values.esRollover.concurrencyPolicy }}
   schedule: {{ .Values.esRollover.schedule | quote }}
