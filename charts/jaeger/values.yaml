@@ -217,6 +217,13 @@ jaeger:
     runAsGroup: 10001
     fsGroup: 10001
   securityContext: {}
+  extraVolumes: []
+    # - name: badger-data
+    #   persistentVolumeClaim:
+    #     claimName: jaeger-badger-data
+  extraVolumeMounts: []
+    # - name: badger-data
+    #   mountPath: /badger
 
 # ------------------------------------------------------------------------------
 # Storage Connection Settings

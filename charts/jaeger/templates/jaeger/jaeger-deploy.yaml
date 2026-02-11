@@ -111,6 +111,9 @@ spec:
               mountPath: /etc/jaeger/ui-config.json
               subPath: ui-config.json
         {{- end }}
+        {{- with .Values.jaeger.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
       securityContext:
         {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
@@ -124,6 +127,9 @@ spec:
         - name: ui-config
           configMap:
             name: ui-config
+      {{- end }}
+      {{- with .Values.jaeger.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- with .Values.jaeger.affinity }}
       affinity:
