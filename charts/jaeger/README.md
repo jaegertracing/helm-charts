@@ -114,6 +114,7 @@ storage:
     tls:
       enabled: false
     url: http://elasticsearch-master:9200
+    anonymous: false # Set to true to skip injecting ES_USERNAME/ES_PASSWORD (e.g. for AWS OpenSearch with VPC-level access)
     # user: elastic
     # password: changeme
 ```
