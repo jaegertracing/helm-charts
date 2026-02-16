@@ -189,10 +189,12 @@ Elasticsearch related environment variables
   value: {{ $url | quote }}
 - name: ES_NODES
   value: {{ $url | quote }}
+{{- if not $es.anonymous }}
 - name: ES_USERNAME
   value: {{ $user | quote }}
 - name: ES_PASSWORD
   value: {{ $password | quote }}
+{{- end }}
 {{- /* Handle TLS insecurity */ -}}
 {{- if and (($es).tls).enabled (($es).tls).insecure }}
 - name: ES_TLS_SKIP_HOST_VERIFY

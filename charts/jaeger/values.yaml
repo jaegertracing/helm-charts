@@ -268,6 +268,7 @@ storage:
       mountPath: ""
       subPath: ""
     url: http://elasticsearch-master:9200
+    anonymous: false
     # user: elastic
     # password: changeme
 
