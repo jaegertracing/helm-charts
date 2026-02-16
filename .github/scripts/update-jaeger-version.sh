@@ -2,6 +2,11 @@
 # Script to check for new Jaeger Docker Hub releases and update Chart.yaml
 # Can be run standalone for testing or via the GitHub Actions workflow
 #
+# This script updates:
+#   - appVersion field in Chart.yaml
+#   - artifacthub.io/images annotation to keep it in sync with appVersion
+#   - Chart version (via bump-chart-version.sh)
+#
 # Usage: ./update-jaeger-version.sh [--dry-run]
 #
 # Environment variables:
