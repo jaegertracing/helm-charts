@@ -2,6 +2,11 @@
 # Script to check for new Jaeger Docker Hub releases and update Chart.yaml
 # Can be run standalone for testing or via the GitHub Actions workflow
 #
+# This script updates:
+#   - appVersion field in Chart.yaml
+#   - artifacthub.io/images annotation to keep it in sync with appVersion
+#   - Chart version (via bump-chart-version.sh)
+#
 # Usage: ./update-jaeger-version.sh [--dry-run]
 #
 # Environment variables:
@@ -94,6 +99,11 @@ if [[ "$DRY_RUN" == "true" ]]; then
   echo "=============================================="
   echo "DRY RUN MODE - No changes will be made"
   echo "=============================================="
+  echo "Changes that would be made:"
+  echo "  - appVersion: ${CURRENT_APP_VERSION} -> ${LATEST_TAG}"
+  echo "  - artifacthub.io/images annotation: jaegertracing/jaeger:${CURRENT_APP_VERSION} -> jaegertracing/jaeger:${LATEST_TAG}"
+  echo "  - Chart version will be bumped (minor)"
+  echo "=============================================="
   exit 0
 fi
 
@@ -102,6 +112,11 @@ echo "Updating ${CHART_PATH}..."
 
 # Update appVersion
 sed -i "s/^appVersion:.*/appVersion: ${LATEST_TAG}/" "$CHART_PATH"
+
+# Update the artifacthub.io/images annotation to use the new version
+# This ensures the annotation stays in sync with appVersion and provides
+# accurate metadata to Artifact Hub about the Docker image version
+sed -i "s|image: jaegertracing/jaeger:.*|image: jaegertracing/jaeger:${LATEST_TAG}|" "$CHART_PATH"
 
 # Get the script directory (where this script is located)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
