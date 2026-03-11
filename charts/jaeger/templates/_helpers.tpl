@@ -182,19 +182,19 @@ Elasticsearch related environment variables
 {{- define "elasticsearch.env" -}}
 {{- if eq .Values.storage.type "elasticsearch" -}}
 {{- $es := .Values.storage.elasticsearch | default dict -}}
-{{- $user := $es.user | default "elastic" -}}
-{{- $password := $es.password | default "changeme" -}}
-{{- $url := $es.url | default "http://elasticsearch-master:9200" -}}
+{{- if $es.user }}
+- name: ES_USERNAME
+  value: {{ $es.user | quote }}
+{{- end }}
+{{- if $es.password }}
+- name: ES_PASSWORD
+  value: {{ $es.password | quote }}
+{{- end }}
+{{ $url := $es.url | default "http://elasticsearch-master:9200" -}}
 - name: ES_SERVER_URLS
   value: {{ $url | quote }}
 - name: ES_NODES
   value: {{ $url | quote }}
-{{- if not $es.anonymous }}
-- name: ES_USERNAME
-  value: {{ $user | quote }}
-- name: ES_PASSWORD
-  value: {{ $password | quote }}
-{{- end }}
 {{- /* Handle TLS insecurity */ -}}
 {{- if and (($es).tls).enabled (($es).tls).insecure }}
 - name: ES_TLS_SKIP_HOST_VERIFY
