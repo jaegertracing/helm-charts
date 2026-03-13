@@ -190,7 +190,7 @@ Elasticsearch related environment variables
 - name: ES_PASSWORD
   value: {{ $es.password | quote }}
 {{- end }}
-{{ $url := $es.url | default "http://elasticsearch-master:9200" -}}
+{{- $url := $es.url | default "http://elasticsearch-master:9200" }}
 - name: ES_SERVER_URLS
   value: {{ $url | quote }}
 - name: ES_NODES
