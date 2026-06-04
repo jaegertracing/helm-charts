@@ -16,8 +16,13 @@ spec:
   {{- if hasKey .Values.jaeger "replicas" }}
   replicas: {{ .Values.jaeger.replicas }}
   {{- end }}
+  {{- if .Values.jaeger.strategy }}
+  strategy:
+    {{- toYaml .Values.jaeger.strategy | nindent 4 }}
+  {{- else }}
   strategy:
     type: Recreate
+  {{- end }}
   selector:
     matchLabels:
       {{- include "jaeger.selectorLabels" . | nindent 6 }}
