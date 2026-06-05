@@ -1,5 +1,8 @@
 {{- if and (.Values.jaeger.enabled) (.Values.jaeger.httproute.enabled) -}}
 {{- $route := .Values.jaeger.httproute -}}
+{{- if not $route.parentRefs -}}
+{{- fail "jaeger.httproute.enabled is true but jaeger.httproute.parentRefs is empty; an HTTPRoute needs at least one parentRef to attach to a Gateway" -}}
+{{- end -}}
 apiVersion: {{ $route.apiVersion | default "gateway.networking.k8s.io/v1" }}
 kind: HTTPRoute
 metadata:
