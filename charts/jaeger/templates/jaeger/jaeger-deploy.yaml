@@ -81,6 +81,8 @@ spec:
               protocol: TCP
             - containerPort: 8888
               protocol: TCP
+            - containerPort: 8889
+              protocol: TCP
           livenessProbe:
             failureThreshold: 5
             httpGet:
