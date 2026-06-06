@@ -171,6 +171,7 @@ For a full list of supported environment variables, see the [Spark Dependencies 
 To access the ui you can either:
 
 * enable the ingress and fill at least one host
+* enable the Gateway API HTTPRoute and attach it to an existing Gateway
 * provide your own ingress
 * or port forward ```kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 16686:16686 --address 0.0.0.0``` and access at http://localhost:16686/
 
@@ -179,6 +180,19 @@ jaeger:
   ingress:
     enabled: true
     hosts:
+      - <fill a host here>
+```
+
+Alternatively, expose the Query UI through the [Gateway API](https://gateway-api.sigs.k8s.io/). This requires the Gateway API CRDs and a `Gateway` to already exist in the cluster:
+
+```yaml
+jaeger:
+  httproute:
+    enabled: true
+    parentRefs:
+      - name: <your-gateway-name>
+        namespace: <your-gateway-namespace>
+    hostnames:
       - <fill a host here>
 ```
 
