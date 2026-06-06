@@ -1,0 +1,41 @@
+{{- if and (.Values.jaeger.enabled) (.Values.jaeger.httproute.enabled) -}}
+{{- $route := .Values.jaeger.httproute -}}
+{{- if not $route.parentRefs -}}
+{{- fail "jaeger.httproute.enabled is true but jaeger.httproute.parentRefs is empty; an HTTPRoute needs at least one parentRef to attach to a Gateway" -}}
+{{- end -}}
+apiVersion: {{ $route.apiVersion | default "gateway.networking.k8s.io/v1" }}
+kind: HTTPRoute
+metadata:
+  name: {{ template "jaeger.fullname" . }}
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+    app.kubernetes.io/component: all-in-one
+  {{- with include "jaeger.annotations" (dict "context" . "component" $route.annotations) }}
+  annotations:
+    {{- . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with $route.parentRefs }}
+  parentRefs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $route.hostnames }}
+  hostnames:
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- with $route.additionalRules }}
+    {{- tpl (toYaml .) $ | nindent 4 }}
+    {{- end }}
+    - backendRefs:
+        - name: {{ include "jaeger.fullname" . }}
+          port: 16686
+      {{- with $route.matches }}
+      matches:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $route.filters }}
+      filters:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end -}}
