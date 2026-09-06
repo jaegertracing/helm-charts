@@ -198,6 +198,28 @@ jaeger:
 
 You can customize the UI by setting ```uiconfig```.  Please see the values.yaml for examples or https://github.com/jaegertracing/jaeger/tree/main/cmd/jaeger
 
+#### OAuth2 Proxy Sidecar Authentication
+
+You can secure access to the Query UI by deploying `oauth2-proxy` as a sidecar container alongside Jaeger. When `jaeger.oAuthSidecar.enabled` is `true`, query traffic sent to Service port `16686` (or through Ingress) is automatically forwarded to the OAuth2 Proxy sidecar (`containerPort: 4180`), which authenticates incoming requests before proxying them to `http://127.0.0.1:16686`.
+
+```yaml
+jaeger:
+  oAuthSidecar:
+    enabled: true
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.4.0
+    containerPort: 4180
+    args:
+      - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
+      - --upstream=http://127.0.0.1:16686
+      - --http-address=0.0.0.0:4180
+    extraConfigmapMounts:
+      - name: oauth2-proxy-config
+        mountPath: /etc/oauth2-proxy/oauth2-proxy.cfg
+        subPath: oauth2-proxy.cfg
+        configMap: jaeger-oauth2-proxy-config
+        readOnly: true
+```
+
 ## Configuring the Collector
 
 The Jaeger v2 configuration is defined in `config` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.

@@ -122,6 +122,56 @@ spec:
         {{- with .Values.jaeger.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
         {{- end }}
+      {{- if and .Values.jaeger.oAuthSidecar .Values.jaeger.oAuthSidecar.enabled }}
+        - name: {{ template "jaeger.fullname" . }}-oauth2-sidecar
+          image: {{ .Values.jaeger.oAuthSidecar.image }}
+          imagePullPolicy: {{ .Values.jaeger.oAuthSidecar.pullPolicy }}
+          {{- if .Values.jaeger.oAuthSidecar.securityContext }}
+          securityContext:
+            {{- toYaml .Values.jaeger.oAuthSidecar.securityContext | nindent 12 }}
+          {{- end }}
+          {{- if .Values.jaeger.oAuthSidecar.args }}
+          args:
+            {{- range $arg := .Values.jaeger.oAuthSidecar.args }}
+            - "{{ tpl $arg $ }}"
+            {{- end }}
+          {{- end }}
+          {{- if or .Values.jaeger.oAuthSidecar.extraConfigmapMounts .Values.jaeger.oAuthSidecar.extraSecretMounts }}
+          volumeMounts:
+          {{- range .Values.jaeger.oAuthSidecar.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+              readOnly: {{ if eq .readOnly false }}false{{ else }}true{{ end }}
+          {{- end }}
+          {{- range .Values.jaeger.oAuthSidecar.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+              readOnly: {{ if eq .readOnly false }}false{{ else }}true{{ end }}
+          {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.jaeger.oAuthSidecar.containerPort | default 4180 }}
+              name: oauth-proxy
+              protocol: TCP
+          {{- if .Values.jaeger.oAuthSidecar.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.jaeger.oAuthSidecar.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.jaeger.oAuthSidecar.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.jaeger.oAuthSidecar.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- with .Values.jaeger.oAuthSidecar.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.jaeger.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ template "jaeger.fullname" . }}
@@ -138,6 +188,18 @@ spec:
       {{- end }}
       {{- with .Values.jaeger.extraVolumes }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and .Values.jaeger.oAuthSidecar .Values.jaeger.oAuthSidecar.enabled }}
+      {{- range .Values.jaeger.oAuthSidecar.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.jaeger.oAuthSidecar.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
       {{- end }}
     {{- with .Values.jaeger.affinity }}
       affinity:

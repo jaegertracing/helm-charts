@@ -62,7 +62,7 @@ spec:
     # Query Ports
     - name: http-query
       port: 16686
-      targetPort: 16686
+      targetPort: {{- if and .Values.jaeger.oAuthSidecar .Values.jaeger.oAuthSidecar.enabled }} {{ .Values.jaeger.oAuthSidecar.containerPort | default 4180 }} {{- else }} 16686 {{- end }}
     - name: grpc-query
       port: 16685
       targetPort: 16685
