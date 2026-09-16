@@ -322,8 +322,8 @@ storage:
       # cassandra.tls.enabled: "false"
 
   # Elasticsearch connection settings
-  # NOTE: In Jaeger v2, Elasticsearch is configured directly in config.extensions.jaeger_storage
-  # (see the 'config' section at the top of this file). The settings below are only used by
+  # NOTE: In Jaeger v2, Elasticsearch is configured directly in userconfig.extensions.jaeger_storage
+  # (see the 'userconfig' section at the top of this file). The settings below are only used by
   # the ES maintenance jobs (esIndexCleaner, esRollover, esLookback) via the elasticsearch.env helper.
   elasticsearch:
     tls:
