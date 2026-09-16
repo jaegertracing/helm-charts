@@ -9,7 +9,7 @@
 This release is a refactor designed to simplify operation and configuration.
 
 - **Unified Architecture**: All functionality (Collector, Query, Ingester) is now provided by a single "All-in-One" deployment.
-- **Configuration**: Storage is configured via the `config.extensions.jaeger_storage` section using native Jaeger/OTEL config syntax.
+- **Configuration**: Storage is configured via the `userconfig.extensions.jaeger_storage` section using native Jaeger/OTEL config syntax.
 - **Cassandra Schema**: Jaeger v2 handles schema creation internally. The legacy schema job has been removed.
 - **Service Consolidation**: A single Service now exposes all ports (agent, collector, query).
 - **No provisioned storage**: Dependency charts have been removed.  The user must deploy them separately and configure connection using the Otel config Syntax https://github.com/jaegertracing/jaeger/blob/main/cmd/jaeger/config.yaml 
@@ -130,7 +130,7 @@ To use Cassandra storage, you must provide your own Cassandra instance and confi
 storage:
   type: cassandra
 
-config:
+userconfig:
   extensions:
     jaeger_storage:
       backends:
@@ -206,7 +206,7 @@ You can secure access to the Query UI by deploying `oauth2-proxy` as a sidecar c
 jaeger:
   oAuthSidecar:
     enabled: true
-    image: quay.io/oauth2-proxy/oauth2-proxy:v7.4.0
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.4
     containerPort: 4180
     args:
       - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
@@ -222,10 +222,10 @@ jaeger:
 
 ## Configuring the Collector
 
-The Jaeger v2 configuration is defined in `config` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.
+The Jaeger v2 configuration is defined in `userconfig` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.
 
 ```yaml
-config:
+userconfig:
   service:
     pipelines:
       traces:
