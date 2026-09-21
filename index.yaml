@@ -4,6 +4,47 @@ entries:
   - annotations:
       artifacthub.io/images: |
         - name: jaeger
+          image: jaegertracing/jaeger:2.21.0
+          whitelisted: true
+          ignored: true
+    apiVersion: v2
+    appVersion: 2.21.0
+    created: "2026-09-21T00:54:33.693350438Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: A Jaeger Helm chart for Kubernetes
+    digest: 1aad99ca0e988662e7784a76356c835224b4160d88c51c4d4bb6ff812dc9a9fd
+    home: https://jaegertracing.io
+    icon: https://www.jaegertracing.io/img/jaeger-icon-reverse-color.svg
+    keywords:
+    - jaeger
+    - opentracing
+    - tracing
+    - instrumentation
+    kubeVersion: '>= 1.21-0'
+    maintainers:
+    - email: ankit.mehta@appian.com
+      name: mehta-ankit
+    - email: michael.lorant@fairfaxmedia.com.au
+      name: mikelorant
+    - email: naseem@transit.app
+      name: naseemkullah
+    - email: me@pavelnikolov.net
+      name: pavelnikolov
+    - email: jkowall@kowall.net
+      name: jkowall
+    name: jaeger
+    sources:
+    - https://hub.docker.com/u/jaegertracing/
+    type: application
+    urls:
+    - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-4.14.0/jaeger-4.14.0.tgz
+    version: 4.14.0
+  - annotations:
+      artifacthub.io/images: |
+        - name: jaeger
           image: jaegertracing/jaeger:2.20.0
           whitelisted: true
           ignored: true
@@ -10986,4 +11027,4 @@ entries:
     urls:
     - https://github.com/jaegertracing/helm-charts/releases/download/jaeger-operator-2.12.1/jaeger-operator-2.12.1.tgz
     version: 2.12.1
-generated: "2026-09-06T09:57:17.475909261Z"
+generated: "2026-09-21T00:54:33.694966151Z"
