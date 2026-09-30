@@ -9,7 +9,7 @@ metadata:
     {{- include "jaeger.labels" . | nindent 4 }}
   {{- if .Values.commonAnnotations }}
   annotations:
-    {{- include "jaeger.annotations" . | nindent 4 }}
+    {{- include "jaeger.annotations" (dict "context" . "component" nil) | nindent 4 }}
   {{- end }}
 data:
   user-config.yaml: |
