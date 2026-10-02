@@ -15,3 +15,8 @@ jaeger:
       # When component annotations are present, override common annotation
       example/common-annotation-1: "component-value-1"
       example/common-annotation-3: "component-value-3"
+
+# Render the UI config map with common annotations
+uiconfig:
+  monitor:
+    menuEnabled: false
