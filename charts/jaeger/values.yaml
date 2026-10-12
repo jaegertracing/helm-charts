@@ -228,6 +228,27 @@ jaeger:
     filters: []
     # additionalRules (templated) prepends custom HTTPRoute rules
     additionalRules: []
+  livenessProbe:
+    failureThreshold: 5
+    httpGet:
+      path: /status
+      port: 13133
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /status
+      port: 13133
+      scheme: HTTP
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  startupProbe: {}
   # resources:
   #   limits:
   #     cpu: 500m

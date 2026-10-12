@@ -220,6 +220,22 @@ jaeger:
         readOnly: true
 ```
 
+### 6. Health Probes
+
+You can configure the Jaeger container's probes using `jaeger.livenessProbe`, `jaeger.readinessProbe`, and `jaeger.startupProbe`. See values.yaml for the defaults.
+
+For slow startup, such as Badger recovery, configure a startup probe:
+
+```yaml
+jaeger:
+  startupProbe:
+    httpGet:
+      path: /status
+      port: 13133
+    failureThreshold: 120
+    periodSeconds: 10
+```
+
 ## Configuring the Collector
 
 The Jaeger v2 configuration is defined in `config` using OpenTelemetry Collector syntax. You can override pipelines, receivers, and processors there.
