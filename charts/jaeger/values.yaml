@@ -228,6 +228,27 @@ jaeger:
     filters: []
     # additionalRules (templated) prepends custom HTTPRoute rules
     additionalRules: []
+  livenessProbe:
+    failureThreshold: 5
+    httpGet:
+      path: /status
+      port: 13133
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /status
+      port: 13133
+      scheme: HTTP
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  startupProbe: {}
   # resources:
   #   limits:
   #     cpu: 500m
@@ -239,11 +260,48 @@ jaeger:
   tolerations: []
   affinity: {}
   topologySpreadContraints: []
+  podAnnotations:
+    prometheus.io/port: "8888"
+    prometheus.io/scrape: "true"
   podSecurityContext:
     runAsUser: 10001
     runAsGroup: 10001
     fsGroup: 10001
   securityContext: {}
+  extraVolumes: []
+    # - name: badger-data
+    #   persistentVolumeClaim:
+    #     claimName: jaeger-badger-data
+  extraVolumeMounts: []
+    # - name: badger-data
+    #   mountPath: /badger
+
+  # Configure an OAuth2 Proxy sidecar for Query UI authentication
+  oAuthSidecar:
+    enabled: false
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.5
+    pullPolicy: IfNotPresent
+    containerPort: 4180
+    args: []
+    # - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
+    # - --upstream=http://127.0.0.1:16686
+    # - --http-address=0.0.0.0:4180
+    extraConfigmapMounts: []
+    # - name: oauth2-proxy-config
+    #   mountPath: /etc/oauth2-proxy/oauth2-proxy.cfg
+    #   subPath: oauth2-proxy.cfg
+    #   configMap: jaeger-oauth2-proxy-config
+    #   readOnly: true
+    extraSecretMounts: []
+    # - name: oauth2-proxy-secret
+    #   mountPath: /etc/oauth2-proxy/secret.cfg
+    #   subPath: secret.cfg
+    #   secretName: jaeger-oauth2-proxy-secret
+    #   readOnly: true
+    securityContext: {}
+    resources: {}
+    # livenessProbe: {}
+    # readinessProbe: {}
 
 # ------------------------------------------------------------------------------
 # Storage Connection Settings
