@@ -63,11 +63,11 @@ Ideal for testing. No persistence.
 helm install jaeger jaegertracing/jaeger
 ```
 
-### 2. Elasticsearch (Production Recommended)
+### 2. Elasticsearch / OpenSearch (Production Recommended)
 
-This chart does not provision an ElasticSearch instance.
+This chart does not provision an ElasticSearch nor OpenSearch instance.
 
-To use ElasticSearch storage, you must provide your own ElasticSearch instance and configure Jaeger via the native config syntax:
+To use ElasticSearch / OpenSearch storage, you must provide your own ElasticSearch / OpenSearch instance and configure Jaeger via the native config syntax:
 
 #### Elasticsearch example:
 
@@ -120,6 +120,37 @@ storage:
 
 * es-rollover __requires__ elasticsearch to be running __BEFORE__ install so the hook job can run.
 
+#### OpenSearch example:
+
+**values.yaml**
+```yaml
+userconfig:
+  extensions:
+    jaeger_query:
+      storage:
+        traces: primary_store_opensearch
+        traces_archive: archive_store_opensearch
+    jaeger_storage:
+      backends:
+        primary_store_opensearch:
+          opensearch:
+            server_urls: ["http://my-opensearch-master:9200"]
+            auth:
+              basic:
+                username: opensearch
+                password: changeme
+        archive_store_opensearch:
+          opensearch:
+            server_urls: ["http://my-opensearch-master:9200"]
+            auth:
+              basic:
+                username: opensearch
+                password: changeme
+  exporters:
+    jaeger_storage_exporter:
+      trace_storage: primary_store_opensearch
+```
+
 ### 3. Cassandra
 This chart does not provision a Cassandra cluster.
 
@@ -152,9 +183,9 @@ To run the Spark dependencies job (for dependency links graph) set ```spark.enab
 
 Below is an example of how to set overrides.  Please see the values.yaml for more examples:
 
-The values are populated under ```storage.elasticsearch``` and ```storage.casandra``` Please see comments in values.yaml for more details.
+The values are populated under ```storage.elasticsearch```, ```storage.opensearch``` and ```storage.casandra``` Please see comments in values.yaml for more details.
 
-You must choose the storage type with ```storage.type=elasticsearch``` or ```storage.type=cassandra```
+You must choose the storage type with ```storage.type=elasticsearch```, ```storage.type=opensearch``` or ```storage.type=cassandra```
 
 ```yaml
 spark:
