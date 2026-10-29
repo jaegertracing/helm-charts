@@ -14,12 +14,4 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm upgrade -i jaeger jaegertracing/jaeger
 ```
 
-For more details on installing Jaeger please see the [chart's README](https://github.com/jaegertracing/helm-charts/tree/master/charts/jaeger).
-
-## Install Jaeger Operator
-
-```bash
-helm upgrade -i jaeger-operator jaegertracing/jaeger-operator
-```
-
-For more details on installing Jaeger Operator please see the [chart's README](https://github.com/jaegertracing/helm-charts/tree/master/charts/jaeger-operator).
+For more details on installing Jaeger please see the [chart's README](https://github.com/jaegertracing/helm-charts/tree/main/charts/jaeger).
