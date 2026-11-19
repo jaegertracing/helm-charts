@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.14'
 
-      - uses: helm/chart-testing-action@v2.8.0
+      - uses: helm/chart-testing-action@v2.9.0
         with:
           version: v3.10.1
 
