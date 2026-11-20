@@ -309,7 +309,7 @@ jaeger:
 # These settings configure spark and es-maintenance templates.
 # ------------------------------------------------------------------------------
 storage:
-  # allowed values (cassandra, elasticsearch)
+  # allowed values (cassandra, elasticsearch, opensearch)
   type: elasticsearch
 
   # Cassandra connection settings (for external Cassandra or customizing provisioned)
@@ -354,6 +354,16 @@ storage:
       subPath: ""
     url: http://elasticsearch-master:9200
     # user: elastic
+    # password: changeme
+
+  # OpenSearch connection settings
+  # NOTE: In Jaeger v2, OpenSearch is configured directly in config.extensions.jaeger_storage
+  # (see the 'config' section at the top of this file). The settings below are only used by
+  # the spark job via the opensearch.env helper. Other configuration parameters like JAVA_OPTS, OS_NODES_WAN_ONLY,
+  # OS_INDEX_PREFIX, OS_INDEX_DATE_SEPARATOR, OS_TIME_RANGE etc. should be passed via spark.extraEnv
+  opensearch:
+    url: http://opensearch-master:9200
+    # user: opensearch
     # password: changeme
 
 # https://github.com/jaegertracing/spark-dependencies

@@ -204,7 +204,27 @@ Elasticsearch related environment variables
 {{- end -}}
 
 {{/*
-Cassandra, Elasticsearch related environment variables depending on which is used
+OpenSearch related environment variables
+*/}}
+{{- define "opensearch.env" -}}
+{{- if eq .Values.storage.type "opensearch" -}}
+{{- $os := .Values.storage.opensearch | default dict -}}
+{{- if $os.user }}
+- name: OS_USERNAME
+  value: {{ $os.user | quote }}
+{{- end }}
+{{- if $os.password }}
+- name: OS_PASSWORD
+  value: {{ $os.password | quote }}
+{{- end }}
+{{- $url := $os.url | default "http://opensearch-master:9200" }}
+- name: OS_NODES
+  value: {{ $url | quote }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Cassandra, Elasticsearch, OpenSearch related environment variables depending on which is used
 TODO: storage.env only used in spark
 */}}
 {{- define "storage.env" -}}
@@ -212,6 +232,8 @@ TODO: storage.env only used in spark
 {{ include "cassandra.env" . }}
 {{- else if eq .Values.storage.type "elasticsearch" -}}
 {{ include "elasticsearch.env" . }}
+{{- else if eq .Values.storage.type "opensearch" -}}
+{{ include "opensearch.env" . }}
 {{- end -}}
 {{- end -}}
 
