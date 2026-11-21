@@ -182,11 +182,23 @@ Elasticsearch related environment variables
 {{- define "elasticsearch.env" -}}
 {{- if eq .Values.storage.type "elasticsearch" -}}
 {{- $es := .Values.storage.elasticsearch | default dict -}}
-{{- if $es.user }}
+{{- if not (empty $es.existingSecret) }}
+- name: ES_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ $es.existingSecret }}
+      key: {{ $es.existingSecretUsernameKey }}
+{{- else if $es.user }}
 - name: ES_USERNAME
   value: {{ $es.user | quote }}
 {{- end }}
-{{- if $es.password }}
+{{- if not (empty $es.existingSecret) }}
+- name: ES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ $es.existingSecret }}
+      key: {{ $es.existingSecretPasswordKey }}
+{{- else if $es.password }}
 - name: ES_PASSWORD
   value: {{ $es.password | quote }}
 {{- end }}
@@ -209,11 +221,23 @@ OpenSearch related environment variables
 {{- define "opensearch.env" -}}
 {{- if eq .Values.storage.type "opensearch" -}}
 {{- $os := .Values.storage.opensearch | default dict -}}
-{{- if $os.user }}
+{{- if not (empty $os.existingSecret) }}
+- name: OS_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ $os.existingSecret }}
+      key: {{ $os.existingSecretUsernameKey }}
+{{- else if $os.user }}
 - name: OS_USERNAME
   value: {{ $os.user | quote }}
 {{- end }}
-{{- if $os.password }}
+{{- if not (empty $os.existingSecret) }}
+- name: OS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ $os.existingSecret }}
+      key: {{ $os.existingSecretPasswordKey }}
+{{- else if $os.password }}
 - name: OS_PASSWORD
   value: {{ $os.password | quote }}
 {{- end }}
