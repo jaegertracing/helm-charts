@@ -355,16 +355,24 @@ storage:
     url: http://elasticsearch-master:9200
     # user: elastic
     # password: changeme
+    ## Name of existing secret to use for Elasticsearch credentials (overrides previous user and password)
+    existingSecret: ""
+    existingSecretUsernameKey: username
+    existingSecretPasswordKey: password
 
   # OpenSearch connection settings
-  # NOTE: In Jaeger v2, OpenSearch is configured directly in config.extensions.jaeger_storage
-  # (see the 'config' section at the top of this file). The settings below are only used by
+  # NOTE: In Jaeger v2, OpenSearch is configured directly in userconfig.extensions.jaeger_storage
+  # (see the 'userconfig' section at the top of this file). The settings below are only used by
   # the spark job via the opensearch.env helper. Other configuration parameters like JAVA_OPTS, OS_NODES_WAN_ONLY,
   # OS_INDEX_PREFIX, OS_INDEX_DATE_SEPARATOR, OS_TIME_RANGE etc. should be passed via spark.extraEnv
   opensearch:
     url: http://opensearch-master:9200
     # user: opensearch
     # password: changeme
+    ## Name of existing secret to use for Opensearch credentials (overrides previous user and password)
+    existingSecret: ""
+    existingSecretUsernameKey: username
+    existingSecretPasswordKey: password
 
 # https://github.com/jaegertracing/spark-dependencies
 spark:
