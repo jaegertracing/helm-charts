@@ -18,7 +18,7 @@ jobs:
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
       - uses: actions/setup-python@v7
         with:
-          python-version: '3.14'
+          python-version: '3.15'
 
       - uses: helm/chart-testing-action@v2.9.0
         with:
