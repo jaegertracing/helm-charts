@@ -4,10 +4,12 @@
     "config:recommended",
     ":gitSignOff"
   ],
-  "dependencyDashboard": true,
+  "dependencyDashboard": {
+    "enabled": true
+  },
   "packageRules": [
     {
-      "matchManagers": ["helm", "helm-requirements", "helm-values", "helmv3"],
+      "matchManagers": ["helm-values", "helmv3"],
       "matchFileNames": ["charts/**"],
       "bumpVersions": [
         {
